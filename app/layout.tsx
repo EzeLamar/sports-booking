@@ -1,9 +1,7 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
 import { AuthContextProvider } from './context/AuthContext';
+import 'bootstrap/dist/css/bootstrap.css';
 import './globals.css';
-
-const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'Sport Booking',
@@ -22,7 +20,7 @@ export default function RootLayout({
         head.js. Find out more at https://beta.nextjs.org/docs/api-reference/file-conventions/head
       */}
       <head />
-      <body className={inter.className}>
+      <body>
         <AuthContextProvider>
           {children}
         </AuthContextProvider>
