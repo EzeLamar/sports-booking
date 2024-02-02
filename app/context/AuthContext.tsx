@@ -1,46 +1,49 @@
-'use client'
-import { useState, useEffect, useContext, createContext } from 'react';
-import {
-    onAuthStateChanged,
-    getAuth,
-    User,
-} from 'firebase/auth';
-import firebase_app from "../firebase/config";
+'use client';
 
-const auth = getAuth(firebase_app);
+import {
+  useState, useEffect, useContext, createContext, ReactNode, useMemo,
+} from 'react';
+import {
+  onAuthStateChanged,
+  getAuth,
+  User,
+} from 'firebase/auth';
+import firebaseApp from '../firebase/config';
+
+const auth = getAuth(firebaseApp);
 
 export type AuthContent = {
     user: User | null,
   }
 
 export const AuthContext = createContext<AuthContent>({
-    user: null
-    })
+  user: null,
+});
 
 export const useAuthContext = () => useContext(AuthContext);
 
-export const AuthContextProvider = ({ children } : { children: any}) => {
-    const [user, setUser] = useState<User | null>(null);
-    const [loading, setLoading] = useState(true);
+export function AuthContextProvider({ children } : { children: ReactNode}) {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
-            if (user) {
-                setUser(user);
-            } else {
-                setUser(null);
-            }
-            setLoading(false);
-        });
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (userLogged) => {
+      if (userLogged) {
+        setUser(userLogged);
+      } else {
+        setUser(null);
+      }
+      setLoading(false);
+    });
 
-        return () => unsubscribe();
-    }, []);
+    return () => unsubscribe();
+  }, []);
 
-    const authContext: AuthContent = { user };
-    
-    return (
-        <AuthContext.Provider value={authContext}>
-            {loading ? <div>Loading...</div> : children}
-        </AuthContext.Provider>
-    );
-};
+  const authContextValue = useMemo(() => ({ user }), [user]);
+
+  return (
+    <AuthContext.Provider value={authContextValue}>
+      {loading ? <div>Loading...</div> : children}
+    </AuthContext.Provider>
+  );
+}
