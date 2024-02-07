@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { AuthContextProvider } from './context/AuthContext';
 import 'bootstrap/dist/css/bootstrap.css';
 import './globals.css';
+import NavBar from './components/Navbar';
 
 export const metadata: Metadata = {
   title: 'Sport Booking',
@@ -21,6 +22,7 @@ export default function RootLayout({
       */}
       <head />
       <body>
+        <NavBar />
         <AuthContextProvider>
           {children}
         </AuthContextProvider>
