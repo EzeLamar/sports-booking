@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import signIn from '../firebase/auth/signin';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -17,7 +17,7 @@ export default function SignInPage() {
     const { error } = await signIn(email, password);
 
     if (error) {
-      toast('Error: Invalid Credentials');
+      toast.error('Error: Invalid Credentials');
       return;
     }
 
@@ -25,7 +25,6 @@ export default function SignInPage() {
   };
   return (
     <div className="wrapper">
-      <ToastContainer />
       <div className="form-wrapper">
         <h1 className="mt-60 mb-30">Sign In</h1>
         <form onSubmit={handleForm} className="form">

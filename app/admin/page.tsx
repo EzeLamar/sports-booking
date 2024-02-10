@@ -2,10 +2,10 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { AuthContent, useAuthContext } from '../context/AuthContext';
+import { useAuthContext } from '../context/AuthContext';
 
 export default function AdminPage() {
-  const { user }: AuthContent = useAuthContext();
+  const user = useAuthContext();
   const router = useRouter();
 
   useEffect((): void => {

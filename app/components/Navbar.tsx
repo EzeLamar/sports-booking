@@ -1,8 +1,23 @@
+'use client';
+
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 
+import { toast } from 'react-toastify';
+import { useAuthContext } from '../context/AuthContext';
+import logout from '../firebase/auth/signout';
+
 export default function NavBar() {
+  const user = useAuthContext();
+
+  const handleLogout = async () => {
+    const { error } = await logout();
+    if (error) {
+      toast.error('Error: cannot logout');
+    }
+  };
+
   return (
     <nav className="navbar navbar-expand-lg bg-body-tertiary">
       <div className="container-fluid">
@@ -34,6 +49,12 @@ export default function NavBar() {
               <Link className="nav-link" href="/signup">Sign up</Link>
             </li>
           </ul>
+          {user ? (
+            <>
+              <p>{user.email}</p>
+              <button type="button" onClick={handleLogout}>Logout</button>
+            </>
+          ) : 'no login'}
         </div>
       </div>
     </nav>

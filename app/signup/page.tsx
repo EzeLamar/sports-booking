@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from 'next/navigation';
 import signUp from '../firebase/auth/signup';
@@ -17,7 +17,7 @@ export default function SignUpPage() {
     const { error } = await signUp(email, password);
 
     if (error) {
-      toast('Error');
+      toast.error('Error');
       return;
     }
 
@@ -25,7 +25,6 @@ export default function SignUpPage() {
   };
   return (
     <div className="wrapper">
-      <ToastContainer />
       <div className="form-wrapper">
         <h1 className="mt-60 mb-30">Sign up</h1>
         <form onSubmit={handleForm} className="form">

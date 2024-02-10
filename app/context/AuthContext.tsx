@@ -1,7 +1,7 @@
 'use client';
 
 import {
-  useState, useEffect, useContext, createContext, ReactNode, useMemo,
+  useState, useEffect, useContext, createContext, ReactNode,
 } from 'react';
 import {
   onAuthStateChanged,
@@ -12,26 +12,19 @@ import firebaseApp from '../firebase/config';
 
 const auth = getAuth(firebaseApp);
 
-export type AuthContent = {
-    user: User | null,
-  }
-
-export const AuthContext = createContext<AuthContent>({
-  user: null,
-});
-
+const AuthContext = createContext<User | null>(null);
 export const useAuthContext = () => useContext(AuthContext);
 
 export function AuthContextProvider({ children } : { children: ReactNode}) {
-  const [user, setUser] = useState<User | null>(null);
+  const [authUser, setAuthUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (userLogged) => {
-      if (userLogged) {
-        setUser(userLogged);
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setAuthUser(user);
       } else {
-        setUser(null);
+        setAuthUser(null);
       }
       setLoading(false);
     });
@@ -39,10 +32,8 @@ export function AuthContextProvider({ children } : { children: ReactNode}) {
     return () => unsubscribe();
   }, []);
 
-  const authContextValue = useMemo(() => ({ user }), [user]);
-
   return (
-    <AuthContext.Provider value={authContextValue}>
+    <AuthContext.Provider value={authUser}>
       {loading ? <div>Loading...</div> : children}
     </AuthContext.Provider>
   );

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { ToastContainer } from 'react-toastify';
 import { AuthContextProvider } from './context/AuthContext';
 import 'bootstrap/dist/css/bootstrap.css';
 import './globals.css';
@@ -22,8 +23,9 @@ export default function RootLayout({
       */}
       <head />
       <body>
-        <NavBar />
+        <ToastContainer />
         <AuthContextProvider>
+          <NavBar />
           {children}
         </AuthContextProvider>
       </body>
