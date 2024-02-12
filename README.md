@@ -47,3 +47,9 @@ NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=<sender-id>
 NEXT_PUBLIC_FIREBASE_APP_ID=<app-id>
 NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=<analytic-id>
 ```
+# Storybook
+To start the storybook local server execute the next command:
+```
+npm run storybook
+```
+

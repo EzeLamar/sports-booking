@@ -12,7 +12,7 @@ import firebaseApp from '../firebase/config';
 
 const auth = getAuth(firebaseApp);
 
-const AuthContext = createContext<User | null>(null);
+export const AuthContext = createContext<User | null>(null);
 export const useAuthContext = () => useContext(AuthContext);
 
 export function AuthContextProvider({ children } : { children: ReactNode}) {
