@@ -51,8 +51,10 @@ export default function NavBar() {
           </ul>
           {user ? (
             <>
-              <p>{user.email}</p>
-              <button type="button" onClick={handleLogout}>Logout</button>
+              <span className="navbar-text">
+                {user.email}
+              </span>
+              <button className="btn btn-outline-danger my-2 my-sm-0" type="button" onClick={handleLogout}>Logout</button>
             </>
           ) : 'no login'}
         </div>
