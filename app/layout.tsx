@@ -3,7 +3,7 @@ import { ToastContainer } from 'react-toastify';
 import { AuthContextProvider } from './context/AuthContext';
 import 'bootstrap/dist/css/bootstrap.css';
 import './globals.css';
-import NavBar from './components/Navbar';
+import NavBar from './components/UI/Navbar/Navbar';
 
 export const metadata: Metadata = {
   title: 'Sport Booking',
