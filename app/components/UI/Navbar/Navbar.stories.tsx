@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { User } from 'firebase/auth';
 import NavBar from './Navbar';
-import { AuthContext } from '../context/AuthContext';
+import { AuthContext } from '../../../context/AuthContext';
 
 const meta = {
   title: 'Page/Navbar',
