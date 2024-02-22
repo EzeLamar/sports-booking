@@ -5,8 +5,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import { toast } from 'react-toastify';
-import { useAuthContext } from '../context/AuthContext';
-import logout from '../firebase/auth/signout';
+import { useAuthContext } from '../../../context/AuthContext';
+import logout from '../../../firebase/auth/signout';
 
 export default function NavBar() {
   const user = useAuthContext();

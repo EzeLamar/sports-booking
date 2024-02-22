@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import BadgePill from '../UI/BadgePill';
+import BadgePill from '../UI/BadgePill/BadgePill';
 import './OpenReservationBadge.css';
 
 type Props = {
