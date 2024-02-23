@@ -15,7 +15,9 @@ export default function MultipleOptionBadge({
 	selected,
 	select,
 }: Props) {
-	const classes = `multiple-option-badge__container ${selected ? 'btn-primary' : 'btn-secondary'}`;
+	const classes = `multiple-option-badge__container ${
+		selected ? 'btn-primary' : 'btn-secondary'
+	}`;
 
 	return (
 		<BadgePill className={classes} handleClick={() => select()}>
