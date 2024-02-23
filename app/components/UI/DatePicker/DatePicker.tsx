@@ -18,7 +18,7 @@ type Props = {
 	hidePastDays: boolean;
 	monthsBackToBeShown: number;
 	monthsForwardToBeShown: number;
-	daysToDisable: Matcher[];
+	daysToDisable: Date[];
 };
 
 export default function DatePicker({
