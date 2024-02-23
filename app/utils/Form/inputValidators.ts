@@ -49,6 +49,15 @@ export const CHECKBOX_VALIDATOR = {
 	},
 };
 
+export const RADIO_VALIDATOR = {
+	validation: {
+		required: {
+			value: true,
+			message: 'elegir una opción',
+		},
+	},
+};
+
 export const PRICE_VALIDATOR = {
 	showCurrency: true,
 	type: 'number',
