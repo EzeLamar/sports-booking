@@ -5,17 +5,21 @@ import BadgePill from '../UI/BadgePill/BadgePill';
 import './OpenReservationBadge.css';
 
 type Props = {
-    initialTime: string,
-    selected: boolean,
-    select: () => void,
+	initialTime: string;
+	selected: boolean;
+	select: () => void;
 };
 
-export default function OpenReservationBage({ initialTime, selected, select }: Props) {
-  const classes = `open-reservation-badge__container ${selected ? 'btn-primary' : 'btn-outline-secondary'}`;
+export default function OpenReservationBage({
+	initialTime,
+	selected,
+	select,
+}: Props) {
+	const classes = `open-reservation-badge__container ${selected ? 'btn-primary' : 'btn-outline-secondary'}`;
 
-  return (
-    <BadgePill className={classes} handleClick={() => select()}>
-      {initialTime}
-    </BadgePill>
-  );
+	return (
+		<BadgePill className={classes} handleClick={() => select()}>
+			{initialTime}
+		</BadgePill>
+	);
 }

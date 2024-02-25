@@ -3,11 +3,11 @@ import { useState } from 'react';
 import MultipleOptionsSelector from './MultipleOptionsSelector';
 
 const meta = {
-  title: 'UI/MultipleOptionsSelector',
-  component: MultipleOptionsSelector,
-  parameters: {},
-  tags: ['autodocs'],
-  argTypes: {},
+	title: 'UI/MultipleOptionsSelector',
+	component: MultipleOptionsSelector,
+	parameters: {},
+	tags: ['autodocs'],
+	argTypes: {},
 } satisfies Meta<typeof MultipleOptionsSelector>;
 
 export default meta;
@@ -15,38 +15,42 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 const options = [
-  'lunes',
-  'martes',
-  'miércoles',
-  'jueves',
-  'viernes',
-  'sábado',
-  'domingo',
+	'lunes',
+	'martes',
+	'miércoles',
+	'jueves',
+	'viernes',
+	'sábado',
+	'domingo',
 ];
 
 const defaultSelectedOptions = ['martes', 'jueves'];
 
 export const Primary: Story = {
-  args: {
-    options,
-    selectedOptions: defaultSelectedOptions,
-    // eslint-disable-next-line no-console
-    setSelectedOptions: (selectedLabels) => { console.log(selectedLabels); },
-  },
+	args: {
+		options,
+		selectedOptions: defaultSelectedOptions,
+		setSelectedOptions: selectedLabels => {
+			// eslint-disable-next-line no-console
+			console.log(selectedLabels);
+		},
+	},
 };
 
 export const TryIt: Story = {
-  decorators: [
-    () => {
-      const [selectedLabels, setSelectedLabels] = useState<string[]>(defaultSelectedOptions);
+	decorators: [
+		() => {
+			const [selectedLabels, setSelectedLabels] = useState<string[]>(
+				defaultSelectedOptions
+			);
 
-      return (
-        <MultipleOptionsSelector
-          options={options}
-          selectedOptions={selectedLabels}
-          setSelectedOptions={setSelectedLabels}
-        />
-      );
-    },
-  ],
+			return (
+				<MultipleOptionsSelector
+					options={options}
+					selectedOptions={selectedLabels}
+					setSelectedOptions={setSelectedLabels}
+				/>
+			);
+		},
+	],
 };

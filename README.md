@@ -35,9 +35,10 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
 
-
 # Firebase
+
 It is necessary to create the file .env in the root directory with the credentials of the corresponding Firebase Project with the next structure:
+
 ```
 NEXT_PUBLIC_FIREBASE_API_KEY=<api-key>
 NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=<auth-domain>
@@ -47,9 +48,11 @@ NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=<sender-id>
 NEXT_PUBLIC_FIREBASE_APP_ID=<app-id>
 NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=<analytic-id>
 ```
+
 # Storybook
+
 To start the storybook local server execute the next command:
+
 ```
 npm run storybook
 ```
-
