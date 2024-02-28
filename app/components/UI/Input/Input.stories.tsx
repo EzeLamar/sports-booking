@@ -5,9 +5,11 @@ import {
 	TEXT_VALIDATOR,
 	NUMBER_VALIDATOR,
 	EMAIL_VALIDATOR,
+	CHECKBOX_VALIDATOR,
 } from '../../../utils/Form/inputValidators';
 import Form from '../Form/Form';
 import Input from './Input';
+import MultipleInputSelector from '../MultipleInputSelector/MultipleInputSelector';
 
 const meta = {
 	title: 'UI/Form/Input',
@@ -24,20 +26,22 @@ type Story = StoryObj<typeof meta>;
 export const InputsWithValidators: Story = {
 	decorators: [
 		() => {
+			const [disabled, setDisabled] = useState<boolean>(true);
 			const initialValues = {
 				firstName: 'Pepe',
 				lastName: null,
 				age: '23',
 				email: 'test@mail.com',
+				days: ['tuesday'],
 			};
 
 			const handleSubmit = (data: unknown) => {
 				console.log(data);
 				// eslint-disable-next-line no-alert
 				alert(JSON.stringify(data));
+				setDisabled(true);
 			};
 
-			const [disabled, setDisabled] = useState<boolean>(true);
 			return (
 				<Form
 					title='Form With Inputs'
@@ -76,6 +80,13 @@ export const InputsWithValidators: Story = {
 						placeholder='...'
 						name='email'
 						{...EMAIL_VALIDATOR}
+					/>
+					<MultipleInputSelector
+						id='input-field-multiple-input-selector'
+						options={['monday', 'tuesday', 'friday']}
+						label='Days'
+						name='days'
+						{...CHECKBOX_VALIDATOR}
 					/>
 				</Form>
 			);

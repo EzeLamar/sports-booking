@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import OpenReservationsSelector from './OpenReservationsSelector';
 
 const meta = {
-	title: 'Court/OpenReservationsSelector',
+	title: 'Courts/OpenReservationsSelector',
 	component: OpenReservationsSelector,
 	parameters: {},
 	tags: ['autodocs'],
