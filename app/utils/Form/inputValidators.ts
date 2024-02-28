@@ -40,6 +40,15 @@ export const PASSWORD_VALIDATOR = {
 	},
 };
 
+export const CHECKBOX_VALIDATOR = {
+	validation: {
+		required: {
+			value: true,
+			message: 'al menos 1 requerido',
+		},
+	},
+};
+
 export const PRICE_VALIDATOR = {
 	showCurrency: true,
 	type: 'number',

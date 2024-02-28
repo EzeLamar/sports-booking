@@ -12,7 +12,7 @@ type Props = {
 	showCurrency?: boolean;
 };
 
-function InputError({ message }: { message: string }) {
+export function InputError({ message }: { message: string }) {
 	return <p className='input__error'>{message}</p>;
 }
 
