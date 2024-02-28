@@ -1,0 +1,8 @@
+.form__buttons {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.form__button {
+	margin: 2px;
+}
