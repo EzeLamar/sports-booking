@@ -23,12 +23,15 @@ const court: Court = {
 	closeHour: '16:00',
 };
 
-const handleSubmit = (data: unknown) => {
-	// eslint-disable-next-line no-console
-	console.log(data);
-	// eslint-disable-next-line no-alert
-	alert(JSON.stringify(data));
-};
+const handleSubmit = (data: unknown): Promise<boolean> =>
+	new Promise(resolve => {
+		// eslint-disable-next-line no-console
+		console.log(data);
+		// eslint-disable-next-line no-alert
+		alert(JSON.stringify(data));
+		resolve(true);
+	});
+
 const handleCancel = () => {
 	// eslint-disable-next-line no-console
 	console.log('Cancel Button');
