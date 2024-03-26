@@ -2,10 +2,11 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuthContext } from '../context/AuthContext';
-import Loading from '../components/UI/Loading/Loading';
+import { useAuthContext } from '../../context/AuthContext';
+import CourtSettingsView from './CourtSettingsView';
+import Loading from '../../components/UI/Loading/Loading';
 
-export default function AdminPage() {
+export default function CourtPage() {
 	const user = useAuthContext();
 	const router = useRouter();
 
@@ -19,8 +20,8 @@ export default function AdminPage() {
 		<Loading />
 	) : (
 		<>
-			<h2>Admin View: Hi {user.email}</h2>
-			<p>Only logged in users can view this page</p>
+			<h2>Court View: Hi {user.email}</h2>
+			<CourtSettingsView />
 		</>
 	);
 }

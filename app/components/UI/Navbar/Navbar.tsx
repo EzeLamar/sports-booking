@@ -56,7 +56,12 @@ export default function NavBar() {
 						</li>
 						<li className='nav-item'>
 							<Link className='nav-link' href='/admin'>
-								Test logged user
+								Admin
+							</Link>
+						</li>
+						<li className='nav-item'>
+							<Link className='nav-link' href='/admin/court'>
+								Court Settings
 							</Link>
 						</li>
 						<li className='nav-item'>

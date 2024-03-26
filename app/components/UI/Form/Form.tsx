@@ -11,9 +11,10 @@ type Props = {
 	children: React.ReactNode;
 	title: string;
 	initialValues: FieldValues;
-	handleSubmit: (data: unknown) => void;
-	handleCancel: () => void;
+	/* eslint-disable @typescript-eslint/no-explicit-any */
+	handleSubmit: (data: any) => Promise<boolean>;
 	disabled?: boolean;
+	handleCancel?: () => void;
 	setDisabled?: (state: boolean) => void;
 };
 
@@ -21,18 +22,14 @@ export default function Form({
 	children,
 	title,
 	initialValues,
-	setDisabled = () => {},
 	handleSubmit,
-	handleCancel,
 	disabled = false,
+	handleCancel = () => {},
+	setDisabled = () => {},
 }: Props) {
 	const methods = useForm({
 		mode: 'onChange',
 		values: initialValues,
-	});
-
-	const formSubmit = methods.handleSubmit(data => {
-		handleSubmit(data);
 	});
 
 	const onCancel = () => {
@@ -40,6 +37,12 @@ export default function Form({
 		setDisabled(true);
 		handleCancel();
 	};
+
+	const formSubmit = methods.handleSubmit(data => {
+		handleSubmit(data)
+			.then(() => setDisabled(true))
+			.catch(() => onCancel());
+	});
 
 	const onSubmit = (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
@@ -49,15 +52,17 @@ export default function Form({
 	return (
 		<FormProvider {...methods}>
 			<form onSubmit={e => onSubmit(e)} noValidate>
+				<legend>
+					{title}
+					{disabled && (
+						<button
+							className='btn btn-outline-primary bi bi-pencil-fill'
+							type='button'
+							onClick={() => setDisabled(false)}
+						/>
+					)}
+				</legend>
 				<fieldset disabled={disabled}>
-					<legend>
-						{title}
-						{disabled && (
-							<button type='button' onClick={() => setDisabled(false)}>
-								Editar
-							</button>
-						)}
-					</legend>
 					{children}
 					{!disabled && (
 						<div className='form__buttons'>

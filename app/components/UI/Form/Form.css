@@ -6,3 +6,7 @@
 .form__button {
 	margin: 2px;
 }
+
+.form__edit-button {
+	margin-left: 1rem;
+}
