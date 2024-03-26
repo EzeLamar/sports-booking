@@ -9,6 +9,8 @@ import {
 } from 'react';
 import { onAuthStateChanged, getAuth, User } from 'firebase/auth';
 import firebaseApp from '../firebase/config';
+import Loading from '../components/UI/Loading/Loading';
+import NavbarPlaceholder from '../components/UI/Navbar/NavbarPlaceholder';
 
 const auth = getAuth(firebaseApp);
 
@@ -34,7 +36,14 @@ export function AuthContextProvider({ children }: { children: ReactNode }) {
 
 	return (
 		<AuthContext.Provider value={authUser}>
-			{loading ? <div>Loading...</div> : children}
+			{loading ? (
+				<>
+					<NavbarPlaceholder />
+					<Loading />
+				</>
+			) : (
+				children
+			)}
 		</AuthContext.Provider>
 	);
 }

@@ -4,7 +4,7 @@ import NavBar from './Navbar';
 import { AuthContext } from '../../../context/AuthContext';
 
 const meta = {
-	title: 'Page/Navbar',
+	title: 'Page/Navbar/Navbar',
 	component: NavBar,
 	parameters: {},
 	tags: ['autodocs'],
