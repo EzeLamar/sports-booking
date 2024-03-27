@@ -23,9 +23,8 @@ export type Court = {
 
 type Props = {
 	court: Court | null;
-	editable: boolean;
-	handleSubmit: (data: unknown) => void;
-	handleCancel: () => void;
+	handleSubmit: (data: Court) => Promise<boolean>;
+	editable?: boolean;
 };
 
 const LABELS = {
@@ -52,7 +51,6 @@ export default function CourtSettings({
 	court = null,
 	editable = false,
 	handleSubmit,
-	handleCancel,
 }: Props) {
 	const [disabled, setDisabled] = useState<boolean>(!editable);
 	const formValues = { ...court };
@@ -65,7 +63,6 @@ export default function CourtSettings({
 				setDisabled={setDisabled}
 				initialValues={formValues}
 				handleSubmit={handleSubmit}
-				handleCancel={handleCancel}
 			>
 				<Input
 					id='court-settings-name'

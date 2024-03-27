@@ -35,12 +35,13 @@ export const InputsWithValidators: Story = {
 				days: ['tuesday'],
 			};
 
-			const handleSubmit = (data: unknown) => {
-				console.log(data);
-				// eslint-disable-next-line no-alert
-				alert(JSON.stringify(data));
-				setDisabled(true);
-			};
+			const handleSubmit = (data: unknown): Promise<boolean> =>
+				new Promise(resolve => {
+					console.log(data);
+					// eslint-disable-next-line no-alert
+					alert(JSON.stringify(data));
+					resolve(true);
+				});
 
 			return (
 				<Form
