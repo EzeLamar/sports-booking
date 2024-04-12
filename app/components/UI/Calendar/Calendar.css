@@ -1,0 +1,15 @@
+.calendar__container {
+	height: 600px;
+}
+
+.calendar__today {
+	/* background-color: rgb(253, 254, 222); */
+}
+
+.calendar__type-class {
+	background-color: rgb(96, 209, 96);
+}
+
+.calendar__type-match {
+	background-color: rgb(108, 108, 234);
+}
