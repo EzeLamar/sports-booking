@@ -13,6 +13,8 @@ type Props = {
 	initialValues: FieldValues;
 	/* eslint-disable @typescript-eslint/no-explicit-any */
 	handleSubmit: (data: any) => Promise<boolean>;
+	showCancelButton?: boolean;
+	submitLabel?: string;
 	disabled?: boolean;
 	handleCancel?: () => void;
 	setDisabled?: (state: boolean) => void;
@@ -23,6 +25,8 @@ export default function Form({
 	title,
 	initialValues,
 	handleSubmit,
+	submitLabel = LABELS.SUBMIT,
+	showCancelButton = true,
 	disabled = false,
 	handleCancel = () => {},
 	setDisabled = () => {},
@@ -69,15 +73,17 @@ export default function Form({
 							<input
 								type='submit'
 								className='btn btn-primary form__button'
-								value={LABELS.SUBMIT}
+								value={submitLabel}
 							/>
-							<button
-								type='button'
-								className='btn btn-secondary form__button'
-								onClick={onCancel}
-							>
-								{LABELS.CANCEL}
-							</button>
+							{showCancelButton && (
+								<button
+									type='button'
+									className='btn btn-secondary form__button'
+									onClick={onCancel}
+								>
+									{LABELS.CANCEL}
+								</button>
+							)}
 						</div>
 					)}
 				</fieldset>

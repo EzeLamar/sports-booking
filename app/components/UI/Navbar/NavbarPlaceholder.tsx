@@ -1,16 +1,20 @@
-'use client';
-
-import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function NavbarPlaceholder() {
 	return (
-		<nav
-			style={{ color: 'red' }}
-			className='navbar navbar-expand-lg bg-body-tertiary'
-		>
+		<nav className='navbar navbar-expand-lg bg-body-tertiary'>
 			<div className='container-fluid'>
-				Sports Booking App
+				<Link className='navbar-brand' href='/'>
+					<Image
+						className='d-inline-block align-top'
+						src='\app-logo.svg'
+						alt='Logo'
+						width={30}
+						height={30}
+					/>
+					Sports Booking App
+				</Link>
 				<button
 					className='navbar-toggler'
 					type='button'
@@ -30,6 +34,10 @@ export default function NavbarPlaceholder() {
 							</Link>
 						</li>
 					</ul>
+					<p className='placeholder-glow'>
+						<span className='placeholder col-1' />
+					</p>
+					<p className='btn btn-primary disabled placeholder col-1' />
 				</div>
 			</div>
 		</nav>
