@@ -49,36 +49,25 @@ export default function NavBar() {
 								Home
 							</Link>
 						</li>
-						<li className='nav-item'>
-							<Link className='nav-link' href='/signin'>
-								Login
-							</Link>
-						</li>
-						<li className='nav-item'>
-							<Link className='nav-link' href='/admin'>
-								Admin
-							</Link>
-						</li>
-						<li className='nav-item'>
-							<Link className='nav-link' href='/admin/court'>
-								Court Settings
-							</Link>
-						</li>
-						<li className='nav-item'>
-							<Link className='nav-link' href='/admin/reservations'>
-								Reservations
-							</Link>
-						</li>
-						<li className='nav-item'>
-							<Link className='nav-link' href='/signup'>
-								Sign up
-							</Link>
-						</li>
-						<li className='nav-item'>
-							<Link className='nav-link' href='/signup'>
-								Sign up
-							</Link>
-						</li>
+						{user && (
+							<>
+								<li className='nav-item'>
+									<Link className='nav-link' href='/admin'>
+										Admin
+									</Link>
+								</li>
+								<li className='nav-item'>
+									<Link className='nav-link' href='/admin/court'>
+										Court Settings
+									</Link>
+								</li>
+								<li className='nav-item'>
+									<Link className='nav-link' href='/admin/reservations'>
+										Reservations
+									</Link>
+								</li>
+							</>
+						)}
 					</ul>
 					{user ? (
 						<>
@@ -92,7 +81,9 @@ export default function NavBar() {
 							</button>
 						</>
 					) : (
-						'no login'
+						<Link className='btn btn-primary' href='/signin'>
+							Login
+						</Link>
 					)}
 				</div>
 			</div>

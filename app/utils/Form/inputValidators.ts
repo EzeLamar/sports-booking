@@ -31,11 +31,11 @@ export const PASSWORD_VALIDATOR = {
 	validation: {
 		required: {
 			value: true,
-			message: 'required',
+			message: 'requerido',
 		},
 		minLength: {
 			value: 6,
-			message: 'min 6 characters',
+			message: 'al menos 6 carácteres',
 		},
 	},
 };
@@ -84,12 +84,12 @@ export const EMAIL_VALIDATOR = {
 	validation: {
 		required: {
 			value: true,
-			message: 'required',
+			message: 'requerido',
 		},
 		pattern: {
 			value:
 				/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-			message: 'not valid',
+			message: 'email no válido',
 		},
 	},
 };
