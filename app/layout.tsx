@@ -5,6 +5,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import './globals.css';
 import NavBar from './components/UI/Navbar/Navbar';
+import BootstrapClient from './components/BootstrapClient';
 
 export const metadata: Metadata = {
 	title: 'Sport Booking',
@@ -21,9 +22,10 @@ export default function RootLayout({
 			{/*
         <head /> will contain the components returned by the nearest parent
         head.js. Find out more at https://beta.nextjs.org/docs/api-reference/file-conventions/head
-      */}
-			<head />
+		<head />
+	  */}
 			<body>
+				<BootstrapClient />
 				<ToastContainer />
 				<AuthContextProvider>
 					<NavBar />
