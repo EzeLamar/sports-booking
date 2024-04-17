@@ -57,7 +57,7 @@ To start the storybook local server execute the next command:
 npm run storybook
 ```
 
-# Build Process
+# NextJs Build Process
 
 First make sure there is no Lint and Prettier errors executing:
 
@@ -76,4 +76,54 @@ Finally, you can build the project executing:
 
 ```shell
 npm run build
+```
+
+# Firebase Build & Deploy Process (Hosting)
+
+First, we need to install firebase-tools
+Login with your Firebase account executing:
+
+```shell
+npx firebase login
+```
+
+We indicate that we want to enable the SSR on Firebase Hosting to support NextJS with the next command:
+
+```shell
+npx firebase experiments:enable webframeworks
+```
+
+Then, we indicate that we want to start a firebase config from scrath including the service hosting
+
+```shell
+npx firebase init hosting
+```
+
+Select the current firebase project that we configured previously.
+Automatically NetxJs from our project. Mark as this is OK.
+
+Do not select to use Github to manage the deploy process
+
+firebase.json and .firebaserc files will be created. In case you are loading the project with the configuration previously done, you will have to create the .fireabaserc file with the next structure:
+
+```json
+{
+	"projects": {
+		"default": "<FIREBASE_PROJECT_ID>"
+	}
+}
+```
+
+## Firebase Emulator
+
+```shell
+npx firebase emulators:start
+```
+
+## Firebase Deploy
+
+Finally, we can deploy it with:
+
+```shell
+npx firebase deploy
 ```
