@@ -12,9 +12,10 @@ export default function NavBar() {
 	const user = useAuthContext();
 
 	const handleLogout = async () => {
-		const { error } = await logout();
-		if (error) {
-			toast.error('Error: cannot logout');
+		try {
+			await logout();
+		} catch (error) {
+			toast.error(error.message, { theme: 'colored' });
 		}
 	};
 
@@ -77,12 +78,12 @@ export default function NavBar() {
 								type='button'
 								onClick={handleLogout}
 							>
-								Logout
+								Cerrar Sesión
 							</button>
 						</>
 					) : (
 						<Link className='btn btn-primary' href='/signin'>
-							Login
+							Ingresar
 						</Link>
 					)}
 				</div>

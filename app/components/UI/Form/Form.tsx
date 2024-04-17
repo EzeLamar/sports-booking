@@ -9,10 +9,10 @@ const LABELS = {
 
 type Props = {
 	children: React.ReactNode;
-	title: string;
 	initialValues: FieldValues;
 	/* eslint-disable @typescript-eslint/no-explicit-any */
 	handleSubmit: (data: any) => Promise<boolean>;
+	title?: string | null;
 	showCancelButton?: boolean;
 	submitLabel?: string;
 	disabled?: boolean;
@@ -22,9 +22,9 @@ type Props = {
 
 export default function Form({
 	children,
-	title,
 	initialValues,
 	handleSubmit,
+	title = null,
 	submitLabel = LABELS.SUBMIT,
 	showCancelButton = true,
 	disabled = false,

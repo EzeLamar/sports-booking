@@ -1,4 +1,4 @@
-/* eslint-disable jsx-a11y/label-has-associated-control */
+import GoogleButton from 'react-google-button';
 import Form from '../../UI/Form/Form';
 import Input from '../../UI/Input/Input';
 import {
@@ -6,6 +6,7 @@ import {
 	PASSWORD_VALIDATOR,
 } from '../../../utils/Form/inputValidators';
 import Card from '../../UI/Card/Card';
+import './Signin.css';
 
 export type Login = {
 	user: string;
@@ -14,6 +15,7 @@ export type Login = {
 
 type Props = {
 	handleSubmit: (data: Login) => Promise<boolean>;
+	handleGoogleLogin: () => void;
 };
 
 const LABELS = {
@@ -24,7 +26,7 @@ const LABELS = {
 	SUBMIT: 'Ingresar',
 };
 
-export default function Signin({ handleSubmit }: Props) {
+export default function Signin({ handleSubmit, handleGoogleLogin }: Props) {
 	const formValues = {
 		user: null,
 		password: null,
@@ -32,8 +34,15 @@ export default function Signin({ handleSubmit }: Props) {
 
 	return (
 		<Card>
+			<legend>{LABELS.TITLE}</legend>
+			<div className='signin__google-button'>
+				<GoogleButton
+					label='Continuar con Google'
+					onClick={handleGoogleLogin}
+				/>
+			</div>
+			-ó-
 			<Form
-				title={LABELS.TITLE}
 				disabled={false}
 				initialValues={formValues}
 				handleSubmit={handleSubmit}
