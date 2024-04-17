@@ -22,8 +22,8 @@ export type Court = {
 };
 
 type Props = {
-	court: Court | null;
 	handleSubmit: (data: Court) => Promise<boolean>;
+	court?: Court | null;
 	editable?: boolean;
 };
 

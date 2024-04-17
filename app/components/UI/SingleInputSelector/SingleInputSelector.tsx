@@ -1,6 +1,6 @@
 import React from 'react';
 import { RegisterOptions, useFormContext } from 'react-hook-form';
-import { findInputError, isFormInvalid } from '../../../utils/Form/formHelper';
+import { findInputError } from '../../../utils/Form/formHelper';
 import { InputError } from '../Input/Input';
 import './SingleInputSelector.css';
 
@@ -25,7 +25,6 @@ export default function SingleInputSelector({
 	} = useFormContext();
 
 	const inputError = findInputError(errors, name);
-	const isInvalid = isFormInvalid(inputError);
 
 	return (
 		<div className='mb-3'>
@@ -53,7 +52,7 @@ export default function SingleInputSelector({
 					</span>
 				))}
 			</div>
-			{isInvalid && <InputError message={inputError.error.message} />}
+			{inputError && <InputError message={inputError} />}
 		</div>
 	);
 }

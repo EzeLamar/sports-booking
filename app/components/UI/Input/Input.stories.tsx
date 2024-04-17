@@ -23,6 +23,7 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
+// @ts-expect-error useState ts limitation on storybook
 export const InputsWithValidators: Story = {
 	decorators: [
 		() => {

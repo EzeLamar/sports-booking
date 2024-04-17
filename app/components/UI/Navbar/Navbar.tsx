@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import { toast } from 'react-toastify';
+import hasErrorMessage from '@/app/utils/Error/ErrorHelper';
 import { useAuthContext } from '../../../context/AuthContext';
 import logout from '../../../firebase/auth/signout';
 
@@ -14,8 +15,10 @@ export default function NavBar() {
 	const handleLogout = async () => {
 		try {
 			await logout();
-		} catch (error) {
-			toast.error(error.message, { theme: 'colored' });
+		} catch (error: unknown) {
+			if (hasErrorMessage(error)) {
+				toast.error(error.message, { theme: 'colored' });
+			}
 		}
 	};
 

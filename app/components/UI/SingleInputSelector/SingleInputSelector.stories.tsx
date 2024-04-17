@@ -27,6 +27,7 @@ const options = [
 	'Option 8',
 ];
 
+// @ts-expect-error useState ts limitation on storybook
 export const FormTest: Story = {
 	decorators: [
 		() => {
@@ -34,10 +35,12 @@ export const FormTest: Story = {
 				options: ['Option 2', 'Option 4'],
 			};
 
-			const handleSubmit = (data: unknown) => {
-				// eslint-disable-next-line no-alert
-				alert(JSON.stringify(data));
-			};
+			const handleSubmit = (data: unknown): Promise<boolean> =>
+				new Promise(resolve => {
+					// eslint-disable-next-line no-alert
+					alert(JSON.stringify(data));
+					resolve(true);
+				});
 
 			const [disabled, setDisabled] = useState<boolean>(true);
 			return (

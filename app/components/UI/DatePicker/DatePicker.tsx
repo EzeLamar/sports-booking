@@ -15,15 +15,15 @@ import styles from 'react-day-picker/dist/style.module.css';
 type Props = {
 	selectedDate: Date;
 	setSelectedDate: (selectedDate: Date) => void;
-	hidePastDays: boolean;
-	monthsBackToBeShown: number;
-	monthsForwardToBeShown: number;
-	daysToDisable: Matcher[];
+	hidePastDays?: boolean;
+	monthsBackToBeShown?: number;
+	monthsForwardToBeShown?: number;
+	daysToDisable?: Matcher[];
 };
 
 export default function DatePicker({
-	setSelectedDate,
 	selectedDate,
+	setSelectedDate,
 	hidePastDays = false,
 	monthsBackToBeShown = 12,
 	monthsForwardToBeShown = 3,
@@ -70,6 +70,7 @@ export default function DatePicker({
 			toMonth={finalShownDate}
 			disabled={disabledDays}
 			selected={selectedDate}
+			// @ts-expect-error onSelect type seems as not compatible
 			onSelect={setSelectedDate}
 			month={monthShown}
 			onMonthChange={setMonthShown}

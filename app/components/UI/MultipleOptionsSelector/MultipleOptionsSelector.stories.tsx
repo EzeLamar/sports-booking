@@ -37,6 +37,7 @@ export const Primary: Story = {
 	},
 };
 
+// @ts-expect-error useState ts limitation on storybook
 export const TryIt: Story = {
 	decorators: [
 		() => {

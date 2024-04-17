@@ -1,14 +1,16 @@
 import { FieldErrors } from 'react-hook-form';
 
-export const isFormInvalid = (err: FieldErrors) => {
-	if (Object.keys(err).length > 0) return true;
-	return false;
-};
-
-export function findInputError(errors: FieldErrors, name: string): FieldErrors {
-	const filtered = Object.keys(errors)
+export function findInputError(
+	errors: FieldErrors,
+	name: string
+): string | null {
+	let errorMessage = null;
+	Object.keys(errors)
 		.filter(key => key.includes(name))
-		.reduce((cur, key) => Object.assign(cur, { error: errors[key] }), {});
+		.reduce((cur, key) => {
+			errorMessage = errors[key]?.message;
+			return Object.assign(cur, { error: errors[key] });
+		}, {});
 
-	return filtered;
+	return errorMessage;
 }

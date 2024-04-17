@@ -16,7 +16,8 @@ export async function getReservation(): Promise<ReservationType> {
 	const db = getFirestore(firebaseApp);
 	const docRef = doc(
 		db,
-		process.env.NEXT_PUBLIC_RESERVATIONS_COLLECTION,
+		process.env.NEXT_PUBLIC_RESERVATIONS_COLLECTION ??
+			'NEXT_PUBLIC_RESERVATIONS_COLLECTION',
 		reservationId
 	);
 	const docSnap = await getDoc(docRef);

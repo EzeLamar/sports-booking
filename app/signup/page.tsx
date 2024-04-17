@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import signUp from '../firebase/auth/signup';
 import Signup, { Register } from '../components/Login/Signup/Signup';
 import 'react-toastify/dist/ReactToastify.css';
+import hasErrorMessage from '../utils/Error/ErrorHelper';
 
 export default function SignUpPage() {
 	const router = useRouter();
@@ -22,7 +23,9 @@ export default function SignUpPage() {
 				toast.success(`Usuario ${data.user} registrado!`);
 				router.push('/admin');
 			} catch (error) {
-				toast.error(error.message, { theme: 'colored' });
+				if (hasErrorMessage(error)) {
+					toast.error(error.message, { theme: 'colored' });
+				}
 
 				throw error;
 			}
