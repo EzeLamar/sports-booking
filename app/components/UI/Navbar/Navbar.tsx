@@ -65,6 +65,11 @@ export default function NavBar() {
 							</Link>
 						</li>
 						<li className='nav-item'>
+							<Link className='nav-link' href='/admin/reservations'>
+								Reservations
+							</Link>
+						</li>
+						<li className='nav-item'>
 							<Link className='nav-link' href='/signup'>
 								Sign up
 							</Link>
