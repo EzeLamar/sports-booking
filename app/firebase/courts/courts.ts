@@ -4,10 +4,11 @@ import firebaseApp from '../config';
 
 export async function getCourt(): Promise<Court> {
 	const db = getFirestore(firebaseApp);
+
 	const docRef = doc(
 		db,
-		process.env.NEXT_PUBLIC_COURT_COLLECTION,
-		process.env.NEXT_PUBLIC_BURATO_COURT_ID
+		process.env.NEXT_PUBLIC_COURT_COLLECTION ?? 'NEXT_PUBLIC_COURT_COLLECTION',
+		process.env.NEXT_PUBLIC_BURATO_COURT_ID ?? 'NEXT_PUBLIC_BURATO_COURT_ID'
 	);
 
 	const docSnap = await getDoc(docRef);
@@ -31,8 +32,8 @@ export async function editCourt(court: Court): Promise<boolean> {
 	const db = getFirestore(firebaseApp);
 	const docRef = doc(
 		db,
-		process.env.NEXT_PUBLIC_COURT_COLLECTION,
-		process.env.NEXT_PUBLIC_BURATO_COURT_ID
+		process.env.NEXT_PUBLIC_COURT_COLLECTION ?? 'NEXT_PUBLIC_COURT_COLLECTION',
+		process.env.NEXT_PUBLIC_BURATO_COURT_ID ?? 'NEXT_PUBLIC_BURATO_COURT_ID'
 	);
 	await updateDoc(docRef, court);
 

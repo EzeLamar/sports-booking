@@ -17,11 +17,7 @@ type Story = StoryObj<typeof meta>;
 
 const today = new Date();
 const dayAfterTomorrow = addDays(today, 2);
-
-export const Default: Story = {
-	args: {},
-};
-
+// @ts-expect-error useState ts limitation on storybook
 export const TestClick: Story = {
 	decorators: [
 		() => {
@@ -44,18 +40,21 @@ export const StartWithADaySelected: Story = {
 
 export const HidePastDays: Story = {
 	args: {
+		selectedDate: dayAfterTomorrow,
 		hidePastDays: true,
 	},
 };
 
 export const DisableTheDayAfterTomorrow: Story = {
 	args: {
+		selectedDate: dayAfterTomorrow,
 		daysToDisable: [dayAfterTomorrow],
 	},
 };
 
 export const HidePastDaysAndDisableDayAfterTomorrow: Story = {
 	args: {
+		selectedDate: dayAfterTomorrow,
 		hidePastDays: true,
 		daysToDisable: [dayAfterTomorrow],
 	},
@@ -63,12 +62,14 @@ export const HidePastDaysAndDisableDayAfterTomorrow: Story = {
 
 export const ShowOnlyOneMonthForward: Story = {
 	args: {
+		selectedDate: dayAfterTomorrow,
 		monthsForwardToBeShown: 1,
 	},
 };
 
 export const ShowOnlyOneMonthBack: Story = {
 	args: {
+		selectedDate: dayAfterTomorrow,
 		monthsBackToBeShown: 1,
 	},
 };

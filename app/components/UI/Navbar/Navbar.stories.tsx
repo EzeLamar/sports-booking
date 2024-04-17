@@ -17,6 +17,7 @@ const userLogged: User = {
 	email: 'test@gmail.com',
 	emailVerified: false,
 	isAnonymous: false,
+	// @ts-expect-error mock value only need for testing
 	metadata: undefined,
 	providerData: [],
 	refreshToken: '',

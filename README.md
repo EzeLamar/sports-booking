@@ -56,3 +56,24 @@ To start the storybook local server execute the next command:
 ```
 npm run storybook
 ```
+
+# Build Process
+
+First make sure there is no Lint and Prettier errors executing:
+
+```shell
+npm run lint:check
+npm run format:check
+```
+
+Then, verify there is no Typescript errors with the next command:
+
+```shell
+npx tsc --noEmit
+```
+
+Finally, you can build the project executing:
+
+```shell
+npm run build
+```

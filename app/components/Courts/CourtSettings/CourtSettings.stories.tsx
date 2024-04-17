@@ -32,17 +32,11 @@ const handleSubmit = (data: unknown): Promise<boolean> =>
 		resolve(true);
 	});
 
-const handleCancel = () => {
-	// eslint-disable-next-line no-console
-	console.log('Cancel Button');
-};
-
 export const Enabled: Story = {
 	args: {
 		court,
 		editable: true,
 		handleSubmit,
-		handleCancel,
 	},
 };
 
@@ -50,7 +44,6 @@ export const Disabled: Story = {
 	args: {
 		court,
 		handleSubmit,
-		handleCancel,
 	},
 };
 
@@ -58,6 +51,5 @@ export const Empty: Story = {
 	args: {
 		editable: true,
 		handleSubmit,
-		handleCancel,
 	},
 };

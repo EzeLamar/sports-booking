@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
+import hasErrorMessage from '@/app/utils/Error/ErrorHelper';
 import CourtSettings, {
 	Court,
 } from '../../components/Courts/CourtSettings/CourtSettings';
@@ -23,8 +24,10 @@ export default function CourtSettingsView() {
 				setCourt(data);
 
 				return result;
-			} catch (error) {
-				toast.error(error.message, { theme: 'colored' });
+			} catch (error: unknown) {
+				if (hasErrorMessage(error)) {
+					toast.error(error.message, { theme: 'colored' });
+				}
 
 				throw error;
 			}
@@ -39,8 +42,10 @@ export default function CourtSettingsView() {
 				const courtData = await getCourt();
 				setCourt(courtData);
 				setLoading(false);
-			} catch (error) {
-				toast.error(error.message, { theme: 'colored' });
+			} catch (error: unknown) {
+				if (hasErrorMessage(error)) {
+					toast.error(error.message, { theme: 'colored' });
+				}
 			}
 		};
 

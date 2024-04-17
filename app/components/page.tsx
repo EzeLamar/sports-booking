@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 import ReservationWidget, { ReservationType } from './Reservations/Reservation';
 import { getReservation } from '../firebase/reservations/reservation';
 import Loading from './UI/Loading/Loading';
+import hasErrorMessage from '../utils/Error/ErrorHelper';
 
 export default function ComponentsView() {
 	const [loading, setLoading] = useState<boolean>(true);
@@ -16,8 +17,10 @@ export default function ComponentsView() {
 				const reservationData = await getReservation();
 				setReservation(reservationData);
 				setLoading(false);
-			} catch (error) {
-				toast.error(error.message, { theme: 'colored' });
+			} catch (error: unknown) {
+				if (hasErrorMessage(error)) {
+					toast.error(error.message, { theme: 'colored' });
+				}
 			}
 		};
 		fetchData();
@@ -28,7 +31,7 @@ export default function ComponentsView() {
 			{loading ? (
 				<Loading />
 			) : (
-				<ReservationWidget reservationInfo={reservation} />
+				reservation && <ReservationWidget reservationInfo={reservation} />
 			)}
 		</div>
 	);

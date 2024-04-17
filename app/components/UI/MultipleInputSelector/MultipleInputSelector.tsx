@@ -2,7 +2,7 @@ import React from 'react';
 import { RegisterOptions, useFormContext } from 'react-hook-form';
 import '../MultipleOptionsSelector/MultipleOptionsSelector.css';
 import '../MultipleOptionsSelector/MultipleOptionBadge.css';
-import { findInputError, isFormInvalid } from '../../../utils/Form/formHelper';
+import { findInputError } from '../../../utils/Form/formHelper';
 import { InputError } from '../Input/Input';
 
 type Props = {
@@ -26,7 +26,6 @@ export default function MultipleInputSelector({
 	} = useFormContext();
 
 	const inputError = findInputError(errors, name);
-	const isInvalid = isFormInvalid(inputError);
 
 	return (
 		<div className='mb-3'>
@@ -54,7 +53,7 @@ export default function MultipleInputSelector({
 					</div>
 				))}
 			</div>
-			{isInvalid && <InputError message={inputError.error.message} />}
+			{inputError && <InputError message={inputError} />}
 		</div>
 	);
 }

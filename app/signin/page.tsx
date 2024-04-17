@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 import { signIn, googlePopUpSignIn } from '../firebase/auth/signin';
 import 'react-toastify/dist/ReactToastify.css';
 import Signin, { Login } from '../components/Login/Signin/Signin';
+import hasErrorMessage from '../utils/Error/ErrorHelper';
 
 export default function SignInPage() {
 	const router = useRouter();
@@ -14,8 +15,10 @@ export default function SignInPage() {
 		const signinGoogleUser = async () => {
 			try {
 				await googlePopUpSignIn();
-			} catch (error) {
-				toast.error(error.message, { theme: 'colored' });
+			} catch (error: unknown) {
+				if (hasErrorMessage(error)) {
+					toast.error(error.message, { theme: 'colored' });
+				}
 			}
 
 			router.push('/admin');
@@ -28,8 +31,10 @@ export default function SignInPage() {
 			try {
 				await signIn(data.user, data.password);
 				router.push('/admin');
-			} catch (error) {
-				toast.error(error.message, { theme: 'colored' });
+			} catch (error: unknown) {
+				if (hasErrorMessage(error)) {
+					toast.error(error.message, { theme: 'colored' });
+				}
 
 				throw error;
 			}
