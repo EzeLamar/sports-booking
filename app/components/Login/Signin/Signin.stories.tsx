@@ -22,8 +22,13 @@ const handleSubmit = (data: unknown): Promise<boolean> =>
 		resolve(true);
 	});
 
+const handleGoogleLogin = (): void =>
+	// eslint-disable-next-line no-alert
+	alert('google popup');
+
 export const Enabled: Story = {
 	args: {
 		handleSubmit,
+		handleGoogleLogin,
 	},
 };

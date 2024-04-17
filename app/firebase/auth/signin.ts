@@ -1,16 +1,22 @@
-import { signInWithEmailAndPassword, getAuth } from 'firebase/auth';
+import {
+	signInWithEmailAndPassword,
+	getAuth,
+	signInWithPopup,
+	GoogleAuthProvider,
+	UserCredential,
+} from 'firebase/auth';
 import firebaseApp from '../config';
 
 const auth = getAuth(firebaseApp);
 
-export default async function signIn(email: string, password: string) {
-	let result = null;
-	let error = null;
-	try {
-		result = await signInWithEmailAndPassword(auth, email, password);
-	} catch (e) {
-		error = e;
-	}
+export async function googlePopUpSignIn(): Promise<void> {
+	const provider = new GoogleAuthProvider();
+	await signInWithPopup(auth, provider);
+}
 
-	return { result, error };
+export async function signIn(
+	email: string,
+	password: string
+): Promise<UserCredential> {
+	return signInWithEmailAndPassword(auth, email, password);
 }
