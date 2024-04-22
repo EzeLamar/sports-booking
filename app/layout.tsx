@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { ToastContainer } from 'react-toastify';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import { AuthContextProvider } from './context/AuthContext';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
@@ -31,6 +32,7 @@ export default function RootLayout({
 					<NavBar />
 					{children}
 				</AuthContextProvider>
+				<SpeedInsights />
 			</body>
 		</html>
 	);

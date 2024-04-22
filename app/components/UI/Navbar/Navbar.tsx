@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import { toast } from 'react-toastify';
-import hasErrorMessage from '@/app/utils/Error/ErrorHelper';
+import hasErrorMessage from '../../../utils/Error/ErrorHelper';
 import { useAuthContext } from '../../../context/AuthContext';
 import logout from '../../../firebase/auth/signout';
 
@@ -33,7 +33,7 @@ export default function NavBar() {
 						width={30}
 						height={30}
 					/>
-					Sports Booking App
+					Sports Booking Appp
 				</Link>
 				<button
 					className='navbar-toggler'
