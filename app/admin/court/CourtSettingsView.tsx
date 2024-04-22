@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import hasErrorMessage from '@/app/utils/Error/ErrorHelper';
+import hasErrorMessage from '../../utils/Error/ErrorHelper';
 import CourtSettings, {
 	Court,
 } from '../../components/Courts/CourtSettings/CourtSettings';
