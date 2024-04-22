@@ -17,6 +17,7 @@
 		"tsc:check": "tsc --noEmit"
 	},
 	"dependencies": {
+		"@vercel/speed-insights": "^1.0.10",
 		"bootstrap": "^5.3.2",
 		"bootstrap-icons": "^1.11.3",
 		"date-fns": "^3.3.1",
