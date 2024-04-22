@@ -11,12 +11,14 @@
 		"prepare": "husky",
 		"storybook": "storybook dev -p 6006",
 		"build-storybook": "storybook build",
+		"serve-storybook": "serve storybook-static",
 		"format": "prettier --check --ignore-path .gitignore .",
 		"format:fix": "prettier --write --ignore-path .gitignore .",
 		"checks:fix": "npm run lint:fix && npm run format:fix",
 		"tsc:check": "tsc --noEmit"
 	},
 	"dependencies": {
+		"@vercel/speed-insights": "^1.0.10",
 		"bootstrap": "^5.3.2",
 		"bootstrap-icons": "^1.11.3",
 		"date-fns": "^3.3.1",
@@ -55,6 +57,7 @@
 		"husky": "^9.0.10",
 		"postcss": "^8",
 		"prettier": "^3.2.5",
+		"serve": "^14.2.2",
 		"typescript": "^5"
 	}
 }
