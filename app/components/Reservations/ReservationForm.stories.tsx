@@ -1,6 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import moment from 'moment';
-import ReservationForm, { Reservation } from './ReservationForm';
+import ReservationForm, {
+	InitialReservation,
+	Reservation,
+} from './ReservationForm';
 
 const meta = {
 	title: 'Reservations/ReservationForm',
@@ -23,13 +26,25 @@ const reservationStartTime = new Date(
 	0
 );
 
-const reservation: Reservation = {
+const reservation: InitialReservation = {
 	owner: 'John Doe',
 	startTime: reservationStartTime,
 	endTime: moment(reservationStartTime).add(90, 'minutes').toDate(),
 };
 
-const handleSubmit = (data: unknown): Promise<boolean> =>
+const reservationWithoutEndTime: InitialReservation = {
+	owner: 'John Doe',
+	startTime: reservationStartTime,
+	endTime: null,
+};
+
+const emptyReservation: InitialReservation = {
+	owner: '',
+	startTime: null,
+	endTime: null,
+};
+
+const handleSubmit = (data: Reservation): Promise<boolean> =>
 	new Promise(resolve => {
 		// eslint-disable-next-line no-console
 		console.log(data);
@@ -43,6 +58,8 @@ export const Enabled: Story = {
 		reservation,
 		editable: true,
 		handleSubmit,
+		minDate: reservationStartTime,
+		maxDate: reservationStartTime,
 	},
 };
 
@@ -50,12 +67,27 @@ export const Disabled: Story = {
 	args: {
 		reservation,
 		handleSubmit,
+		minDate: reservationStartTime,
+		maxDate: reservationStartTime,
 	},
 };
 
-// export const Empty: Story = {
-// 	args: {
-// 		editable: true,
-// 		handleSubmit,
-// 	},
-// };
+export const Empty: Story = {
+	args: {
+		reservation: emptyReservation,
+		editable: true,
+		handleSubmit,
+		minDate: reservationStartTime,
+		maxDate: reservationStartTime,
+	},
+};
+
+export const MissingEndTime: Story = {
+	args: {
+		reservation: reservationWithoutEndTime,
+		editable: true,
+		handleSubmit,
+		minDate: reservationStartTime,
+		maxDate: reservationStartTime,
+	},
+};

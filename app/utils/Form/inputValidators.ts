@@ -1,4 +1,12 @@
-export const TEXT_VALIDATOR = {
+import { RegisterOptions } from 'react-hook-form';
+
+type ValidationType = {
+	validation: RegisterOptions;
+	type: string;
+	showCurrency?: boolean;
+};
+
+export const TEXT_VALIDATOR: ValidationType = {
 	type: 'text',
 	validation: {
 		required: {
@@ -12,7 +20,7 @@ export const TEXT_VALIDATOR = {
 	},
 };
 
-export const HOUR_VALIDATOR = {
+export const HOUR_VALIDATOR: ValidationType = {
 	type: 'text',
 	validation: {
 		required: {
@@ -26,12 +34,12 @@ export const HOUR_VALIDATOR = {
 	},
 };
 
-export const DATETIME_VALIDATOR = {
+export const DATETIME_VALIDATOR: ValidationType = {
 	type: 'datetime-local',
 	validation: {
 		required: {
 			value: true,
-			message: 'Fecha requerida',
+			message: 'Fecha y hora requerida',
 		},
 		pattern: {
 			value: /^\d+-\d+-\d+T([0-1]?[0-9]|2[0-3]):[0|3][0]$/,
@@ -40,7 +48,7 @@ export const DATETIME_VALIDATOR = {
 	},
 };
 
-export const PASSWORD_VALIDATOR = {
+export const PASSWORD_VALIDATOR: ValidationType = {
 	type: 'password',
 	validation: {
 		required: {
@@ -54,7 +62,8 @@ export const PASSWORD_VALIDATOR = {
 	},
 };
 
-export const CHECKBOX_VALIDATOR = {
+export const CHECKBOX_VALIDATOR: ValidationType = {
+	type: 'checkbox',
 	validation: {
 		required: {
 			value: true,
@@ -63,7 +72,8 @@ export const CHECKBOX_VALIDATOR = {
 	},
 };
 
-export const RADIO_VALIDATOR = {
+export const RADIO_VALIDATOR: ValidationType = {
+	type: 'radio',
 	validation: {
 		required: {
 			value: true,
@@ -72,7 +82,7 @@ export const RADIO_VALIDATOR = {
 	},
 };
 
-export const PRICE_VALIDATOR = {
+export const PRICE_VALIDATOR: ValidationType = {
 	showCurrency: true,
 	type: 'number',
 	validation: {
@@ -83,7 +93,7 @@ export const PRICE_VALIDATOR = {
 	},
 };
 
-export const NUMBER_VALIDATOR = {
+export const NUMBER_VALIDATOR: ValidationType = {
 	type: 'number',
 	validation: {
 		required: {
@@ -93,7 +103,7 @@ export const NUMBER_VALIDATOR = {
 	},
 };
 
-export const EMAIL_VALIDATOR = {
+export const EMAIL_VALIDATOR: ValidationType = {
 	type: 'email',
 	validation: {
 		required: {
