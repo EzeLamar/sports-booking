@@ -1,4 +1,8 @@
 import React, { useState } from 'react';
+import { FieldValues } from 'react-hook-form';
+import moment from 'moment';
+import { toast } from 'react-toastify';
+import hasErrorMessage from '../../utils/Error/ErrorHelper';
 import Form from '../UI/Form/Form';
 import Input from '../UI/Input/Input';
 import {
@@ -12,6 +16,9 @@ const LABELS = {
 	START_TIME: 'Hora inicio',
 	END_TIME: 'Hora fin',
 };
+const DATE_TIME_FORMAT = 'YYYY-MM-DDTHH:mm';
+const MIN_DATE_FORMAT = 'YYYY-MM-DDT00:00';
+const MAX_DATE_FORMAT = 'YYYY-MM-DDT23:00';
 
 export type Reservation = {
 	owner: string;
@@ -19,9 +26,17 @@ export type Reservation = {
 	endTime: Date;
 };
 
+export type InitialReservation = {
+	owner: string;
+	startTime: Date | null;
+	endTime: Date | null;
+};
+
 type Props = {
-	reservation: Reservation;
+	reservation: InitialReservation;
 	handleSubmit: (data: Reservation) => Promise<boolean>;
+	minDate?: Date | null;
+	maxDate?: Date | null;
 	editable?: boolean;
 };
 
@@ -29,14 +44,57 @@ export default function ReservationForm({
 	reservation,
 	handleSubmit,
 	editable = false,
+	minDate = null,
+	maxDate = null,
 }: Props) {
 	const [disabled, setDisabled] = useState<boolean>(!editable);
+	const min = minDate ? moment(minDate).format(MIN_DATE_FORMAT) : undefined;
+	const max = maxDate ? moment(maxDate).format(MAX_DATE_FORMAT) : undefined;
+	const initialValues = {
+		owner: reservation.owner,
+		startTime: reservation.startTime
+			? moment(reservation.startTime).format(DATE_TIME_FORMAT)
+			: null,
+		endTime: reservation.endTime
+			? moment(reservation.endTime).format(DATE_TIME_FORMAT)
+			: null,
+	};
+
+	const onSubmit = async (data: FieldValues): Promise<boolean> => {
+		const reservationSubmitted = {
+			owner: data.owner,
+			startTime: new Date(data.startTime),
+			endTime: new Date(data.endTime),
+		};
+
+		try {
+			return await handleSubmit(reservationSubmitted);
+		} catch (error: unknown) {
+			if (hasErrorMessage(error)) {
+				toast.error(error.message, { theme: 'colored' });
+			}
+
+			return false;
+		}
+	};
+
+	const endHourValidation = (endTime: string, formValues: FieldValues) => {
+		if (endTime === formValues.startTime) {
+			return 'Fecha y hora igual a la de inicio';
+		}
+
+		if (endTime < formValues.startTime) {
+			return 'Fecha y hora anterior a la de inicio';
+		}
+
+		return true;
+	};
 
 	return (
 		<Form
 			title={LABELS.FORM_TITLE}
-			initialValues={reservation}
-			handleSubmit={handleSubmit}
+			initialValues={initialValues}
+			handleSubmit={onSubmit}
 			disabled={disabled}
 			setDisabled={setDisabled}
 		>
@@ -52,6 +110,8 @@ export default function ReservationForm({
 				label={LABELS.START_TIME}
 				name='startTime'
 				placeholder={LABELS.START_TIME}
+				min={min}
+				max={max}
 				{...DATETIME_VALIDATOR}
 			/>
 			<Input
@@ -59,7 +119,15 @@ export default function ReservationForm({
 				label={LABELS.END_TIME}
 				name='endTime'
 				placeholder={LABELS.END_TIME}
-				{...DATETIME_VALIDATOR}
+				min={min}
+				max={max}
+				type={DATETIME_VALIDATOR.type}
+				validation={{
+					...DATETIME_VALIDATOR.validation,
+					validate: {
+						endGreaterThanStart: endHourValidation,
+					},
+				}}
 			/>
 		</Form>
 	);

@@ -10,6 +10,8 @@ type Props = {
 	name: string;
 	validation: RegisterOptions;
 	showCurrency?: boolean;
+	min?: string | undefined;
+	max?: string | undefined;
 };
 
 export function InputError({ message }: { message: string }) {
@@ -24,6 +26,8 @@ export default function Input({
 	validation,
 	name,
 	showCurrency = false,
+	min = undefined,
+	max = undefined,
 }: Props) {
 	const {
 		register,
@@ -43,6 +47,8 @@ export default function Input({
 					type={type}
 					className='form-control'
 					placeholder={placeholder}
+					min={min}
+					max={max}
 					{...register(name, validation)}
 				/>
 			</div>
