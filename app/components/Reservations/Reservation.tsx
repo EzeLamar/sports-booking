@@ -18,7 +18,7 @@ export default function ReservationWidget({ reservationInfo }: Props) {
 		<div>
 			<h2>
 				Reserva para la cancha{' '}
-				<Link href={`/admin/courts/${reservationInfo.court.id}`}>
+				<Link href={`/courts/${reservationInfo.court.id}`}>
 					{reservationInfo.court.id}
 				</Link>
 			</h2>

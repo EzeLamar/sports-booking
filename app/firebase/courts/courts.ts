@@ -3,21 +3,25 @@ import {
 	doc,
 	getDoc,
 	updateDoc,
+	DocumentReference,
 	collection,
 	getDocs,
 } from 'firebase/firestore';
-import { Court } from '../../components/Courts/CourtSettings/CourtSettings';
+import { Court } from '@/app/components/Courts/CourtSettings/CourtSettings';
 import firebaseApp from '../config';
 
-export async function getCourt(courtId: string): Promise<Court> {
+export function getCourtRef(courtId: string): DocumentReference {
 	const db = getFirestore(firebaseApp);
 
-	const docRef = doc(
+	return doc(
 		db,
 		process.env.NEXT_PUBLIC_COURT_COLLECTION ?? 'NEXT_PUBLIC_COURT_COLLECTION',
 		courtId
 	);
+}
 
+export async function getCourt(courtId: string): Promise<Court> {
+	const docRef = getCourtRef(courtId);
 	const docSnap = await getDoc(docRef);
 	if (!docSnap.exists()) {
 		throw new Error('The court does not exist.');
