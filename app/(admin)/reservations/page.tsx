@@ -1,16 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import Calendar from '@/app/components/UI/Calendar/Calendar';
-import Loading from '@/app/components//UI/Loading/Loading';
-import { Views } from 'react-big-calendar';
 import moment from 'moment';
-import { useAuthContext } from '../../context/AuthContext';
+import { Views } from 'react-big-calendar';
+import { useState } from 'react';
+import Calendar from '@/app/components/UI/Calendar/Calendar';
 
 export default function AdminPage() {
-	const user = useAuthContext();
-	const router = useRouter();
 	const [showAll, setShowAll] = useState(false);
 	const minHour = !showAll ? moment('2024-04-04T09:00:00').toDate() : null;
 	const maxHour = !showAll ? moment('2024-04-04T23:00:00').toDate() : null;
@@ -67,16 +62,8 @@ export default function AdminPage() {
 		setShowAll(!showAll);
 	};
 
-	useEffect((): void => {
-		if (!user) {
-			router.push('/signin');
-		}
-	}, [user, router]);
-
-	return !user ? (
-		<Loading />
-	) : (
-		<div>
+	return (
+		<div className='container-fluid'>
 			<label htmlFor='show-all'>
 				<input
 					type='checkbox'

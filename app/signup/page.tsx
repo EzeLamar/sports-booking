@@ -20,7 +20,7 @@ export default function SignUpPage() {
 				}
 
 				toast.success(`Usuario ${data.user} registrado!`);
-				router.push('/admin');
+				router.push('/');
 			} catch (error) {
 				if (hasErrorMessage(error)) {
 					toast.error(error.message, { theme: 'colored' });

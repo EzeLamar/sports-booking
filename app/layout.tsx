@@ -28,7 +28,7 @@ export default function RootLayout({
 				<ToastContainer />
 				<AuthContextProvider>
 					<NavBar />
-					{children}
+					<div className='container-fluid pt-3'>{children}</div>
 				</AuthContextProvider>
 				<SpeedInsights />
 			</body>

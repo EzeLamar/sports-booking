@@ -5,12 +5,14 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import { toast } from 'react-toastify';
+import { usePathname } from 'next/navigation';
 import hasErrorMessage from '../../../utils/Error/ErrorHelper';
 import { useAuthContext } from '../../../context/AuthContext';
 import logout from '../../../firebase/auth/signout';
 
 export default function NavBar() {
 	const user = useAuthContext();
+	const pathName = usePathname();
 
 	const handleLogout = async () => {
 		try {
@@ -49,24 +51,29 @@ export default function NavBar() {
 				<div className='collapse navbar-collapse' id='navbarSupportedContent'>
 					<ul className='navbar-nav me-auto mb-2 mb-lg-0'>
 						<li className='nav-item'>
-							<Link className='nav-link active' aria-current='page' href='/'>
+							<Link
+								className={`nav-link ${pathName === '/' ? 'active' : ''}`}
+								aria-current='page'
+								href='/'
+							>
 								Home
 							</Link>
 						</li>
 						{user && (
 							<>
 								<li className='nav-item'>
-									<Link className='nav-link' href='/admin'>
-										Admin
-									</Link>
-								</li>
-								<li className='nav-item'>
-									<Link className='nav-link' href='/admin/court'>
+									<Link
+										className={`nav-link ${pathName === '/court' ? 'active' : ''}`}
+										href='/court'
+									>
 										Court Settings
 									</Link>
 								</li>
 								<li className='nav-item'>
-									<Link className='nav-link' href='/admin/reservations'>
+									<Link
+										className={`nav-link ${pathName === '/reservations' ? 'active' : ''}`}
+										href='/reservations'
+									>
 										Reservations
 									</Link>
 								</li>
@@ -77,7 +84,7 @@ export default function NavBar() {
 						<>
 							<span className='navbar-text'>{user.email}</span>
 							<button
-								className='btn btn-outline-danger my-2 my-sm-0'
+								className='btn btn-outline-danger ms-1 my-2 my-sm-0'
 								type='button'
 								onClick={handleLogout}
 							>

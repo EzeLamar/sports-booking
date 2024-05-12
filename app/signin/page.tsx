@@ -20,7 +20,7 @@ export default function SignInPage() {
 				}
 			}
 
-			router.push('/admin');
+			router.push('/');
 		};
 		signinGoogleUser();
 	};
@@ -29,7 +29,7 @@ export default function SignInPage() {
 		const signinUser = async () => {
 			try {
 				await signIn(data.user, data.password);
-				router.push('/admin');
+				router.push('/');
 			} catch (error: unknown) {
 				if (hasErrorMessage(error)) {
 					toast.error(error.message, { theme: 'colored' });

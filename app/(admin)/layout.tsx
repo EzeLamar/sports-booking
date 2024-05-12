@@ -1,11 +1,15 @@
 'use client';
 
-import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 import { useAuthContext } from '../context/AuthContext';
 import Loading from '../components/UI/Loading/Loading';
 
-export default function AdminPage() {
+export default function AdminLayout({
+	children,
+}: Readonly<{
+	children: React.ReactNode;
+}>) {
 	const user = useAuthContext();
 	const router = useRouter();
 
@@ -15,12 +19,5 @@ export default function AdminPage() {
 		}
 	}, [user, router]);
 
-	return !user ? (
-		<Loading />
-	) : (
-		<>
-			<h2>Admin View: Hi {user.email}</h2>
-			<p>Only logged in users can view this page</p>
-		</>
-	);
+	return !user ? <Loading /> : <div>{children}</div>;
 }
