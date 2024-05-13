@@ -1,5 +1,6 @@
 import '../app/globals.css';
 import type { Preview } from '@storybook/react';
+import 'bootstrap/dist/js/bootstrap.bundle.min';
 
 const preview: Preview = {
 	parameters: {
