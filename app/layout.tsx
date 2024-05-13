@@ -2,8 +2,6 @@ import type { Metadata } from 'next';
 import { ToastContainer } from 'react-toastify';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { AuthContextProvider } from './context/AuthContext';
-import 'bootstrap/dist/css/bootstrap.css';
-import 'bootstrap-icons/font/bootstrap-icons.css';
 import './globals.css';
 import NavBar from './components/UI/Navbar/Navbar';
 import BootstrapClient from './components/BootstrapClient';
