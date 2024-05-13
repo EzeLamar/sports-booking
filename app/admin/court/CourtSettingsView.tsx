@@ -8,7 +8,6 @@ import CourtSettings, {
 } from '../../components/Courts/CourtSettings/CourtSettings';
 import { getCourt, editCourt } from '../../firebase/courts/courts';
 import Loading from '../../components/UI/Loading/Loading';
-import 'react-toastify/dist/ReactToastify.css';
 
 export default function CourtSettingsView() {
 	const [court, setCourt] = useState<Court | null>(null);

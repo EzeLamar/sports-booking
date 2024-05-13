@@ -4,7 +4,6 @@ import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
 import signUp from '../firebase/auth/signup';
 import Signup, { Register } from '../components/Login/Signup/Signup';
-import 'react-toastify/dist/ReactToastify.css';
 import hasErrorMessage from '../utils/Error/ErrorHelper';
 
 export default function SignUpPage() {

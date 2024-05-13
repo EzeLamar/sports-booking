@@ -4,7 +4,6 @@ import React from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 import { signIn, googlePopUpSignIn } from '../firebase/auth/signin';
-import 'react-toastify/dist/ReactToastify.css';
 import Signin, { Login } from '../components/Login/Signin/Signin';
 import hasErrorMessage from '../utils/Error/ErrorHelper';
 
