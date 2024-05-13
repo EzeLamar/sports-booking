@@ -35,17 +35,21 @@ export type InitialReservation = {
 type Props = {
 	reservation: InitialReservation;
 	handleSubmit: (data: Reservation) => Promise<boolean>;
+	handleCancel: () => void;
 	minDate?: Date | null;
 	maxDate?: Date | null;
 	editable?: boolean;
+	showTitle?: boolean;
 };
 
 export default function ReservationForm({
 	reservation,
 	handleSubmit,
+	handleCancel = () => {},
 	editable = false,
 	minDate = null,
 	maxDate = null,
+	showTitle = true,
 }: Props) {
 	const [disabled, setDisabled] = useState<boolean>(!editable);
 	const min = minDate ? moment(minDate).format(MIN_DATE_FORMAT) : undefined;
@@ -92,9 +96,10 @@ export default function ReservationForm({
 
 	return (
 		<Form
-			title={LABELS.FORM_TITLE}
+			title={showTitle ? LABELS.FORM_TITLE : null}
 			initialValues={initialValues}
 			handleSubmit={onSubmit}
+			handleCancel={handleCancel}
 			disabled={disabled}
 			setDisabled={setDisabled}
 		>

@@ -1,9 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import moment from 'moment';
-import ReservationForm, {
-	InitialReservation,
-	Reservation,
-} from './ReservationForm';
+import ReservationForm, { Reservation } from './ReservationForm';
+import {
+	EMPTY_RESERVATION,
+	RESERVATION,
+	RESERVATION_START_TIME,
+	RESERVATION_WITHOUT_END_TIME,
+} from './values';
 
 const meta = {
 	title: 'Reservations/ReservationForm',
@@ -17,33 +19,6 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-const now = new Date();
-const reservationStartTime = new Date(
-	now.getFullYear(),
-	now.getMonth(),
-	now.getDate(),
-	14,
-	0
-);
-
-const reservation: InitialReservation = {
-	owner: 'John Doe',
-	startTime: reservationStartTime,
-	endTime: moment(reservationStartTime).add(90, 'minutes').toDate(),
-};
-
-const reservationWithoutEndTime: InitialReservation = {
-	owner: 'John Doe',
-	startTime: reservationStartTime,
-	endTime: null,
-};
-
-const emptyReservation: InitialReservation = {
-	owner: '',
-	startTime: null,
-	endTime: null,
-};
-
 const handleSubmit = (data: Reservation): Promise<boolean> =>
 	new Promise(resolve => {
 		// eslint-disable-next-line no-console
@@ -55,39 +30,39 @@ const handleSubmit = (data: Reservation): Promise<boolean> =>
 
 export const Enabled: Story = {
 	args: {
-		reservation,
+		reservation: RESERVATION,
 		editable: true,
 		handleSubmit,
-		minDate: reservationStartTime,
-		maxDate: reservationStartTime,
+		minDate: RESERVATION_START_TIME,
+		maxDate: RESERVATION_START_TIME,
 	},
 };
 
 export const Disabled: Story = {
 	args: {
-		reservation,
+		reservation: RESERVATION,
 		handleSubmit,
-		minDate: reservationStartTime,
-		maxDate: reservationStartTime,
+		minDate: RESERVATION_START_TIME,
+		maxDate: RESERVATION_START_TIME,
 	},
 };
 
 export const Empty: Story = {
 	args: {
-		reservation: emptyReservation,
+		reservation: EMPTY_RESERVATION,
 		editable: true,
 		handleSubmit,
-		minDate: reservationStartTime,
-		maxDate: reservationStartTime,
+		minDate: RESERVATION_START_TIME,
+		maxDate: RESERVATION_START_TIME,
 	},
 };
 
 export const MissingEndTime: Story = {
 	args: {
-		reservation: reservationWithoutEndTime,
+		reservation: RESERVATION_WITHOUT_END_TIME,
 		editable: true,
 		handleSubmit,
-		minDate: reservationStartTime,
-		maxDate: reservationStartTime,
+		minDate: RESERVATION_START_TIME,
+		maxDate: RESERVATION_START_TIME,
 	},
 };
