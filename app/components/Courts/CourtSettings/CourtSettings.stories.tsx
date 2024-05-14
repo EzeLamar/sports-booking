@@ -14,6 +14,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 const court: Court = {
+	id: 'MockID',
 	isEnabled: true,
 	name: 'Test Court',
 	address: 'Test Address 1234',

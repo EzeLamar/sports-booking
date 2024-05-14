@@ -63,10 +63,10 @@ export default function NavBar() {
 							<>
 								<li className='nav-item'>
 									<Link
-										className={`nav-link ${pathName === '/court' ? 'active' : ''}`}
-										href='/court'
+										className={`nav-link ${pathName === '/courts' ? 'active' : ''}`}
+										href='/courts'
 									>
-										Court Settings
+										Courts List
 									</Link>
 								</li>
 								<li className='nav-item'>
