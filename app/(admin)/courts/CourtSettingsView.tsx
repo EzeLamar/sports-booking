@@ -9,7 +9,11 @@ import CourtSettings, {
 import { getCourt, editCourt } from '../../firebase/courts/courts';
 import Loading from '../../components/UI/Loading/Loading';
 
-export default function CourtSettingsView() {
+type Props = {
+	courtId: string;
+};
+
+export default function CourtSettingsView({ courtId }: Props) {
 	const [court, setCourt] = useState<Court | null>(null);
 	const [loading, setLoading] = useState<boolean>(true);
 
@@ -38,7 +42,7 @@ export default function CourtSettingsView() {
 	useEffect((): void => {
 		const fetchData = async () => {
 			try {
-				const courtData = await getCourt();
+				const courtData = await getCourt(courtId);
 				setCourt(courtData);
 				setLoading(false);
 			} catch (error: unknown) {
@@ -49,7 +53,7 @@ export default function CourtSettingsView() {
 		};
 
 		fetchData();
-	}, []);
+	}, [courtId]);
 
 	return (
 		<div>

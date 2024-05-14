@@ -2,21 +2,26 @@
 
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
+import { useRouter } from 'next/navigation';
+import { useAuthContext } from '../context/AuthContext';
 import ReservationWidget, { ReservationType } from './Reservations/Reservation';
-import { getReservation } from '../firebase/reservations/reservation';
+import { getAllReservations } from '../firebase/reservations/reservation';
 import Loading from './UI/Loading/Loading';
 import hasErrorMessage from '../utils/Error/ErrorHelper';
 
 export default function ComponentsView() {
-	const [loading, setLoading] = useState<boolean>(true);
-	const [reservation, setReservation] = useState<ReservationType>();
+	const user = useAuthContext();
+	const router = useRouter();
+	const [reservations, setReservations] = useState<Array<ReservationType>>([]);
 
 	useEffect((): void => {
+		if (!user) {
+			router.push('/signin');
+		}
 		const fetchData = async () => {
 			try {
-				const reservationData = await getReservation();
-				setReservation(reservationData);
-				setLoading(false);
+				const reservationData = await getAllReservations();
+				setReservations(reservationData);
 			} catch (error: unknown) {
 				if (hasErrorMessage(error)) {
 					toast.error(error.message, { theme: 'colored' });
@@ -24,15 +29,20 @@ export default function ComponentsView() {
 			}
 		};
 		fetchData();
-	}, []);
+	}, [user, router]);
 
-	return (
-		<div>
-			{loading ? (
-				<Loading />
-			) : (
-				reservation && <ReservationWidget reservationInfo={reservation} />
-			)}
-		</div>
+	return !user ? (
+		<Loading />
+	) : (
+		<>
+			<h2>List of reservations</h2>
+			<ul>
+				{reservations.map(reservation => (
+					<li key={reservation.court.id + reservation.startTime}>
+						<ReservationWidget reservationInfo={reservation} />
+					</li>
+				))}
+			</ul>
+		</>
 	);
 }

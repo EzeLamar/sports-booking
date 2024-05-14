@@ -12,6 +12,7 @@ import Card from '../../UI/Card/Card';
 import MultipleInputSelector from '../../UI/MultipleInputSelector/MultipleInputSelector';
 
 export type Court = {
+	id: string;
 	isEnabled: boolean;
 	name: string;
 	address: string;
