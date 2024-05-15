@@ -13,6 +13,11 @@ import { isToday } from 'date-fns';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import './Calendar.css';
 import { EventProp, SelectEventSlotProp, TEvent } from './module';
+import {
+	InitialReservation,
+	Reservation,
+} from '../../Reservations/ReservationForm';
+import ReservationModal from '../../Reservations/ReservationModal';
 
 const AGENDA_RANGE = 7;
 const MESSAGES_LABELS = {
@@ -95,6 +100,9 @@ export default function Calendar({
 }: Props) {
 	moment.locale('es');
 	const localizer = momentLocalizer(moment);
+	const [selected, setSelected] = useState<InitialReservation | null>(null);
+	const [showModal, setShowModal] = useState<boolean>(false);
+	const [editable, setEditable] = useState<boolean>(false);
 
 	const { components } = useMemo(
 		() => ({
@@ -113,34 +121,48 @@ export default function Calendar({
 		}),
 		[]
 	);
-	const [myEvents, setEvents] = useState(events);
+	const [myEvents, setEvents] = useState<TEvent[]>(events);
 
-	const handleSelectSlot = useCallback(
-		({ start, end }: SelectEventSlotProp) => {
-			// eslint-disable-next-line no-alert
-			const title = window.prompt('New Event title');
-			const event = {
-				start,
-				end,
-				title,
+	const onSubmit = (data: Reservation): Promise<boolean> =>
+		new Promise(resolve => {
+			const event: TEvent = {
+				start: data.startTime,
+				end: data.endTime,
+				title: 'Test Title',
 				data: {
 					type: 'match',
-					owner: 'Test User',
+					owner: data.owner,
 				},
 				desc: '',
 			};
-			if (title) {
-				setEvents(prev => [...prev, event]);
-			}
-		},
-		[setEvents]
-	);
+			setEvents([...myEvents, event]);
+			setShowModal(false);
+			resolve(true);
+		});
 
-	const handleSelectEvent = useCallback(
+	const onSelectSlot = useCallback(({ start, end }: SelectEventSlotProp) => {
 		// eslint-disable-next-line no-alert
-		(event: TEvent) => window.alert(JSON.stringify(event)),
-		[]
-	);
+		const reservation: InitialReservation = {
+			owner: '',
+			startTime: start,
+			endTime: end,
+		};
+		setSelected(reservation);
+		setEditable(true);
+		setShowModal(true);
+	}, []);
+
+	const onSelectEvent = useCallback((event: TEvent) => {
+		const reservation: InitialReservation = {
+			owner: event.data.owner,
+			startTime: event.start,
+			endTime: event.end,
+		};
+
+		setSelected(reservation);
+		setShowModal(true);
+		setEditable(false);
+	}, []);
 
 	return (
 		<div className='calendar__container'>
@@ -158,9 +180,21 @@ export default function Calendar({
 				dayPropGetter={customDayPropGetter}
 				eventPropGetter={customEventPropGetter}
 				selectable
-				onSelectEvent={handleSelectEvent}
-				onSelectSlot={handleSelectSlot}
+				onSelectEvent={onSelectEvent}
+				onSelectSlot={onSelectSlot}
 			/>
+			{selected && (
+				<ReservationModal
+					show={showModal}
+					reservation={selected}
+					handleClose={() => setShowModal(false)}
+					handleSubmit={onSubmit}
+					handleCancel={() => setShowModal(false)}
+					editable={editable}
+					minDate={selected ? selected.startTime : null}
+					maxDate={selected ? selected.startTime : null}
+				/>
+			)}
 		</div>
 	);
 }
