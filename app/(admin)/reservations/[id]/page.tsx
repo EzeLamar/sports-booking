@@ -5,7 +5,11 @@ import { Views } from 'react-big-calendar';
 import { useState } from 'react';
 import Calendar from '@/app/components/UI/Calendar/Calendar';
 
-export default function AdminPage() {
+type Props = {
+	params: { id: string };
+};
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export default function AdminPage({ params }: Props) {
 	const [showAll, setShowAll] = useState(false);
 	const minHour = !showAll ? moment('2024-04-04T09:00:00').toDate() : null;
 	const maxHour = !showAll ? moment('2024-04-04T23:00:00').toDate() : null;

@@ -60,24 +60,14 @@ export default function NavBar() {
 							</Link>
 						</li>
 						{user && (
-							<>
-								<li className='nav-item'>
-									<Link
-										className={`nav-link ${pathName === '/courts' ? 'active' : ''}`}
-										href='/courts'
-									>
-										Courts List
-									</Link>
-								</li>
-								<li className='nav-item'>
-									<Link
-										className={`nav-link ${pathName === '/reservations' ? 'active' : ''}`}
-										href='/reservations'
-									>
-										Reservations
-									</Link>
-								</li>
-							</>
+							<li className='nav-item'>
+								<Link
+									className={`nav-link ${pathName === '/courts' ? 'active' : ''}`}
+									href='/courts'
+								>
+									Courts
+								</Link>
+							</li>
 						)}
 					</ul>
 					{user ? (
