@@ -2,65 +2,63 @@
 
 import moment from 'moment';
 import { Views } from 'react-big-calendar';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Calendar from '@/app/components/UI/Calendar/Calendar';
+import { getAllReservations } from '@/app/firebase/reservations/reservation';
+import hasErrorMessage from '@/app/utils/Error/ErrorHelper';
+import { toast } from 'react-toastify';
+import { getCourt } from '@/app/firebase/courts/courts';
+import { Court } from '@/app/components/Courts/CourtSettings/CourtSettings';
+import Loading from '@/app/components/UI/Loading/Loading';
+import { TEvent } from '@/app/components/UI/Calendar/module';
+import { ReservationType } from '@/app/components/Reservations/Reservation';
 
 type Props = {
 	params: { id: string };
 };
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
 export default function AdminPage({ params }: Props) {
 	const [showAll, setShowAll] = useState(false);
-	const minHour = !showAll ? moment('2024-04-04T09:00:00').toDate() : null;
-	const maxHour = !showAll ? moment('2024-04-04T23:00:00').toDate() : null;
+	const [reservations, setReservations] = useState<Array<TEvent>>([]);
+	const [court, setCourt] = useState<Court | null>(null);
+	const [loading, setLoading] = useState<boolean>(true);
 
-	const mockEvents = [
-		{
-			start: moment('2024-04-07T12:30:00').toDate(),
-			end: moment('2024-04-07T14:00:00').toDate(),
-			title: 'Evento 1',
+	const formatReservations = (
+		reservationsData: ReservationType[]
+	): Array<TEvent> =>
+		reservationsData.map(reservation => ({
+			start: moment(reservation.startTime).toDate(),
+			end: moment(reservation.endTime).toDate(),
+			title: reservation.court.id,
 			data: {
 				type: 'class',
-				owner: 'Ezequiel Lamarque',
+				owner: reservation.owner,
 			},
-		},
-		{
-			start: moment('2024-04-07T14:00:00').toDate(),
-			end: moment('2024-04-07T15:00:00').toDate(),
-			title: 'Evento 4',
-			data: {
-				type: 'match',
-				owner: 'Lucas Bualo',
-			},
-		},
-		{
-			start: moment('2024-04-07T18:00:00').toDate(),
-			end: moment('2024-04-07T20:00:00').toDate(),
-			title: 'Evento 2',
-			data: {
-				type: 'class',
-				owner: 'Ezequiel Lamarque',
-			},
-		},
-		{
-			start: moment('2024-04-07T15:30:00').toDate(),
-			end: moment('2024-04-07T16:00:00').toDate(),
-			title: 'Evento 3',
-			data: {
-				type: 'match',
-				owner: 'Lucas Bualo',
-			},
-		},
-		{
-			start: moment('2024-04-08T15:30:00').toDate(),
-			end: moment('2024-04-08T16:00:00').toDate(),
-			title: 'Evento 5',
-			data: {
-				type: 'match',
-				owner: 'Ezequiel Lamarque',
-			},
-		},
-	];
+		}));
+
+	useEffect((): void => {
+		const fetchData = async () => {
+			try {
+				const courtData = await getCourt(params.id);
+				const reservationsData = await getAllReservations();
+				setCourt(courtData);
+				setReservations(formatReservations(reservationsData));
+				setLoading(false);
+			} catch (error: unknown) {
+				if (hasErrorMessage(error)) {
+					toast.error(error.message, { theme: 'colored' });
+				}
+			}
+		};
+		fetchData();
+	}, [params.id]);
+
+	const minHour = !showAll
+		? moment(`2024-04-04T${court?.openHour}:00`).toDate()
+		: null;
+	const maxHour = !showAll
+		? moment(`2024-04-04T${court?.closeHour}:00`).toDate()
+		: null;
 
 	const handleShowAll = (): void => {
 		setShowAll(!showAll);
@@ -68,22 +66,28 @@ export default function AdminPage({ params }: Props) {
 
 	return (
 		<div className='container-fluid'>
-			<label htmlFor='show-all'>
-				<input
-					type='checkbox'
-					id='show-all'
-					checked={showAll}
-					onChange={handleShowAll}
-				/>
-				Mostrar Todas las horas?
-			</label>
-
-			<Calendar
-				events={mockEvents}
-				minHour={minHour}
-				maxHour={maxHour}
-				defaultView={Views.DAY}
-			/>
+			{loading ? (
+				<Loading />
+			) : (
+				<>
+					<h2 className='text-center'>{court?.name}</h2>
+					<label htmlFor='show-all'>
+						<input
+							type='checkbox'
+							id='show-all'
+							checked={showAll}
+							onChange={handleShowAll}
+						/>
+						Mostrar Todas las horas?
+					</label>
+					<Calendar
+						events={reservations}
+						minHour={minHour}
+						maxHour={maxHour}
+						defaultView={Views.DAY}
+					/>
+				</>
+			)}
 		</div>
 	);
 }
