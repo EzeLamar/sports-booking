@@ -4,7 +4,7 @@ import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Loading from '../../../components/UI/Loading/Loading';
 import { useAuthContext } from '../../../context/AuthContext';
-import CourtSettingsView from '../CourtSettingsView';
+import CourtSettingsView from './CourtSettingsView';
 
 export default function CourtView({ params }: { params: { id: string } }) {
 	const user = useAuthContext();
