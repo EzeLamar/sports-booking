@@ -2,7 +2,15 @@ import { DocumentReference } from 'firebase/firestore';
 import Link from 'next/link';
 import React from 'react';
 
-export type ReservationType = {
+export type Reservation = {
+	id: string;
+	court: DocumentReference;
+	owner: string;
+	startTime: Date;
+	endTime: Date;
+};
+
+export type ReservationDraft = {
 	court: DocumentReference;
 	owner: string;
 	startTime: Date;
@@ -10,7 +18,7 @@ export type ReservationType = {
 };
 
 type Props = {
-	reservationInfo: ReservationType;
+	reservationInfo: Reservation;
 };
 
 export default function ReservationWidget({ reservationInfo }: Props) {

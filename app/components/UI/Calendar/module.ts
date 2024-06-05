@@ -1,4 +1,5 @@
 type ReservationData = {
+	id: string;
 	type: string;
 	owner: string;
 };
