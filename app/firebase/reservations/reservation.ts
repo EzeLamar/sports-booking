@@ -6,7 +6,10 @@ import {
 	getDocs,
 	addDoc,
 } from 'firebase/firestore';
-import { ReservationType } from '@/app/components/Reservations/Reservation';
+import {
+	ReservationDraft,
+	Reservation,
+} from '@/app/components/Reservations/Reservation';
 import moment from 'moment';
 import firebaseApp from '../config';
 
@@ -24,7 +27,7 @@ function getDurationFromStartTimeAndEndTimeInMinutes(
 	return (endTime.getTime() - startTime.getTime()) / 60000;
 }
 
-export async function getReservation(id: string): Promise<ReservationType> {
+export async function getReservation(id: string): Promise<Reservation> {
 	const db = getFirestore(firebaseApp);
 	const docRef = doc(
 		db,
@@ -39,6 +42,7 @@ export async function getReservation(id: string): Promise<ReservationType> {
 	const data = { ...docSnap.data() };
 
 	return {
+		id: docSnap.id,
 		court: data.court,
 		owner: data.owner,
 		startTime: data.startTime.toDate(),
@@ -49,7 +53,7 @@ export async function getReservation(id: string): Promise<ReservationType> {
 	};
 }
 
-export async function getAllReservations(): Promise<Array<ReservationType>> {
+export async function getAllReservations(): Promise<Array<Reservation>> {
 	const db = getFirestore(firebaseApp);
 	const colRef = collection(
 		db,
@@ -58,9 +62,11 @@ export async function getAllReservations(): Promise<Array<ReservationType>> {
 	);
 	const courtsSnap = await getDocs(colRef);
 
-	return courtsSnap.docs.map((docSnap): ReservationType => {
+	return courtsSnap.docs.map((docSnap): Reservation => {
 		const data = docSnap.data();
+
 		return {
+			id: docSnap.id,
 			court: data.court,
 			owner: data.owner,
 			startTime: data.startTime.toDate(),
@@ -73,8 +79,8 @@ export async function getAllReservations(): Promise<Array<ReservationType>> {
 }
 
 export async function createReservation(
-	reservationData: ReservationType
-): Promise<boolean> {
+	reservationData: ReservationDraft
+): Promise<string> {
 	const db = getFirestore(firebaseApp);
 	const colRef = collection(
 		db,
@@ -90,7 +96,7 @@ export async function createReservation(
 			reservationData.endTime
 		),
 	};
-	await addDoc(colRef, reservation);
+	const docRef = await addDoc(colRef, reservation);
 
-	return true;
+	return docRef.id;
 }

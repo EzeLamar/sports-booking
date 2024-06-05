@@ -15,6 +15,7 @@ export default function CreateReservationPage() {
 	return (
 		<ReservationForm
 			reservation={{
+				id: null,
 				owner: 'Prueba',
 				startTime: new Date(),
 				endTime: new Date(),
@@ -33,7 +34,7 @@ export default function CreateReservationPage() {
 					toast.success('Evento creado!', {
 						theme: 'colored',
 					});
-					return result;
+					return !!result;
 				} catch (error: unknown) {
 					if (hasErrorMessage(error)) {
 						toast.error(error.message, { theme: 'colored' });

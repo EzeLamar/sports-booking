@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import ReservationWidget, {
-	ReservationType,
+	Reservation,
 } from '../../components/Reservations/Reservation';
 import { getAllReservations } from '../../firebase/reservations/reservation';
 import Loading from '../../components/UI/Loading/Loading';
@@ -12,7 +12,7 @@ import hasErrorMessage from '../../utils/Error/ErrorHelper';
 // FIXME: this is just a test view, will be deleted once we have the calendar for reservations
 export default function GetAllReservationsView() {
 	const [loading, setLoading] = useState<boolean>(true);
-	const [reservations, setReservations] = useState<Array<ReservationType>>([]);
+	const [reservations, setReservations] = useState<Array<Reservation>>([]);
 
 	useEffect((): void => {
 		const fetchData = async () => {

@@ -21,12 +21,14 @@ const MIN_DATE_FORMAT = 'YYYY-MM-DDT00:00';
 const MAX_DATE_FORMAT = 'YYYY-MM-DDT23:00';
 
 export type Reservation = {
+	id: string | null;
 	owner: string;
 	startTime: Date;
 	endTime: Date;
 };
 
 export type InitialReservation = {
+	id: string | null;
 	owner: string;
 	startTime: Date | null;
 	endTime: Date | null;
@@ -55,6 +57,7 @@ export default function ReservationForm({
 	const min = minDate ? moment(minDate).format(MIN_DATE_FORMAT) : undefined;
 	const max = maxDate ? moment(maxDate).format(MAX_DATE_FORMAT) : undefined;
 	const initialValues = {
+		id: reservation.id,
 		owner: reservation.owner,
 		startTime: reservation.startTime
 			? moment(reservation.startTime).format(DATE_TIME_FORMAT)
@@ -66,6 +69,7 @@ export default function ReservationForm({
 
 	const onSubmit = async (data: FieldValues): Promise<boolean> => {
 		const reservationSubmitted = {
+			id: data.id,
 			owner: data.owner,
 			startTime: new Date(data.startTime),
 			endTime: new Date(data.endTime),

@@ -83,6 +83,7 @@ const customEventPropGetter = (event: TEvent) => {
 
 type Props = {
 	events: TEvent[];
+	handleAddEvent: (data: Reservation) => Promise<string>;
 	minHour?: Date | null;
 	maxHour?: Date | null;
 	defaultDate?: Date;
@@ -92,6 +93,7 @@ type Props = {
 
 export default function Calendar({
 	events,
+	handleAddEvent,
 	minHour = null,
 	maxHour = null,
 	defaultDate = new Date(),
@@ -125,24 +127,33 @@ export default function Calendar({
 
 	const onSubmit = (data: Reservation): Promise<boolean> =>
 		new Promise(resolve => {
-			const event: TEvent = {
-				start: data.startTime,
-				end: data.endTime,
-				title: 'Test Title',
-				data: {
-					type: 'match',
-					owner: data.owner,
-				},
-				desc: '',
-			};
-			setEvents([...myEvents, event]);
-			setShowModal(false);
-			resolve(true);
+			if (!data.id) {
+				handleAddEvent(data).then((eventId: string) => {
+					const event: TEvent = {
+						start: data.startTime,
+						end: data.endTime,
+						title: 'Test Title',
+						data: {
+							id: eventId,
+							type: 'match',
+							owner: data.owner,
+						},
+						desc: '',
+					};
+					setEvents([...myEvents, event]);
+					setShowModal(false);
+					resolve(true);
+				});
+			} else {
+				// TODO: Service call to Edit the Reservation on FireStore
+				setShowModal(false);
+				resolve(true);
+			}
 		});
 
 	const onSelectSlot = useCallback(({ start, end }: SelectEventSlotProp) => {
-		// eslint-disable-next-line no-alert
 		const reservation: InitialReservation = {
+			id: null,
 			owner: '',
 			startTime: start,
 			endTime: end,
@@ -154,6 +165,7 @@ export default function Calendar({
 
 	const onSelectEvent = useCallback((event: TEvent) => {
 		const reservation: InitialReservation = {
+			id: event.data.id,
 			owner: event.data.owner,
 			startTime: event.start,
 			endTime: event.end,
