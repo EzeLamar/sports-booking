@@ -5,6 +5,7 @@ import {
 	collection,
 	getDocs,
 	addDoc,
+	deleteDoc,
 } from 'firebase/firestore';
 import {
 	ReservationDraft,
@@ -99,4 +100,17 @@ export async function createReservation(
 	const docRef = await addDoc(colRef, reservation);
 
 	return docRef.id;
+}
+
+export async function deleteReservation(id: string): Promise<boolean> {
+	const db = getFirestore(firebaseApp);
+	const docRef = doc(
+		db,
+		process.env.NEXT_PUBLIC_RESERVATIONS_COLLECTION ??
+			'NEXT_PUBLIC_RESERVATIONS_COLLECTION',
+		id
+	);
+	await deleteDoc(docRef);
+
+	return true;
 }

@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import Calendar from '@/app/components/UI/Calendar/Calendar';
 import {
 	createReservation,
+	deleteReservation,
 	getAllReservations,
 } from '@/app/firebase/reservations/reservation';
 import hasErrorMessage from '@/app/utils/Error/ErrorHelper';
@@ -79,6 +80,22 @@ export default function AdminPage({ params }: Props) {
 		}
 	};
 
+	const handleDeleteReservation = async (id: string): Promise<boolean> => {
+		try {
+			await deleteReservation(id);
+			toast.success('Reserva Eliminada!', {
+				theme: 'colored',
+			});
+			return true;
+		} catch (error: unknown) {
+			if (hasErrorMessage(error)) {
+				toast.error(error.message, { theme: 'colored' });
+			}
+
+			throw error;
+		}
+	};
+
 	const minHour = !showAll
 		? moment(`2024-04-04T${court?.openHour}:00`).toDate()
 		: null;
@@ -109,6 +126,7 @@ export default function AdminPage({ params }: Props) {
 					<Calendar
 						events={reservations}
 						handleAddEvent={handleAddReservation}
+						handleDeleteEvent={handleDeleteReservation}
 						minHour={minHour}
 						maxHour={maxHour}
 						defaultView={Views.DAY}

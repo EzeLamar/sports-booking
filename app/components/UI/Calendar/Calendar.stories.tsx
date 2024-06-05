@@ -80,10 +80,17 @@ const handleAddEvent = (_data: Reservation): Promise<string> =>
 		resolve('1');
 	});
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const handleDeleteEvent = (_id: string): Promise<boolean> =>
+	new Promise(resolve => {
+		resolve(true);
+	});
+
 export const Default: Story = {
 	args: {
 		events,
 		handleAddEvent,
+		handleDeleteEvent,
 		minHour,
 		maxHour,
 		defaultDate,

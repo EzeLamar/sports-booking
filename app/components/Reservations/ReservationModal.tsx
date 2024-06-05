@@ -14,6 +14,7 @@ type Props = {
 	reservation: InitialReservation;
 	handleClose: () => void;
 	handleSubmit: (data: Reservation) => Promise<boolean>;
+	handleDelete: (id: string) => Promise<boolean>;
 	handleCancel: () => void;
 	minDate?: Date | null;
 	maxDate?: Date | null;
@@ -25,6 +26,7 @@ export default function ReservationModal({
 	reservation,
 	handleSubmit,
 	handleClose,
+	handleDelete,
 	handleCancel = () => {},
 	editable = false,
 	minDate = null,
@@ -41,6 +43,7 @@ export default function ReservationModal({
 				reservation={reservation}
 				handleSubmit={handleSubmit}
 				handleCancel={handleCancel}
+				handleDelete={handleDelete}
 				editable={editable}
 				minDate={minDate}
 				maxDate={maxDate}

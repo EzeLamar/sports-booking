@@ -37,6 +37,7 @@ export type InitialReservation = {
 type Props = {
 	reservation: InitialReservation;
 	handleSubmit: (data: Reservation) => Promise<boolean>;
+	handleDelete: (id: string) => Promise<boolean>;
 	handleCancel: () => void;
 	minDate?: Date | null;
 	maxDate?: Date | null;
@@ -48,6 +49,7 @@ export default function ReservationForm({
 	reservation,
 	handleSubmit,
 	handleCancel = () => {},
+	handleDelete,
 	editable = false,
 	minDate = null,
 	maxDate = null,
@@ -86,6 +88,18 @@ export default function ReservationForm({
 		}
 	};
 
+	const onDelete = async (id: string): Promise<boolean> => {
+		try {
+			return await handleDelete(id);
+		} catch (error: unknown) {
+			if (hasErrorMessage(error)) {
+				toast.error(error.message, { theme: 'colored' });
+			}
+
+			return false;
+		}
+	};
+
 	const endHourValidation = (endTime: string, formValues: FieldValues) => {
 		if (endTime === formValues.startTime) {
 			return 'Fecha y hora igual a la de inicio';
@@ -99,45 +113,56 @@ export default function ReservationForm({
 	};
 
 	return (
-		<Form
-			title={showTitle ? LABELS.FORM_TITLE : null}
-			initialValues={initialValues}
-			handleSubmit={onSubmit}
-			handleCancel={handleCancel}
-			disabled={disabled}
-			setDisabled={setDisabled}
-		>
-			<Input
-				id='reservation-owner'
-				label={LABELS.OWNER}
-				name='owner'
-				placeholder={LABELS.OWNER}
-				{...TEXT_VALIDATOR}
-			/>
-			<Input
-				id='reservation-start-time'
-				label={LABELS.START_TIME}
-				name='startTime'
-				placeholder={LABELS.START_TIME}
-				min={min}
-				max={max}
-				{...DATETIME_VALIDATOR}
-			/>
-			<Input
-				id='reservation-end-time'
-				label={LABELS.END_TIME}
-				name='endTime'
-				placeholder={LABELS.END_TIME}
-				min={min}
-				max={max}
-				type={DATETIME_VALIDATOR.type}
-				validation={{
-					...DATETIME_VALIDATOR.validation,
-					validate: {
-						endGreaterThanStart: endHourValidation,
-					},
-				}}
-			/>
-		</Form>
+		<>
+			{initialValues.id && (
+				<button
+					className='position-absolute top-0 end-0 mt-3 me-3 p-2 btn btn-danger bi bi-trash-fill'
+					type='button'
+					onClick={() => onDelete(initialValues.id ?? '')}
+				>
+					Borrar
+				</button>
+			)}
+			<Form
+				title={showTitle ? LABELS.FORM_TITLE : null}
+				initialValues={initialValues}
+				handleSubmit={onSubmit}
+				handleCancel={handleCancel}
+				disabled={disabled}
+				setDisabled={setDisabled}
+			>
+				<Input
+					id='reservation-owner'
+					label={LABELS.OWNER}
+					name='owner'
+					placeholder={LABELS.OWNER}
+					{...TEXT_VALIDATOR}
+				/>
+				<Input
+					id='reservation-start-time'
+					label={LABELS.START_TIME}
+					name='startTime'
+					placeholder={LABELS.START_TIME}
+					min={min}
+					max={max}
+					{...DATETIME_VALIDATOR}
+				/>
+				<Input
+					id='reservation-end-time'
+					label={LABELS.END_TIME}
+					name='endTime'
+					placeholder={LABELS.END_TIME}
+					min={min}
+					max={max}
+					type={DATETIME_VALIDATOR.type}
+					validation={{
+						...DATETIME_VALIDATOR.validation,
+						validate: {
+							endGreaterThanStart: endHourValidation,
+						},
+					}}
+				/>
+			</Form>
+		</>
 	);
 }
