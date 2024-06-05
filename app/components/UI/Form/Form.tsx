@@ -69,7 +69,7 @@ export default function Form({
 				<fieldset disabled={disabled}>
 					{children}
 					{!disabled && (
-						<div className='form__buttons'>
+						<div className='d-flex flex-start'>
 							<input
 								type='submit'
 								className='btn btn-primary form__button'

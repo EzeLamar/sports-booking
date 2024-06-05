@@ -28,11 +28,21 @@ const handleSubmit = (data: Reservation): Promise<boolean> =>
 		resolve(true);
 	});
 
+const handleDelete = (id: string): Promise<boolean> =>
+	new Promise(resolve => {
+		// eslint-disable-next-line no-console
+		console.log(id);
+		// eslint-disable-next-line no-alert
+		alert(JSON.stringify(id));
+		resolve(true);
+	});
+
 export const Enabled: Story = {
 	args: {
 		reservation: RESERVATION,
 		editable: true,
 		handleSubmit,
+		handleDelete,
 		minDate: RESERVATION_START_TIME,
 		maxDate: RESERVATION_START_TIME,
 	},
@@ -42,6 +52,7 @@ export const Disabled: Story = {
 	args: {
 		reservation: RESERVATION,
 		handleSubmit,
+		handleDelete,
 		minDate: RESERVATION_START_TIME,
 		maxDate: RESERVATION_START_TIME,
 	},
@@ -52,6 +63,7 @@ export const Empty: Story = {
 		reservation: EMPTY_RESERVATION,
 		editable: true,
 		handleSubmit,
+		handleDelete,
 		minDate: RESERVATION_START_TIME,
 		maxDate: RESERVATION_START_TIME,
 	},
@@ -62,6 +74,7 @@ export const MissingEndTime: Story = {
 		reservation: RESERVATION_WITHOUT_END_TIME,
 		editable: true,
 		handleSubmit,
+		handleDelete,
 		minDate: RESERVATION_START_TIME,
 		maxDate: RESERVATION_START_TIME,
 	},

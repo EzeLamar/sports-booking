@@ -84,6 +84,7 @@ const customEventPropGetter = (event: TEvent) => {
 type Props = {
 	events: TEvent[];
 	handleAddEvent: (data: Reservation) => Promise<string>;
+	handleDeleteEvent: (id: string) => Promise<boolean>;
 	minHour?: Date | null;
 	maxHour?: Date | null;
 	defaultDate?: Date;
@@ -94,6 +95,7 @@ type Props = {
 export default function Calendar({
 	events,
 	handleAddEvent,
+	handleDeleteEvent,
 	minHour = null,
 	maxHour = null,
 	defaultDate = new Date(),
@@ -151,6 +153,15 @@ export default function Calendar({
 			}
 		});
 
+	const onDelete = (id: string): Promise<boolean> =>
+		new Promise(resolve => {
+			handleDeleteEvent(id).then(() => {
+				setEvents(myEvents.filter(event => event.data.id !== id));
+				setShowModal(false);
+				resolve(true);
+			});
+		});
+
 	const onSelectSlot = useCallback(({ start, end }: SelectEventSlotProp) => {
 		const reservation: InitialReservation = {
 			id: null,
@@ -201,6 +212,7 @@ export default function Calendar({
 					reservation={selected}
 					handleClose={() => setShowModal(false)}
 					handleSubmit={onSubmit}
+					handleDelete={onDelete}
 					handleCancel={() => setShowModal(false)}
 					editable={editable}
 					minDate={selected ? selected.startTime : null}

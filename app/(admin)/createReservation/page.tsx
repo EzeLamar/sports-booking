@@ -6,7 +6,10 @@ import 'react-toastify/dist/ReactToastify.css';
 import ReservationForm, {
 	Reservation,
 } from '../../components/Reservations/ReservationForm';
-import { createReservation } from '../../firebase/reservations/reservation';
+import {
+	createReservation,
+	deleteReservation,
+} from '../../firebase/reservations/reservation';
 import { getCourtRef } from '../../firebase/courts/courts';
 import hasErrorMessage from '../../utils/Error/ErrorHelper';
 
@@ -32,6 +35,21 @@ export default function CreateReservationPage() {
 						),
 					});
 					toast.success('Evento creado!', {
+						theme: 'colored',
+					});
+					return !!result;
+				} catch (error: unknown) {
+					if (hasErrorMessage(error)) {
+						toast.error(error.message, { theme: 'colored' });
+					}
+
+					throw error;
+				}
+			}}
+			handleDelete={async (id: string): Promise<boolean> => {
+				try {
+					const result = deleteReservation(id);
+					toast.success('Evento Eliminado!', {
 						theme: 'colored',
 					});
 					return !!result;
