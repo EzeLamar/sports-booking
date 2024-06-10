@@ -7,6 +7,8 @@ import {
 	addDoc,
 	deleteDoc,
 	updateDoc,
+	query,
+	where,
 } from 'firebase/firestore';
 import {
 	ReservationDraft,
@@ -14,6 +16,7 @@ import {
 } from '@/app/components/Reservations/Reservation';
 import moment from 'moment';
 import firebaseApp from '../config';
+import { getCourtRef } from '../courts/courts';
 
 function getEndTimeFromStartTimeAndDuration(
 	startTime: Date,
@@ -63,6 +66,36 @@ export async function getAllReservations(): Promise<Array<Reservation>> {
 			'NEXT_PUBLIC_RESERVATIONS_COLLECTION'
 	);
 	const courtsSnap = await getDocs(colRef);
+
+	return courtsSnap.docs.map((docSnap): Reservation => {
+		const data = docSnap.data();
+
+		return {
+			id: docSnap.id,
+			court: data.court,
+			owner: data.owner,
+			startTime: data.startTime.toDate(),
+			endTime: getEndTimeFromStartTimeAndDuration(
+				data.startTime.toDate(),
+				data.duration
+			),
+		};
+	});
+}
+
+export async function getAllReservationsByCourtId(
+	courtId: string
+): Promise<Array<Reservation>> {
+	const db = getFirestore(firebaseApp);
+	const courtRef = getCourtRef(courtId);
+	const colRef = collection(
+		db,
+		process.env.NEXT_PUBLIC_RESERVATIONS_COLLECTION ??
+			'NEXT_PUBLIC_RESERVATIONS_COLLECTION'
+	);
+
+	const q = await query(colRef, where('court', '==', courtRef));
+	const courtsSnap = await getDocs(q);
 
 	return courtsSnap.docs.map((docSnap): Reservation => {
 		const data = docSnap.data();

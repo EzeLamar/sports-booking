@@ -7,8 +7,8 @@ import Calendar from '@/app/components/UI/Calendar/Calendar';
 import {
 	createReservation,
 	deleteReservation,
-	getAllReservations,
 	updateReservation,
+	getAllReservationsByCourtId,
 } from '@/app/firebase/reservations/reservation';
 import hasErrorMessage from '@/app/utils/Error/ErrorHelper';
 import { toast } from 'react-toastify';
@@ -45,7 +45,7 @@ export default function AdminPage({ params }: Props) {
 		const fetchData = async () => {
 			try {
 				const courtData = await getCourt(params.id);
-				const reservationsData = await getAllReservations();
+				const reservationsData = await getAllReservationsByCourtId(params.id);
 				setCourt(courtData);
 				setReservations(formatReservations(reservationsData));
 				setLoading(false);
