@@ -20,9 +20,8 @@ export default function CourtView({ params }: { params: { id: string } }) {
 	return !user ? (
 		<Loading />
 	) : (
-		<>
-			<h2>Court View: Hi {user.email}</h2>
+		<div className='d-flex p-3'>
 			<CourtSettingsView courtId={courtId} />
-		</>
+		</div>
 	);
 }
