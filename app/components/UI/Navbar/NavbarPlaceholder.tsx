@@ -13,7 +13,7 @@ export default function NavbarPlaceholder() {
 						width={30}
 						height={30}
 					/>
-					Sports Booking App
+					Sports Booking
 				</Link>
 				<button
 					className='navbar-toggler'
@@ -28,16 +28,10 @@ export default function NavbarPlaceholder() {
 				</button>
 				<div className='collapse navbar-collapse' id='navbarNav'>
 					<ul className='navbar-nav me-auto mb-2 mb-lg-0'>
-						<li className='nav-item'>
-							<Link className='nav-link active' aria-current='page' href='/'>
-								Home
-							</Link>
+						<li className='nav-item placeholder-glow'>
+							<desc href='/' className='nav-link placeholder' />
 						</li>
 					</ul>
-					<p className='placeholder-glow'>
-						<span className='placeholder col-1' />
-					</p>
-					<p className='btn btn-primary disabled placeholder col-1' />
 				</div>
 			</div>
 		</nav>

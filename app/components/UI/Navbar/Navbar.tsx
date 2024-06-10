@@ -35,7 +35,7 @@ export default function NavBar() {
 						width={30}
 						height={30}
 					/>
-					Sports Booking App
+					Sports Booking
 				</Link>
 				<button
 					className='navbar-toggler'
@@ -50,16 +50,7 @@ export default function NavBar() {
 				</button>
 				<div className='collapse navbar-collapse' id='navbarSupportedContent'>
 					<ul className='navbar-nav me-auto mb-2 mb-lg-0'>
-						<li className='nav-item'>
-							<Link
-								className={`nav-link ${pathName === '/' ? 'active' : ''}`}
-								aria-current='page'
-								href='/'
-							>
-								Home
-							</Link>
-						</li>
-						{user && (
+						{user ? (
 							<li className='nav-item'>
 								<Link
 									className={`nav-link ${pathName === '/courts' ? 'active' : ''}`}
@@ -68,9 +59,19 @@ export default function NavBar() {
 									Courts
 								</Link>
 							</li>
+						) : (
+							<li className='nav-item'>
+								<Link
+									className={`nav-link ${pathName === '/' ? 'active' : ''}`}
+									aria-current='page'
+									href='/'
+								>
+									Home
+								</Link>
+							</li>
 						)}
 					</ul>
-					{user ? (
+					{user && (
 						<>
 							<span className='navbar-text'>{user.email}</span>
 							<button
@@ -81,10 +82,6 @@ export default function NavBar() {
 								Cerrar Sesión
 							</button>
 						</>
-					) : (
-						<Link className='btn btn-primary' href='/signin'>
-							Ingresar
-						</Link>
 					)}
 				</div>
 			</div>
