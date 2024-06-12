@@ -6,6 +6,7 @@ import {
 	getDocs,
 	addDoc,
 	deleteDoc,
+	updateDoc,
 } from 'firebase/firestore';
 import {
 	ReservationDraft,
@@ -112,5 +113,28 @@ export async function deleteReservation(id: string): Promise<boolean> {
 	);
 	await deleteDoc(docRef);
 
+	return true;
+}
+
+export async function updateReservation(
+	reservationData: Reservation
+): Promise<boolean> {
+	const db = getFirestore(firebaseApp);
+	const docRef = doc(
+		db,
+		process.env.NEXT_PUBLIC_RESERVATIONS_COLLECTION ??
+			'NEXT_PUBLIC_RESERVATIONS_COLLECTION',
+		reservationData.id
+	);
+
+	await updateDoc(docRef, {
+		court: reservationData.court,
+		owner: reservationData.owner,
+		startTime: reservationData.startTime,
+		duration: getDurationFromStartTimeAndEndTimeInMinutes(
+			reservationData.startTime,
+			reservationData.endTime
+		),
+	});
 	return true;
 }
