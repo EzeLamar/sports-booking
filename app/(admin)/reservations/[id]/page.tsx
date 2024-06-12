@@ -8,6 +8,7 @@ import {
 	createReservation,
 	deleteReservation,
 	getAllReservations,
+	updateReservation,
 } from '@/app/firebase/reservations/reservation';
 import hasErrorMessage from '@/app/utils/Error/ErrorHelper';
 import { toast } from 'react-toastify';
@@ -96,6 +97,35 @@ export default function AdminPage({ params }: Props) {
 		}
 	};
 
+	const handleUpdateReservation = async (
+		data: ReservationForm
+	): Promise<boolean> => {
+		try {
+			if (data.id === null) {
+				throw new Error('missingReservationId');
+			} else {
+				const reservation: Reservation = {
+					id: data.id,
+					owner: data.owner,
+					startTime: new Date(data.startTime),
+					endTime: new Date(data.endTime),
+					court: getCourtRef(params.id),
+				};
+				await updateReservation(reservation);
+				toast.success('Reserva modificada!', {
+					theme: 'colored',
+				});
+				return true;
+			}
+		} catch (error: unknown) {
+			if (hasErrorMessage(error)) {
+				toast.error(error.message, { theme: 'colored' });
+			}
+
+			throw error;
+		}
+	};
+
 	const minHour = !showAll
 		? moment(`2024-04-04T${court?.openHour}:00`).toDate()
 		: null;
@@ -127,6 +157,7 @@ export default function AdminPage({ params }: Props) {
 						events={reservations}
 						handleAddEvent={handleAddReservation}
 						handleDeleteEvent={handleDeleteReservation}
+						handleUpdateEvent={handleUpdateReservation}
 						minHour={minHour}
 						maxHour={maxHour}
 						defaultView={Views.DAY}

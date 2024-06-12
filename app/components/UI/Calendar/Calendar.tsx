@@ -85,6 +85,7 @@ type Props = {
 	events: TEvent[];
 	handleAddEvent: (data: Reservation) => Promise<string>;
 	handleDeleteEvent: (id: string) => Promise<boolean>;
+	handleUpdateEvent: (data: Reservation) => Promise<boolean>;
 	minHour?: Date | null;
 	maxHour?: Date | null;
 	defaultDate?: Date;
@@ -96,6 +97,7 @@ export default function Calendar({
 	events,
 	handleAddEvent,
 	handleDeleteEvent,
+	handleUpdateEvent,
 	minHour = null,
 	maxHour = null,
 	defaultDate = new Date(),
@@ -147,9 +149,26 @@ export default function Calendar({
 					resolve(true);
 				});
 			} else {
-				// TODO: Service call to Edit the Reservation on FireStore
-				setShowModal(false);
-				resolve(true);
+				handleUpdateEvent(data).then(() => {
+					const updatedEvent: TEvent = {
+						start: data.startTime,
+						end: data.endTime,
+						title: 'Test Title',
+						data: {
+							id: data.id ?? '', // TODO: this will be fixed in a future update
+							type: 'match',
+							owner: data.owner,
+						},
+						desc: '',
+					};
+
+					setEvents([
+						...myEvents.filter(event => event.data.id !== data.id),
+						updatedEvent,
+					]);
+					setShowModal(false);
+					resolve(true);
+				});
 			}
 		});
 
