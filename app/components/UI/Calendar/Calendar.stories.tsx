@@ -1,7 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import moment from 'moment';
 import { Views } from 'react-big-calendar';
-import { ReservationType } from '../../../firebase/reservations/model';
+import {
+	ReservationStatus,
+	ReservationType,
+} from '../../../firebase/reservations/model';
 import Calendar from './Calendar';
 import { Reservation } from '../../Reservations/ReservationForm';
 
@@ -27,6 +30,7 @@ const events = [
 			type: ReservationType.Lesson,
 			owner: 'Ezequiel Lamarque',
 			price: 5000,
+			status: ReservationStatus.Booked,
 		},
 	},
 	{
@@ -38,6 +42,7 @@ const events = [
 			type: ReservationType.Match,
 			owner: 'Lucas Bualo',
 			price: 1500,
+			status: ReservationStatus.Booked,
 		},
 	},
 	{
@@ -49,6 +54,7 @@ const events = [
 			type: ReservationType.Tournament,
 			owner: 'Ezequiel Lamarque',
 			price: 5000,
+			status: ReservationStatus.Paid,
 		},
 	},
 	{
@@ -60,6 +66,7 @@ const events = [
 			type: ReservationType.Match,
 			owner: 'Lucas Bualo',
 			price: 1500,
+			status: ReservationStatus.Booked,
 		},
 	},
 	{
@@ -71,6 +78,7 @@ const events = [
 			type: ReservationType.Match,
 			owner: 'Ezequiel Lamarque',
 			price: 1500.5,
+			status: ReservationStatus.Canceled,
 		},
 	},
 ];

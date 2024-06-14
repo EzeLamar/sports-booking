@@ -1,5 +1,8 @@
 import moment from 'moment';
-import { ReservationType } from '../../firebase/reservations/model';
+import {
+	ReservationStatus,
+	ReservationType,
+} from '../../firebase/reservations/model';
 import { InitialReservation } from './ReservationForm';
 
 const now = new Date();
@@ -18,6 +21,7 @@ export const RESERVATION: InitialReservation = {
 	startTime: RESERVATION_START_TIME,
 	endTime: moment(RESERVATION_START_TIME).add(90, 'minutes').toDate(),
 	price: 4000.5,
+	status: ReservationStatus.Paid,
 };
 
 export const RESERVATION_WITHOUT_END_TIME: InitialReservation = {
@@ -27,6 +31,7 @@ export const RESERVATION_WITHOUT_END_TIME: InitialReservation = {
 	startTime: RESERVATION_START_TIME,
 	endTime: null,
 	price: 4000.5,
+	status: ReservationStatus.Booked,
 };
 
 export const EMPTY_RESERVATION: InitialReservation = {
@@ -36,4 +41,5 @@ export const EMPTY_RESERVATION: InitialReservation = {
 	startTime: null,
 	endTime: null,
 	price: null,
+	status: null,
 };

@@ -77,8 +77,8 @@ const customDayPropGetter = (date: Date) => {
 
 const customEventPropGetter = (event: TEvent) => {
 	const { data } = event;
-	const { type } = data;
-	return { className: `calendar__type-${type}` };
+	const { type, status } = data;
+	return { className: `calendar__type-${type} calendar__status-${status}` };
 };
 
 type Props = {
@@ -142,6 +142,7 @@ export default function Calendar({
 							type: data.type,
 							owner: data.owner,
 							price: data.price,
+							status: data.status,
 						},
 						desc: '',
 					};
@@ -160,6 +161,7 @@ export default function Calendar({
 							type: data.type,
 							owner: data.owner,
 							price: data.price,
+							status: data.status,
 						},
 						desc: '',
 					};
@@ -191,6 +193,7 @@ export default function Calendar({
 			startTime: start,
 			endTime: end,
 			price: null,
+			status: null,
 		};
 		setSelected(reservation);
 		setEditable(true);
@@ -205,6 +208,7 @@ export default function Calendar({
 			startTime: event.start,
 			endTime: event.end,
 			price: event.data.price,
+			status: event.data.status,
 		};
 
 		setSelected(reservation);

@@ -7,6 +7,12 @@ export enum ReservationType {
 	Tournament = 'tournament',
 }
 
+export enum ReservationStatus {
+	Paid = 'paid',
+	Booked = 'booked',
+	Canceled = 'canceled',
+}
+
 export type Reservation = {
 	id: string;
 	court: DocumentReference;
@@ -15,6 +21,7 @@ export type Reservation = {
 	startTime: Date;
 	endTime: Date;
 	price: number;
+	status: ReservationStatus;
 };
 
 export type ReservationDraft = {
@@ -24,4 +31,5 @@ export type ReservationDraft = {
 	startTime: Date;
 	endTime: Date;
 	price: number;
+	status: ReservationStatus;
 };

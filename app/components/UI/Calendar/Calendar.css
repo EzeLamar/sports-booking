@@ -17,3 +17,11 @@
 .calendar__type-tournament {
 	background-color: rgb(234, 159, 108);
 }
+
+.calendar__status-booked {
+	border: solid 3px red;
+}
+
+.calendar__status-canceled {
+	background-color: grey;
+}
