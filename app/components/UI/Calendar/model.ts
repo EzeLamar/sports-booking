@@ -4,6 +4,7 @@ type ReservationData = {
 	id: string;
 	type: ReservationType;
 	owner: string;
+	price: number;
 };
 
 export type TEvent = {

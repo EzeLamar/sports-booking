@@ -8,6 +8,7 @@ import Form from '../UI/Form/Form';
 import Input from '../UI/Input/Input';
 import {
 	DATETIME_VALIDATOR,
+	PRICE_VALIDATOR,
 	TEXT_VALIDATOR,
 	TYPE_VALIDATOR,
 } from '../../utils/Form/inputValidators';
@@ -17,6 +18,7 @@ const LABELS = {
 	FORM_TITLE: 'Datos de la reserva',
 	OWNER: 'Titular',
 	TYPE: 'Tipo',
+	PRICE: 'Precio',
 	START_TIME: 'Hora inicio',
 	END_TIME: 'Hora fin',
 };
@@ -46,6 +48,7 @@ export type Reservation = {
 	type: ReservationType;
 	startTime: Date;
 	endTime: Date;
+	price: number;
 };
 
 export type InitialReservation = {
@@ -54,6 +57,7 @@ export type InitialReservation = {
 	type: ReservationType | null;
 	startTime: Date | null;
 	endTime: Date | null;
+	price: number | null;
 };
 
 type Props = {
@@ -90,6 +94,7 @@ export default function ReservationForm({
 		endTime: reservation.endTime
 			? moment(reservation.endTime).format(DATE_TIME_FORMAT)
 			: null,
+		price: reservation.price,
 	};
 
 	const onSubmit = async (data: FieldValues): Promise<boolean> => {
@@ -99,6 +104,7 @@ export default function ReservationForm({
 			type: data.type,
 			startTime: new Date(data.startTime),
 			endTime: new Date(data.endTime),
+			price: data.price,
 		};
 
 		try {
@@ -192,6 +198,13 @@ export default function ReservationForm({
 							endGreaterThanStart: endHourValidation,
 						},
 					}}
+				/>
+				<Input
+					id='reservation-price'
+					label={LABELS.PRICE}
+					name='price'
+					placeholder={LABELS.PRICE}
+					{...PRICE_VALIDATOR}
 				/>
 			</Form>
 		</>

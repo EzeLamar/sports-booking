@@ -14,6 +14,7 @@ export type Reservation = {
 	type: ReservationType;
 	startTime: Date;
 	endTime: Date;
+	price: number;
 };
 
 export type ReservationDraft = {
@@ -22,4 +23,5 @@ export type ReservationDraft = {
 	type: ReservationType;
 	startTime: Date;
 	endTime: Date;
+	price: number;
 };

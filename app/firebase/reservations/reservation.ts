@@ -53,6 +53,7 @@ export async function getReservation(id: string): Promise<Reservation> {
 			data.startTime.toDate(),
 			data.duration
 		),
+		price: data.price,
 	};
 }
 
@@ -78,6 +79,7 @@ export async function getAllReservations(): Promise<Array<Reservation>> {
 				data.startTime.toDate(),
 				data.duration
 			),
+			price: data.price,
 		};
 	});
 }
@@ -109,6 +111,7 @@ export async function getAllReservationsByCourtId(
 				data.duration
 			),
 			type: data.type,
+			price: data.price,
 		};
 	});
 }
@@ -131,6 +134,7 @@ export async function createReservation(
 			reservationData.startTime,
 			reservationData.endTime
 		),
+		price: reservationData.price,
 	};
 	const docRef = await addDoc(colRef, reservation);
 
@@ -170,6 +174,7 @@ export async function updateReservation(
 			reservationData.startTime,
 			reservationData.endTime
 		),
+		price: reservationData.price,
 	});
 	return true;
 }

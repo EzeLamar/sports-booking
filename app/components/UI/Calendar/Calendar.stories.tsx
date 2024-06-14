@@ -26,6 +26,7 @@ const events = [
 			id: '1',
 			type: ReservationType.Lesson,
 			owner: 'Ezequiel Lamarque',
+			price: 5000,
 		},
 	},
 	{
@@ -36,6 +37,7 @@ const events = [
 			id: '2',
 			type: ReservationType.Match,
 			owner: 'Lucas Bualo',
+			price: 1500,
 		},
 	},
 	{
@@ -46,6 +48,7 @@ const events = [
 			id: '3',
 			type: ReservationType.Tournament,
 			owner: 'Ezequiel Lamarque',
+			price: 5000,
 		},
 	},
 	{
@@ -56,6 +59,7 @@ const events = [
 			id: '4',
 			type: ReservationType.Match,
 			owner: 'Lucas Bualo',
+			price: 1500,
 		},
 	},
 	{
@@ -66,6 +70,7 @@ const events = [
 			id: '5',
 			type: ReservationType.Match,
 			owner: 'Ezequiel Lamarque',
+			price: 1500.5,
 		},
 	},
 ];
