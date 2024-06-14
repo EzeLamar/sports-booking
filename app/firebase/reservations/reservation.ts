@@ -10,13 +10,10 @@ import {
 	query,
 	where,
 } from 'firebase/firestore';
-import {
-	ReservationDraft,
-	Reservation,
-} from '@/app/components/Reservations/Reservation';
 import moment from 'moment';
 import firebaseApp from '../config';
 import { getCourtRef } from '../courts/courts';
+import { Reservation, ReservationDraft } from './model';
 
 function getEndTimeFromStartTimeAndDuration(
 	startTime: Date,
@@ -50,6 +47,7 @@ export async function getReservation(id: string): Promise<Reservation> {
 		id: docSnap.id,
 		court: data.court,
 		owner: data.owner,
+		type: data.type,
 		startTime: data.startTime.toDate(),
 		endTime: getEndTimeFromStartTimeAndDuration(
 			data.startTime.toDate(),
@@ -74,6 +72,7 @@ export async function getAllReservations(): Promise<Array<Reservation>> {
 			id: docSnap.id,
 			court: data.court,
 			owner: data.owner,
+			type: data.type,
 			startTime: data.startTime.toDate(),
 			endTime: getEndTimeFromStartTimeAndDuration(
 				data.startTime.toDate(),
@@ -109,6 +108,7 @@ export async function getAllReservationsByCourtId(
 				data.startTime.toDate(),
 				data.duration
 			),
+			type: data.type,
 		};
 	});
 }
@@ -125,6 +125,7 @@ export async function createReservation(
 	const reservation = {
 		court: reservationData.court,
 		owner: reservationData.owner,
+		type: reservationData.type,
 		startTime: reservationData.startTime,
 		duration: getDurationFromStartTimeAndEndTimeInMinutes(
 			reservationData.startTime,
@@ -163,6 +164,7 @@ export async function updateReservation(
 	await updateDoc(docRef, {
 		court: reservationData.court,
 		owner: reservationData.owner,
+		type: reservationData.type,
 		startTime: reservationData.startTime,
 		duration: getDurationFromStartTimeAndEndTimeInMinutes(
 			reservationData.startTime,

@@ -3,6 +3,7 @@
 import React from 'react';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { ReservationType } from '@/app/firebase/reservations/model';
 import ReservationForm, {
 	Reservation,
 } from '../../components/Reservations/ReservationForm';
@@ -20,6 +21,7 @@ export default function CreateReservationPage() {
 			reservation={{
 				id: null,
 				owner: 'Prueba',
+				type: ReservationType.Lesson,
 				startTime: new Date(),
 				endTime: new Date(),
 			}}

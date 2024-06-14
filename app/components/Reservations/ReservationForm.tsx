@@ -2,20 +2,40 @@ import React, { useState } from 'react';
 import { FieldValues } from 'react-hook-form';
 import moment from 'moment';
 import { toast } from 'react-toastify';
+import { ReservationType } from '../../firebase/reservations/model';
 import hasErrorMessage from '../../utils/Error/ErrorHelper';
 import Form from '../UI/Form/Form';
 import Input from '../UI/Input/Input';
 import {
 	DATETIME_VALIDATOR,
 	TEXT_VALIDATOR,
+	TYPE_VALIDATOR,
 } from '../../utils/Form/inputValidators';
+import Select from '../UI/Select/Select';
 
 const LABELS = {
 	FORM_TITLE: 'Datos de la reserva',
 	OWNER: 'Titular',
+	TYPE: 'Tipo',
 	START_TIME: 'Hora inicio',
 	END_TIME: 'Hora fin',
 };
+
+const TYPE_VALUES = [
+	{
+		key: ReservationType.Match,
+		label: 'Partido',
+	},
+	{
+		key: ReservationType.Lesson,
+		label: 'Clase',
+	},
+	{
+		key: ReservationType.Tournament,
+		label: 'Torneo',
+	},
+];
+
 const DATE_TIME_FORMAT = 'YYYY-MM-DDTHH:mm';
 const MIN_DATE_FORMAT = 'YYYY-MM-DDT00:00';
 const MAX_DATE_FORMAT = 'YYYY-MM-DDT23:00';
@@ -23,6 +43,7 @@ const MAX_DATE_FORMAT = 'YYYY-MM-DDT23:00';
 export type Reservation = {
 	id: string | null;
 	owner: string;
+	type: ReservationType;
 	startTime: Date;
 	endTime: Date;
 };
@@ -30,6 +51,7 @@ export type Reservation = {
 export type InitialReservation = {
 	id: string | null;
 	owner: string;
+	type: ReservationType | null;
 	startTime: Date | null;
 	endTime: Date | null;
 };
@@ -61,6 +83,7 @@ export default function ReservationForm({
 	const initialValues = {
 		id: reservation.id,
 		owner: reservation.owner,
+		type: reservation.type,
 		startTime: reservation.startTime
 			? moment(reservation.startTime).format(DATE_TIME_FORMAT)
 			: null,
@@ -73,6 +96,7 @@ export default function ReservationForm({
 		const reservationSubmitted = {
 			id: data.id,
 			owner: data.owner,
+			type: data.type,
 			startTime: new Date(data.startTime),
 			endTime: new Date(data.endTime),
 		};
@@ -137,6 +161,13 @@ export default function ReservationForm({
 					name='owner'
 					placeholder={LABELS.OWNER}
 					{...TEXT_VALIDATOR}
+				/>
+				<Select
+					id='reservation-type'
+					label={LABELS.TYPE}
+					name='type'
+					values={TYPE_VALUES}
+					{...TYPE_VALIDATOR}
 				/>
 				<Input
 					id='reservation-start-time'

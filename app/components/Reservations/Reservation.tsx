@@ -1,21 +1,6 @@
-import { DocumentReference } from 'firebase/firestore';
+import { Reservation } from '@/app/firebase/reservations/model';
 import Link from 'next/link';
 import React from 'react';
-
-export type Reservation = {
-	id: string;
-	court: DocumentReference;
-	owner: string;
-	startTime: Date;
-	endTime: Date;
-};
-
-export type ReservationDraft = {
-	court: DocumentReference;
-	owner: string;
-	startTime: Date;
-	endTime: Date;
-};
 
 type Props = {
 	reservationInfo: Reservation;

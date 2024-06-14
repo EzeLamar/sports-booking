@@ -6,10 +6,14 @@
 	/* background-color: rgb(253, 254, 222); */
 }
 
-.calendar__type-class {
+.calendar__type-lesson {
 	background-color: rgb(96, 209, 96);
 }
 
 .calendar__type-match {
 	background-color: rgb(108, 108, 234);
+}
+
+.calendar__type-tournament {
+	background-color: rgb(234, 159, 108);
 }

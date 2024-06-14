@@ -15,9 +15,9 @@ import { toast } from 'react-toastify';
 import { getCourt, getCourtRef } from '@/app/firebase/courts/courts';
 import { Court } from '@/app/components/Courts/CourtSettings/CourtSettings';
 import Loading from '@/app/components/UI/Loading/Loading';
-import { TEvent } from '@/app/components/UI/Calendar/module';
-import { Reservation } from '@/app/components/Reservations/Reservation';
+import { TEvent } from '@/app/components/UI/Calendar/model';
 import { Reservation as ReservationForm } from '@/app/components/Reservations/ReservationForm';
+import { Reservation } from '@/app/firebase/reservations/model';
 
 type Props = {
 	params: { id: string };
@@ -36,7 +36,7 @@ export default function AdminPage({ params }: Props) {
 			title: reservation.court.id,
 			data: {
 				id: reservation.id,
-				type: 'class',
+				type: reservation.type,
 				owner: reservation.owner,
 			},
 		}));
@@ -107,6 +107,7 @@ export default function AdminPage({ params }: Props) {
 				const reservation: Reservation = {
 					id: data.id,
 					owner: data.owner,
+					type: data.type,
 					startTime: new Date(data.startTime),
 					endTime: new Date(data.endTime),
 					court: getCourtRef(params.id),
