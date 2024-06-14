@@ -24,6 +24,7 @@ export default function CreateReservationPage() {
 				type: ReservationType.Lesson,
 				startTime: new Date(),
 				endTime: new Date(),
+				price: 1234,
 			}}
 			handleSubmit={async (data: Reservation): Promise<boolean> => {
 				try {

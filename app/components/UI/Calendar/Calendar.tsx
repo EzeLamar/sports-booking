@@ -141,6 +141,7 @@ export default function Calendar({
 							id: eventId,
 							type: data.type,
 							owner: data.owner,
+							price: data.price,
 						},
 						desc: '',
 					};
@@ -158,6 +159,7 @@ export default function Calendar({
 							id: data.id ?? '', // TODO: this will be fixed in a future update
 							type: data.type,
 							owner: data.owner,
+							price: data.price,
 						},
 						desc: '',
 					};
@@ -188,6 +190,7 @@ export default function Calendar({
 			owner: '',
 			startTime: start,
 			endTime: end,
+			price: null,
 		};
 		setSelected(reservation);
 		setEditable(true);
@@ -201,6 +204,7 @@ export default function Calendar({
 			owner: event.data.owner,
 			startTime: event.start,
 			endTime: event.end,
+			price: event.data.price,
 		};
 
 		setSelected(reservation);

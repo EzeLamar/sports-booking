@@ -17,6 +17,7 @@ export const RESERVATION: InitialReservation = {
 	type: ReservationType.Lesson,
 	startTime: RESERVATION_START_TIME,
 	endTime: moment(RESERVATION_START_TIME).add(90, 'minutes').toDate(),
+	price: 4000.5,
 };
 
 export const RESERVATION_WITHOUT_END_TIME: InitialReservation = {
@@ -25,6 +26,7 @@ export const RESERVATION_WITHOUT_END_TIME: InitialReservation = {
 	type: ReservationType.Lesson,
 	startTime: RESERVATION_START_TIME,
 	endTime: null,
+	price: 4000.5,
 };
 
 export const EMPTY_RESERVATION: InitialReservation = {
@@ -33,4 +35,5 @@ export const EMPTY_RESERVATION: InitialReservation = {
 	type: null,
 	startTime: null,
 	endTime: null,
+	price: null,
 };
