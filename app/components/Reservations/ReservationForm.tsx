@@ -2,13 +2,17 @@ import React, { useState } from 'react';
 import { FieldValues } from 'react-hook-form';
 import moment from 'moment';
 import { toast } from 'react-toastify';
-import { ReservationType } from '../../firebase/reservations/model';
+import {
+	ReservationStatus,
+	ReservationType,
+} from '../../firebase/reservations/model';
 import hasErrorMessage from '../../utils/Error/ErrorHelper';
 import Form from '../UI/Form/Form';
 import Input from '../UI/Input/Input';
 import {
 	DATETIME_VALIDATOR,
 	PRICE_VALIDATOR,
+	STATUS_VALIDATOR,
 	TEXT_VALIDATOR,
 	TYPE_VALIDATOR,
 } from '../../utils/Form/inputValidators';
@@ -19,6 +23,7 @@ const LABELS = {
 	OWNER: 'Titular',
 	TYPE: 'Tipo',
 	PRICE: 'Precio',
+	STATUS: 'Estado',
 	START_TIME: 'Hora inicio',
 	END_TIME: 'Hora fin',
 };
@@ -38,6 +43,21 @@ const TYPE_VALUES = [
 	},
 ];
 
+const STATUS_VALUES = [
+	{
+		key: ReservationStatus.Booked,
+		label: 'Reservado',
+	},
+	{
+		key: ReservationStatus.Paid,
+		label: 'Pagado',
+	},
+	{
+		key: ReservationStatus.Canceled,
+		label: 'Cancelado',
+	},
+];
+
 const DATE_TIME_FORMAT = 'YYYY-MM-DDTHH:mm';
 const MIN_DATE_FORMAT = 'YYYY-MM-DDT00:00';
 const MAX_DATE_FORMAT = 'YYYY-MM-DDT23:00';
@@ -49,6 +69,7 @@ export type Reservation = {
 	startTime: Date;
 	endTime: Date;
 	price: number;
+	status: ReservationStatus;
 };
 
 export type InitialReservation = {
@@ -58,6 +79,7 @@ export type InitialReservation = {
 	startTime: Date | null;
 	endTime: Date | null;
 	price: number | null;
+	status: ReservationStatus | null;
 };
 
 type Props = {
@@ -95,6 +117,7 @@ export default function ReservationForm({
 			? moment(reservation.endTime).format(DATE_TIME_FORMAT)
 			: null,
 		price: reservation.price,
+		status: reservation.status,
 	};
 
 	const onSubmit = async (data: FieldValues): Promise<boolean> => {
@@ -105,6 +128,7 @@ export default function ReservationForm({
 			startTime: new Date(data.startTime),
 			endTime: new Date(data.endTime),
 			price: data.price,
+			status: data.status,
 		};
 
 		try {
@@ -205,6 +229,13 @@ export default function ReservationForm({
 					name='price'
 					placeholder={LABELS.PRICE}
 					{...PRICE_VALIDATOR}
+				/>
+				<Select
+					id='reservation-status'
+					label={LABELS.STATUS}
+					name='status'
+					values={STATUS_VALUES}
+					{...STATUS_VALIDATOR}
 				/>
 			</Form>
 		</>

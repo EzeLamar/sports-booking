@@ -1,10 +1,14 @@
-import { ReservationType } from '@/app/firebase/reservations/model';
+import {
+	ReservationStatus,
+	ReservationType,
+} from '@/app/firebase/reservations/model';
 
 type ReservationData = {
 	id: string;
 	type: ReservationType;
 	owner: string;
 	price: number;
+	status: ReservationStatus;
 };
 
 export type TEvent = {

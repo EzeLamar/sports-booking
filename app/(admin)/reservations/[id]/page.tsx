@@ -39,6 +39,7 @@ export default function AdminPage({ params }: Props) {
 				type: reservation.type,
 				owner: reservation.owner,
 				price: reservation.price,
+				status: reservation.status,
 			},
 		}));
 
@@ -113,6 +114,7 @@ export default function AdminPage({ params }: Props) {
 					endTime: new Date(data.endTime),
 					court: getCourtRef(params.id),
 					price: data.price,
+					status: data.status,
 				};
 				await updateReservation(reservation);
 				toast.success('Reserva modificada!', {

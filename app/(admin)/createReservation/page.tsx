@@ -3,7 +3,10 @@
 import React from 'react';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { ReservationType } from '@/app/firebase/reservations/model';
+import {
+	ReservationStatus,
+	ReservationType,
+} from '@/app/firebase/reservations/model';
 import ReservationForm, {
 	Reservation,
 } from '../../components/Reservations/ReservationForm';
@@ -25,6 +28,7 @@ export default function CreateReservationPage() {
 				startTime: new Date(),
 				endTime: new Date(),
 				price: 1234,
+				status: ReservationStatus.Booked,
 			}}
 			handleSubmit={async (data: Reservation): Promise<boolean> => {
 				try {
