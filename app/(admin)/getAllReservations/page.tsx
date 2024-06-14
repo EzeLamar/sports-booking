@@ -2,9 +2,8 @@
 
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import ReservationWidget, {
-	Reservation,
-} from '../../components/Reservations/Reservation';
+import { Reservation } from '@/app/firebase/reservations/model';
+import ReservationWidget from '../../components/Reservations/Reservation';
 import { getAllReservations } from '../../firebase/reservations/reservation';
 import Loading from '../../components/UI/Loading/Loading';
 import hasErrorMessage from '../../utils/Error/ErrorHelper';

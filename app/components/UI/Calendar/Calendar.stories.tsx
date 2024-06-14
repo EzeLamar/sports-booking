@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import moment from 'moment';
 import { Views } from 'react-big-calendar';
+import { ReservationType } from '../../../firebase/reservations/model';
 import Calendar from './Calendar';
 import { Reservation } from '../../Reservations/ReservationForm';
 
@@ -23,7 +24,7 @@ const events = [
 		title: 'Evento 1',
 		data: {
 			id: '1',
-			type: 'class',
+			type: ReservationType.Lesson,
 			owner: 'Ezequiel Lamarque',
 		},
 	},
@@ -33,7 +34,7 @@ const events = [
 		title: 'Evento 4',
 		data: {
 			id: '2',
-			type: 'match',
+			type: ReservationType.Match,
 			owner: 'Lucas Bualo',
 		},
 	},
@@ -43,7 +44,7 @@ const events = [
 		title: 'Evento 2',
 		data: {
 			id: '3',
-			type: 'class',
+			type: ReservationType.Tournament,
 			owner: 'Ezequiel Lamarque',
 		},
 	},
@@ -53,7 +54,7 @@ const events = [
 		title: 'Evento 3',
 		data: {
 			id: '4',
-			type: 'match',
+			type: ReservationType.Match,
 			owner: 'Lucas Bualo',
 		},
 	},
@@ -63,7 +64,7 @@ const events = [
 		title: 'Evento 5',
 		data: {
 			id: '5',
-			type: 'match',
+			type: ReservationType.Match,
 			owner: 'Ezequiel Lamarque',
 		},
 	},

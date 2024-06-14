@@ -12,7 +12,7 @@ import {
 import { isToday } from 'date-fns';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import './Calendar.css';
-import { EventProp, SelectEventSlotProp, TEvent } from './module';
+import { EventProp, SelectEventSlotProp, TEvent } from './model';
 import {
 	InitialReservation,
 	Reservation,
@@ -139,7 +139,7 @@ export default function Calendar({
 						title: 'Test Title',
 						data: {
 							id: eventId,
-							type: 'match',
+							type: data.type,
 							owner: data.owner,
 						},
 						desc: '',
@@ -156,7 +156,7 @@ export default function Calendar({
 						title: 'Test Title',
 						data: {
 							id: data.id ?? '', // TODO: this will be fixed in a future update
-							type: 'match',
+							type: data.type,
 							owner: data.owner,
 						},
 						desc: '',
@@ -184,6 +184,7 @@ export default function Calendar({
 	const onSelectSlot = useCallback(({ start, end }: SelectEventSlotProp) => {
 		const reservation: InitialReservation = {
 			id: null,
+			type: null,
 			owner: '',
 			startTime: start,
 			endTime: end,
@@ -196,6 +197,7 @@ export default function Calendar({
 	const onSelectEvent = useCallback((event: TEvent) => {
 		const reservation: InitialReservation = {
 			id: event.data.id,
+			type: event.data.type,
 			owner: event.data.owner,
 			startTime: event.start,
 			endTime: event.end,

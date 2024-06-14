@@ -20,6 +20,16 @@ export const TEXT_VALIDATOR: ValidationType = {
 	},
 };
 
+export const TYPE_VALIDATOR: ValidationType = {
+	type: 'dropdown',
+	validation: {
+		required: {
+			value: true,
+			message: 'Tipo requerido',
+		},
+	},
+};
+
 export const HOUR_VALIDATOR: ValidationType = {
 	type: 'text',
 	validation: {

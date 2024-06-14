@@ -1,6 +1,8 @@
+import { ReservationType } from '@/app/firebase/reservations/model';
+
 type ReservationData = {
 	id: string;
-	type: string;
+	type: ReservationType;
 	owner: string;
 };
 
