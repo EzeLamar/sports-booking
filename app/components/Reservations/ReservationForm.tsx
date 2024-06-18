@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useState } from 'react';
 import { FieldValues } from 'react-hook-form';
 import moment from 'moment';
@@ -11,6 +12,7 @@ import Form from '../UI/Form/Form';
 import Input from '../UI/Input/Input';
 import {
 	DATETIME_VALIDATOR,
+	NUMBER_VALIDATOR,
 	PRICE_VALIDATOR,
 	STATUS_VALIDATOR,
 	TEXT_VALIDATOR,
@@ -22,10 +24,13 @@ const LABELS = {
 	FORM_TITLE: 'Datos de la reserva',
 	OWNER: 'Titular',
 	TYPE: 'Tipo',
+	OCURRENCES: 'Replicar',
 	PRICE: 'Precio',
 	STATUS: 'Estado',
 	START_TIME: 'Hora inicio',
 	END_TIME: 'Hora fin',
+	DELETE: 'Borrar',
+	REGULAR_BOOKING: 'Turno Fijo',
 };
 
 const TYPE_VALUES = [
@@ -61,6 +66,7 @@ const STATUS_VALUES = [
 const DATE_TIME_FORMAT = 'YYYY-MM-DDTHH:mm';
 const MIN_DATE_FORMAT = 'YYYY-MM-DDT00:00';
 const MAX_DATE_FORMAT = 'YYYY-MM-DDT23:00';
+const SINGLE_OCURRENCE = 1;
 
 export type Reservation = {
 	id: string | null;
@@ -84,7 +90,7 @@ export type InitialReservation = {
 
 type Props = {
 	reservation: InitialReservation;
-	handleSubmit: (data: Reservation) => Promise<boolean>;
+	handleSubmit: (data: Reservation, ocurrences: number) => Promise<boolean>;
 	handleDelete: (id: string) => Promise<boolean>;
 	handleCancel: () => void;
 	minDate?: Date | null;
@@ -104,6 +110,7 @@ export default function ReservationForm({
 	showTitle = true,
 }: Props) {
 	const [disabled, setDisabled] = useState<boolean>(!editable);
+	const [isRegularBooking, setIsRegularBooking] = useState<boolean>(false);
 	const min = minDate ? moment(minDate).format(MIN_DATE_FORMAT) : undefined;
 	const max = maxDate ? moment(maxDate).format(MAX_DATE_FORMAT) : undefined;
 	const initialValues = {
@@ -118,6 +125,7 @@ export default function ReservationForm({
 			: null,
 		price: reservation.price,
 		status: reservation.status,
+		ocurrences: SINGLE_OCURRENCE,
 	};
 
 	const onSubmit = async (data: FieldValues): Promise<boolean> => {
@@ -132,7 +140,10 @@ export default function ReservationForm({
 		};
 
 		try {
-			return await handleSubmit(reservationSubmitted);
+			return await handleSubmit(
+				reservationSubmitted,
+				isRegularBooking ? data.ocurrences : SINGLE_OCURRENCE
+			);
 		} catch (error: unknown) {
 			if (hasErrorMessage(error)) {
 				toast.error(error.message, { theme: 'colored' });
@@ -174,8 +185,23 @@ export default function ReservationForm({
 					type='button'
 					onClick={() => onDelete(initialValues.id ?? '')}
 				>
-					Borrar
+					{LABELS.DELETE}
 				</button>
+			)}
+			{!initialValues.id && (
+				<div className='form-check form-switch'>
+					<input
+						className='form-check-input'
+						type='checkbox'
+						role='switch'
+						id='switch-regular-booking'
+						checked={isRegularBooking}
+						onChange={() => setIsRegularBooking(!isRegularBooking)}
+					/>
+					<label className='form-check-label' htmlFor='switch-regular-booking'>
+						{LABELS.REGULAR_BOOKING}
+					</label>
+				</div>
 			)}
 			<Form
 				title={showTitle ? LABELS.FORM_TITLE : null}
@@ -199,6 +225,15 @@ export default function ReservationForm({
 					values={TYPE_VALUES}
 					{...TYPE_VALIDATOR}
 				/>
+				{isRegularBooking && (
+					<Input
+						id='reservation-ocurrences'
+						label={LABELS.OCURRENCES}
+						placeholder={LABELS.OCURRENCES}
+						name='ocurrences'
+						{...NUMBER_VALIDATOR}
+					/>
+				)}
 				<Input
 					id='reservation-start-time'
 					label={LABELS.START_TIME}

@@ -84,6 +84,10 @@ const customEventPropGetter = (event: TEvent) => {
 type Props = {
 	events: TEvent[];
 	handleAddEvent: (data: Reservation) => Promise<string>;
+	handleAddRegularEvent: (
+		data: Reservation,
+		ocurrences: number
+	) => Promise<TEvent[]>;
 	handleDeleteEvent: (id: string) => Promise<boolean>;
 	handleUpdateEvent: (data: Reservation) => Promise<boolean>;
 	minHour?: Date | null;
@@ -96,6 +100,7 @@ type Props = {
 export default function Calendar({
 	events,
 	handleAddEvent,
+	handleAddRegularEvent,
 	handleDeleteEvent,
 	handleUpdateEvent,
 	minHour = null,
@@ -129,28 +134,12 @@ export default function Calendar({
 	);
 	const [myEvents, setEvents] = useState<TEvent[]>(events);
 
-	const onSubmit = (data: Reservation): Promise<boolean> =>
-		new Promise(resolve => {
-			if (!data.id) {
-				handleAddEvent(data).then((eventId: string) => {
-					const event: TEvent = {
-						start: data.startTime,
-						end: data.endTime,
-						title: 'Test Title',
-						data: {
-							id: eventId,
-							type: data.type,
-							owner: data.owner,
-							price: data.price,
-							status: data.status,
-						},
-						desc: '',
-					};
-					setEvents([...myEvents, event]);
-					setShowModal(false);
-					resolve(true);
-				});
-			} else {
+	const onSubmit = (
+		data: Reservation,
+		ocurrences: number
+	): Promise<boolean> => {
+		if (data.id) {
+			return new Promise(resolve => {
 				handleUpdateEvent(data).then(() => {
 					const updatedEvent: TEvent = {
 						start: data.startTime,
@@ -165,7 +154,6 @@ export default function Calendar({
 						},
 						desc: '',
 					};
-
 					setEvents([
 						...myEvents.filter(event => event.data.id !== data.id),
 						updatedEvent,
@@ -173,8 +161,40 @@ export default function Calendar({
 					setShowModal(false);
 					resolve(true);
 				});
-			}
+			});
+		}
+
+		if (ocurrences > 1) {
+			return new Promise(resolve => {
+				handleAddRegularEvent(data, ocurrences).then((newEvents: TEvent[]) => {
+					setEvents([...myEvents, ...newEvents]);
+					setShowModal(false);
+					resolve(true);
+				});
+			});
+		}
+
+		return new Promise(resolve => {
+			handleAddEvent(data).then((eventId: string) => {
+				const event: TEvent = {
+					start: data.startTime,
+					end: data.endTime,
+					title: 'Test Title',
+					data: {
+						id: eventId,
+						type: data.type,
+						owner: data.owner,
+						price: data.price,
+						status: data.status,
+					},
+					desc: '',
+				};
+				setEvents([...myEvents, event]);
+				setShowModal(false);
+				resolve(true);
+			});
 		});
+	};
 
 	const onDelete = (id: string): Promise<boolean> =>
 		new Promise(resolve => {
