@@ -1,4 +1,5 @@
-import { FormEvent } from 'react';
+'use client';
+
 import { FieldValues, FormProvider, useForm } from 'react-hook-form';
 import './Form.css';
 
@@ -35,6 +36,7 @@ export default function Form({
 		mode: 'onChange',
 		values: initialValues,
 	});
+	const { isSubmitting } = methods.formState;
 
 	const onCancel = () => {
 		methods.reset();
@@ -42,20 +44,15 @@ export default function Form({
 		handleCancel();
 	};
 
-	const formSubmit = methods.handleSubmit(data => {
-		handleSubmit(data)
+	function onSubmit(data: FieldValues) {
+		return handleSubmit(data)
 			.then(() => setDisabled(true))
 			.catch(() => onCancel());
-	});
-
-	const onSubmit = (e: FormEvent<HTMLFormElement>) => {
-		e.preventDefault();
-		formSubmit();
-	};
+	}
 
 	return (
 		<FormProvider {...methods}>
-			<form onSubmit={e => onSubmit(e)} noValidate>
+			<form onSubmit={methods.handleSubmit(onSubmit)} noValidate>
 				<legend>
 					{title}
 					{disabled && (
@@ -66,17 +63,24 @@ export default function Form({
 						/>
 					)}
 				</legend>
-				<fieldset disabled={disabled}>
+				<fieldset disabled={disabled || isSubmitting}>
 					{children}
 					{!disabled && (
 						<div className='d-flex flex-start'>
-							<input
+							<button
 								type='submit'
+								disabled={isSubmitting}
 								className='btn btn-primary form__button'
 								value={submitLabel}
-							/>
+							>
+								{isSubmitting && (
+									<span className='spinner-border spinner-border-sm me-1' />
+								)}
+								{submitLabel}
+							</button>
 							{showCancelButton && (
 								<button
+									disabled={isSubmitting}
 									type='button'
 									className='btn btn-secondary form__button'
 									onClick={onCancel}
