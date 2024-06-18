@@ -7,6 +7,7 @@ import {
 } from '../../../firebase/reservations/model';
 import Calendar from './Calendar';
 import { Reservation } from '../../Reservations/ReservationForm';
+import { TEvent } from './model';
 
 const meta = {
 	title: 'UI/Calendar',
@@ -95,6 +96,27 @@ const handleAddEvent = (_data: Reservation): Promise<string> =>
 	});
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
+const handleAddRegularEvent = (
+	data: Reservation,
+	ocurrences: number
+): Promise<TEvent[]> =>
+	new Promise(resolve => {
+		const regularEvents = Array.from({ length: ocurrences }, (_, index) => ({
+			start: data.startTime,
+			end: data.endTime,
+			title: `Event ${index + 1}`,
+			data: {
+				id: `${index + 1}`,
+				type: data.type,
+				owner: data.owner,
+				price: data.price,
+				status: data.status,
+			},
+		}));
+		resolve(regularEvents);
+	});
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const handleDeleteEvent = (_id: string): Promise<boolean> =>
 	new Promise(resolve => {
 		resolve(true);
@@ -110,6 +132,7 @@ export const Default: Story = {
 	args: {
 		events,
 		handleAddEvent,
+		handleAddRegularEvent,
 		handleDeleteEvent,
 		handleUpdateEvent,
 		minHour,

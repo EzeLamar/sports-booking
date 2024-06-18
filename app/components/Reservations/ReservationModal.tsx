@@ -13,7 +13,7 @@ type Props = {
 	show: boolean;
 	reservation: InitialReservation;
 	handleClose: () => void;
-	handleSubmit: (data: Reservation) => Promise<boolean>;
+	handleSubmit: (data: Reservation, ocurrences: number) => Promise<boolean>;
 	handleDelete: (id: string) => Promise<boolean>;
 	handleCancel: () => void;
 	minDate?: Date | null;
