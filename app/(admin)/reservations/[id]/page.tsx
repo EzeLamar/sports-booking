@@ -9,6 +9,7 @@ import {
 	deleteReservation,
 	updateReservation,
 	getAllReservationsByCourtId,
+	createRegularReservation,
 } from '@/app/firebase/reservations/reservation';
 import hasErrorMessage from '@/app/utils/Error/ErrorHelper';
 import { toast } from 'react-toastify';
@@ -29,7 +30,7 @@ export default function AdminPage({ params }: Props) {
 	const [court, setCourt] = useState<Court | null>(null);
 	const [loading, setLoading] = useState<boolean>(true);
 
-	const formatReservations = (reservationsData: Reservation[]): Array<TEvent> =>
+	const reservationsToEvents = (reservationsData: Reservation[]): TEvent[] =>
 		reservationsData.map(reservation => ({
 			start: moment(reservation.startTime).toDate(),
 			end: moment(reservation.endTime).toDate(),
@@ -49,7 +50,7 @@ export default function AdminPage({ params }: Props) {
 				const courtData = await getCourt(params.id);
 				const reservationsData = await getAllReservationsByCourtId(params.id);
 				setCourt(courtData);
-				setReservations(formatReservations(reservationsData));
+				setReservations(reservationsToEvents(reservationsData));
 				setLoading(false);
 			} catch (error: unknown) {
 				if (hasErrorMessage(error)) {
@@ -74,6 +75,33 @@ export default function AdminPage({ params }: Props) {
 				theme: 'colored',
 			});
 			return docRef;
+		} catch (error: unknown) {
+			if (hasErrorMessage(error)) {
+				toast.error(error.message, { theme: 'colored' });
+			}
+
+			throw error;
+		}
+	};
+
+	const handleAddRegularReservation = async (
+		data: ReservationForm,
+		ocurrences: number
+	): Promise<TEvent[]> => {
+		try {
+			const newReservations = await createRegularReservation(
+				{
+					...data,
+					startTime: new Date(data.startTime),
+					endTime: new Date(data.endTime),
+					court: getCourtRef(params.id),
+				},
+				ocurrences
+			);
+			toast.success(`Reserva Múltiple Creada! (${ocurrences})`, {
+				theme: 'colored',
+			});
+			return reservationsToEvents(newReservations);
 		} catch (error: unknown) {
 			if (hasErrorMessage(error)) {
 				toast.error(error.message, { theme: 'colored' });
@@ -161,6 +189,7 @@ export default function AdminPage({ params }: Props) {
 					<Calendar
 						events={reservations}
 						handleAddEvent={handleAddReservation}
+						handleAddRegularEvent={handleAddRegularReservation}
 						handleDeleteEvent={handleDeleteReservation}
 						handleUpdateEvent={handleUpdateReservation}
 						minHour={minHour}

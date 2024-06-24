@@ -9,6 +9,7 @@ import {
 	updateDoc,
 	query,
 	where,
+	DocumentReference,
 } from 'firebase/firestore';
 import moment from 'moment';
 import firebaseApp from '../config';
@@ -57,7 +58,27 @@ export async function getReservation(id: string): Promise<Reservation> {
 		status: data.status,
 	};
 }
+async function getReservationsByDocRefs(docRefs: DocumentReference[]) {
+	const reservationPromises = docRefs.map(docRef => getDoc(docRef));
+	const reservationSnapshots = await Promise.all(reservationPromises);
 
+	return reservationSnapshots.map(snapshot => {
+		const data = { ...snapshot.data() };
+		return {
+			id: snapshot.id,
+			court: data.court,
+			owner: data.owner,
+			type: data.type,
+			startTime: data.startTime.toDate(),
+			endTime: getEndTimeFromStartTimeAndDuration(
+				data.startTime.toDate(),
+				data.duration
+			),
+			price: data.price,
+			status: data.status,
+		};
+	});
+}
 export async function getAllReservations(): Promise<Array<Reservation>> {
 	const db = getFirestore(firebaseApp);
 	const colRef = collection(
@@ -128,6 +149,7 @@ export async function createReservation(
 		process.env.NEXT_PUBLIC_RESERVATIONS_COLLECTION ??
 			'NEXT_PUBLIC_RESERVATIONS_COLLECTION'
 	);
+
 	const reservation = {
 		court: reservationData.court,
 		owner: reservationData.owner,
@@ -143,6 +165,46 @@ export async function createReservation(
 	const docRef = await addDoc(colRef, reservation);
 
 	return docRef.id;
+}
+
+export async function createRegularReservation(
+	reservationData: ReservationDraft,
+	ocurrences: number
+): Promise<Reservation[]> {
+	const db = getFirestore(firebaseApp);
+	const colRef = collection(
+		db,
+		process.env.NEXT_PUBLIC_RESERVATIONS_COLLECTION ??
+			'NEXT_PUBLIC_RESERVATIONS_COLLECTION'
+	);
+	const duration = getDurationFromStartTimeAndEndTimeInMinutes(
+		reservationData.startTime,
+		reservationData.endTime
+	);
+
+	const initialReservation = {
+		court: reservationData.court,
+		owner: reservationData.owner,
+		type: reservationData.type,
+		startTime: reservationData.startTime,
+		duration,
+		price: reservationData.price,
+		status: reservationData.status,
+	};
+
+	const docRefs: DocumentReference[] = [];
+	for (let i = 0; i < ocurrences; i += 1) {
+		const newStartTime = new Date(initialReservation.startTime);
+		newStartTime.setDate(newStartTime.getDate() + i * 7);
+		// eslint-disable-next-line no-await-in-loop
+		const docRef = await addDoc(colRef, {
+			...initialReservation,
+			startTime: newStartTime,
+		});
+		docRefs.push(docRef);
+	}
+
+	return getReservationsByDocRefs(docRefs);
 }
 
 export async function deleteReservation(id: string): Promise<boolean> {
