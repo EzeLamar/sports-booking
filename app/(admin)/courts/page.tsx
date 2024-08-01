@@ -33,9 +33,15 @@ export default function CourtsView() {
 		<Loading />
 	) : (
 		<div className='d-flex gap-3 flex-wrap flex-sm-row flex-column align-items-center justify-content-around'>
-			{courts.map(court => (
-				<CourtCard key={court.id} name={court.name} id={court.id} />
-			))}
+			{!courts.length ? (
+				<h1 className='tw-pt-3 tw-text-center tw-text-2xl'>
+					No se encontraron canchas
+				</h1>
+			) : (
+				courts.map(court => (
+					<CourtCard key={court.id} name={court.name} id={court.id} />
+				))
+			)}
 		</div>
 	);
 }
