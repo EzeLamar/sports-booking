@@ -110,6 +110,7 @@ export const PRICE_VALIDATOR: ValidationType = {
 			value: true,
 			message: 'Precio requerido',
 		},
+		valueAsNumber: true,
 	},
 };
 
@@ -120,6 +121,7 @@ export const NUMBER_VALIDATOR: ValidationType = {
 			value: true,
 			message: 'Número requerido',
 		},
+		valueAsNumber: true,
 	},
 };
 
