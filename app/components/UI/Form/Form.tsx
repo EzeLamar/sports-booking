@@ -1,7 +1,13 @@
 'use client';
 
-import { FieldValues, FormProvider, useForm } from 'react-hook-form';
-import './Form.css';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { z, ZodType } from 'zod';
+
+import { Button } from '@/components/ui/button';
+import { Form as FormUI } from '@/components/ui/form';
+import { Pencil, Loader2 } from 'lucide-react';
+import { useState } from 'react';
 
 const LABELS = {
 	SUBMIT: 'Guardar',
@@ -10,7 +16,8 @@ const LABELS = {
 
 type Props = {
 	children: React.ReactNode;
-	initialValues: FieldValues;
+	formSchema: ZodType;
+	initialValues: object;
 	/* eslint-disable @typescript-eslint/no-explicit-any */
 	handleSubmit: (data: any) => Promise<boolean>;
 	title?: string | null;
@@ -23,6 +30,7 @@ type Props = {
 
 export default function Form({
 	children,
+	formSchema,
 	initialValues,
 	handleSubmit,
 	title = null,
@@ -32,66 +40,62 @@ export default function Form({
 	handleCancel = () => {},
 	setDisabled = () => {},
 }: Props) {
-	const methods = useForm({
-		mode: 'onChange',
-		values: initialValues,
+	const [submitting, setSubmitting] = useState(false);
+	const form = useForm<z.infer<typeof formSchema>>({
+		resolver: zodResolver(formSchema),
+		defaultValues: initialValues,
+		disabled,
 	});
-	const { isSubmitting } = methods.formState;
-
 	const onCancel = () => {
-		methods.reset();
+		form.reset();
 		setDisabled(true);
 		handleCancel();
 	};
 
-	function onSubmit(data: FieldValues) {
-		return handleSubmit(data)
+	const onSubmit = (values: z.infer<typeof formSchema>) => {
+		setSubmitting(true);
+		handleSubmit(values)
 			.then(() => setDisabled(true))
-			.catch(() => onCancel());
-	}
+			.catch(() => onCancel())
+			.finally(() => setSubmitting(false));
+	};
 
 	return (
-		<FormProvider {...methods}>
-			<form onSubmit={methods.handleSubmit(onSubmit)} noValidate>
-				<legend>
+		<FormUI {...form}>
+			<form
+				onSubmit={form.handleSubmit(onSubmit)}
+				className='sm:w-2/3 space-y-6'
+				noValidate
+			>
+				<legend className='flex gap-3 justify-between text-xl'>
 					{title}
-					{disabled && (
-						<button
-							className='btn btn-outline-primary bi bi-pencil-fill'
+					{form.formState.disabled && (
+						<Button
 							type='button'
+							variant='outline'
 							onClick={() => setDisabled(false)}
-						/>
+						>
+							<Pencil className='h-4 w-4' />
+						</Button>
 					)}
 				</legend>
-				<fieldset disabled={disabled || isSubmitting}>
-					{children}
-					{!disabled && (
-						<div className='d-flex flex-start'>
-							<button
-								type='submit'
-								disabled={isSubmitting}
-								className='btn btn-primary form__button'
-								value={submitLabel}
-							>
-								{isSubmitting && (
-									<span className='spinner-border spinner-border-sm me-1' />
-								)}
-								{submitLabel}
-							</button>
-							{showCancelButton && (
-								<button
-									disabled={isSubmitting}
-									type='button'
-									className='btn btn-secondary form__button'
-									onClick={onCancel}
-								>
-									{LABELS.CANCEL}
-								</button>
-							)}
-						</div>
-					)}
-				</fieldset>
+				{/* <ScrollArea className='h-100 w-full'> */}
+				{children}
+				{/* </ScrollArea> */}
+				{!form.formState.disabled && (
+					<div className='flex justify-end gap-3 pt-3'>
+						{showCancelButton && (
+							<Button type='button' variant='secondary' onClick={onCancel}>
+								{LABELS.CANCEL}
+							</Button>
+						)}
+						<Button disabled={submitting} type='submit'>
+							{submitting && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
+							{submitLabel}
+						</Button>
+					</div>
+				)}
 			</form>
-		</FormProvider>
+		</FormUI>
 	);
 }

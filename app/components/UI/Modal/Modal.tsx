@@ -1,5 +1,14 @@
-import Button from 'react-bootstrap/Button';
-import ReactModal from 'react-bootstrap/Modal';
+'use client';
+
+import { Button } from '@/components/ui/button';
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+} from '@/components/ui/dialog';
 
 type Props = {
 	show: boolean;
@@ -7,6 +16,7 @@ type Props = {
 	onSubmit?: () => void;
 	onClose: () => void;
 	children: React.ReactNode;
+	description?: string | null;
 	showFooter?: boolean;
 };
 
@@ -16,6 +26,7 @@ export default function Modal({
 	children,
 	onSubmit = () => {},
 	onClose,
+	description = null,
 	showFooter = true,
 }: Props) {
 	const handleClose = () => {
@@ -27,21 +38,22 @@ export default function Modal({
 	};
 
 	return (
-		<ReactModal show={show} onHide={handleClose}>
-			<ReactModal.Header closeButton>
-				<ReactModal.Title>{title}</ReactModal.Title>
-			</ReactModal.Header>
-			<ReactModal.Body>{children}</ReactModal.Body>
-			{showFooter && (
-				<ReactModal.Footer>
-					<Button variant='secondary' onClick={handleClose}>
-						Close
-					</Button>
-					<Button variant='primary' onClick={handleSubmit}>
-						Save Changes
-					</Button>
-				</ReactModal.Footer>
-			)}
-		</ReactModal>
+		<Dialog open={show} onOpenChange={handleClose}>
+			<DialogContent>
+				<DialogHeader>
+					<DialogTitle>{title}</DialogTitle>
+					{description && <DialogDescription>{description}</DialogDescription>}
+				</DialogHeader>
+				{children}
+				{showFooter && (
+					<DialogFooter>
+						<Button variant='secondary' onClick={handleClose}>
+							Close
+						</Button>
+						<Button onClick={handleSubmit}>Save Changes</Button>
+					</DialogFooter>
+				)}
+			</DialogContent>
+		</Dialog>
 	);
 }

@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import React from 'react';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 
 type Props = {
 	name: string;
@@ -7,19 +9,19 @@ type Props = {
 };
 function CourtCard({ name, id }: Props) {
 	return (
-		<div className='card bg-light' style={{ width: '18rem' }}>
-			<div className='card-body'>
-				<h5 className='card-title'>{name}</h5>
-			</div>
-			<div className='card-body d-flex flex-row justify-content-between m-2'>
-				<Link className='btn btn-primary' href={`/reservations/${id}`}>
-					Reservas
-				</Link>
-				<Link className='btn btn-outline-primary' href={`/courts/${id}`}>
-					Ajustes
-				</Link>
-			</div>
-		</div>
+		<Card className='m-3 max-w-sm'>
+			<CardHeader>
+				<CardTitle>{name}</CardTitle>
+			</CardHeader>
+			<CardContent className='flex gap-2 justify-between'>
+				<Button asChild>
+					<Link href={`/reservations/${id}`}>Reservas</Link>
+				</Button>
+				<Button variant='outline' asChild>
+					<Link href={`/courts/${id}`}>Ajustes</Link>
+				</Button>
+			</CardContent>
+		</Card>
 	);
 }
 

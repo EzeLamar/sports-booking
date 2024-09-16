@@ -8,7 +8,7 @@ import {
 	getDocs,
 } from 'firebase/firestore';
 import { Court } from '@/app/components/Courts/CourtSettings/CourtSettings';
-import firebaseApp from '../config';
+import firebaseApp from '@/app/firebase/config';
 
 export function getCourtRef(courtId: string): DocumentReference {
 	const db = getFirestore(firebaseApp);

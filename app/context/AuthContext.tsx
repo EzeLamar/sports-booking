@@ -8,9 +8,9 @@ import {
 	ReactNode,
 } from 'react';
 import { onAuthStateChanged, getAuth, User } from 'firebase/auth';
-import firebaseApp from '../firebase/config';
-import Loading from '../components/UI/Loading/Loading';
-import NavbarPlaceholder from '../components/UI/Navbar/NavbarPlaceholder';
+import firebaseApp from '@/app/firebase/config';
+import Loading from '@/app/components/UI/Loading/Loading';
+import NavbarPlaceholder from '@/app/components/UI/Navbar/NavbarPlaceholder';
 
 const auth = getAuth(firebaseApp);
 

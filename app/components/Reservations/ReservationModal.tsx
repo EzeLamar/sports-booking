@@ -1,12 +1,13 @@
-import React from 'react';
-import Modal from '../UI/Modal/Modal';
 import ReservationForm, {
 	InitialReservation,
 	Reservation,
-} from './ReservationForm';
+} from '@/app/components/Reservations/ReservationForm';
+import Drawer from '@/app/components/UI/Modal/Drawer';
+import React from 'react';
 
 const LABELS = {
-	MODAL_TITLE: 'Reserva:',
+	SHOW_RESERVATION: 'Reserva',
+	NEW_RESERVATION: 'Nueva Reserva',
 };
 
 type Props = {
@@ -32,12 +33,43 @@ export default function ReservationModal({
 	minDate = null,
 	maxDate = null,
 }: Props) {
+	const getTime = (date: Date | null): string | null => {
+		if (!date) {
+			return null;
+		}
+
+		return `${date.getHours().toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false })}:${date.getMinutes().toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false })}`;
+	};
+
+	const rangeTime = `${reservation.startTime?.toLocaleDateString()} ${getTime(reservation.startTime)} - ${getTime(reservation.endTime)} hs`;
+
+	const typeColors = {
+		lesson: 'bg-blue-300 dark:bg-blue-900',
+		tournament: 'bg-orange-300 dark:bg-yellow-800',
+		match: 'bg-violet-300 dark:bg-violet-800',
+	};
+
+	const typeColorSelected = (type: string) => {
+		if (type === 'lesson') {
+			return typeColors.lesson;
+		}
+		if (type === 'match') {
+			return typeColors.match;
+		}
+		if (type === 'tournament') {
+			return typeColors.tournament;
+		}
+
+		return '';
+	};
+
 	return (
-		<Modal
+		<Drawer
 			show={show}
-			title={LABELS.MODAL_TITLE}
+			title={!reservation.id ? LABELS.NEW_RESERVATION : LABELS.SHOW_RESERVATION}
 			onClose={() => handleClose()}
-			showFooter={false}
+			description={!reservation.id ? rangeTime : null}
+			className={typeColorSelected(reservation.type ?? '')}
 		>
 			<ReservationForm
 				reservation={reservation}
@@ -49,6 +81,6 @@ export default function ReservationModal({
 				maxDate={maxDate}
 				showTitle={false}
 			/>
-		</Modal>
+		</Drawer>
 	);
 }

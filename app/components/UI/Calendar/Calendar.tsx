@@ -12,12 +12,16 @@ import {
 import { isToday } from 'date-fns';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import './Calendar.css';
-import { EventProp, SelectEventSlotProp, TEvent } from './model';
 import {
 	InitialReservation,
 	Reservation,
-} from '../../Reservations/ReservationForm';
-import ReservationModal from '../../Reservations/ReservationModal';
+} from '@/app/components/Reservations/ReservationForm';
+import ReservationModal from '@/app/components/Reservations/ReservationModal';
+import {
+	EventProp,
+	SelectEventSlotProp,
+	TEvent,
+} from '@/app/components/UI/Calendar/model';
 
 const AGENDA_RANGE = 7;
 const MESSAGES_LABELS = {
@@ -41,14 +45,13 @@ function Event({ event }: EventProp) {
 }
 
 function EventDay({ event }: EventProp) {
-	const { title, data, desc } = event;
-	const { type, owner } = data;
+	const { data } = event;
+	const { owner, price } = data;
 
 	return (
 		<span>
-			<p>{`${owner}: ${title}`}</p>
-			{desc && `:  ${desc}`}
-			<p>{type}</p>
+			<p>{`${owner}`}</p>
+			<p>{`$${price}`}</p>
 		</span>
 	);
 }
@@ -61,10 +64,10 @@ function EventMonth({ event }: EventProp) {
 }
 
 function EventAgenda({ event }: EventProp) {
-	const { title, data } = event;
+	const { data } = event;
 	const { owner } = data;
 
-	return <span style={{ color: 'white' }}>{`${owner}: ${title}`}</span>;
+	return <span style={{ color: 'white' }}>{`${owner}`}</span>;
 }
 
 const customDayPropGetter = (date: Date) => {

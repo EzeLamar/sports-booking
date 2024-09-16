@@ -12,9 +12,12 @@ import {
 	DocumentReference,
 } from 'firebase/firestore';
 import moment from 'moment';
-import firebaseApp from '../config';
-import { getCourtRef } from '../courts/courts';
-import { Reservation, ReservationDraft } from './model';
+import firebaseApp from '@/app/firebase/config';
+import { getCourtRef } from '@/app/firebase/courts/courts';
+import {
+	Reservation,
+	ReservationDraft,
+} from '@/app/firebase/reservations/model';
 
 function getEndTimeFromStartTimeAndDuration(
 	startTime: Date,

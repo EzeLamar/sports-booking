@@ -3,11 +3,11 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
+import { getAllCourts } from '@/app/firebase/courts/courts';
+import hasErrorMessage from '@/app/utils/Error/ErrorHelper';
+import Loading from '@/app/components/UI/Loading/Loading';
 import CourtCard from '@/app/components/Courts/CourtCard';
-import Loading from '../../components/UI/Loading/Loading';
-import hasErrorMessage from '../../utils/Error/ErrorHelper';
-import { Court } from '../../components/Courts/CourtSettings/CourtSettings';
-import { getAllCourts } from '../../firebase/courts/courts';
+import { Court } from '@/app/components/Courts/CourtSettings/CourtSettings';
 
 export default function CourtsView() {
 	const router = useRouter();

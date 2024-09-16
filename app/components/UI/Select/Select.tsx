@@ -1,45 +1,68 @@
-import { RegisterOptions, useFormContext } from 'react-hook-form';
-import { findInputError } from '../../../utils/Form/formHelper';
+'use client';
 
-export type SelectValues = {
-	key: string;
-	label: string;
-};
+import {
+	FormControl,
+	FormDescription,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
+} from '@/components/ui/form';
+import {
+	Select as SelectUI,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from '@/components/ui/select';
+import { useFormContext } from 'react-hook-form';
 
-type Props = {
-	label: string;
-	id: string;
+export type Props = {
 	name: string;
-	values: SelectValues[];
-	validation: RegisterOptions;
+	label: string;
+	options: { value: string; label: string }[];
+	description?: string;
 };
 
-export function SelectError({ message }: { message: string }) {
-	return <p className='input__error'>{message}</p>;
-}
-
-export default function Select({ label, id, validation, name, values }: Props) {
-	const {
-		register,
-		formState: { errors },
-	} = useFormContext();
-	const inputError = findInputError(errors, name);
+export default function Select({ name, label, options, description }: Props) {
+	const { control } = useFormContext();
 
 	return (
-		<div className='mb-3'>
-			<label htmlFor={id} className='form-label'>
-				{label}
-			</label>
-			<div className='input__container'>
-				<select className='form-select' {...register(name, validation)}>
-					{values.map(value => (
-						<option key={value.key} value={value.key}>
-							{value.label}
-						</option>
-					))}
-				</select>
-			</div>
-			{inputError && <SelectError message={inputError} />}
-		</div>
+		<FormField
+			control={control}
+			name={name}
+			render={({ field }) => (
+				<FormItem>
+					<FormLabel>{label}</FormLabel>
+					<FormControl>
+						<SelectUI
+							onValueChange={field.onChange}
+							defaultValue={field.value}
+							{...field}
+						>
+							<FormControl>
+								<SelectTrigger>
+									<SelectValue />
+								</SelectTrigger>
+							</FormControl>
+							<SelectContent
+								ref={ref =>
+									// temporary workaround from https://github.com/shadcn-ui/ui/issues/1220
+									ref?.addEventListener('touchend', e => e.preventDefault())
+								}
+							>
+								{options.map(option => (
+									<SelectItem key={option.value} value={option.value}>
+										{option.label}
+									</SelectItem>
+								))}
+							</SelectContent>
+						</SelectUI>
+					</FormControl>
+					{description && <FormDescription>{description}</FormDescription>}
+					<FormMessage />
+				</FormItem>
+			)}
+		/>
 	);
 }

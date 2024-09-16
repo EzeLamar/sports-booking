@@ -3,16 +3,40 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-
 import { toast } from 'react-toastify';
-import { usePathname } from 'next/navigation';
-import hasErrorMessage from '../../../utils/Error/ErrorHelper';
-import { useAuthContext } from '../../../context/AuthContext';
-import logout from '../../../firebase/auth/signout';
+import { Menu } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuLabel,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import {
+	Sheet,
+	SheetClose,
+	SheetContent,
+	SheetHeader,
+	SheetTitle,
+	SheetTrigger,
+} from '@/components/ui/sheet';
+import {
+	NavigationMenu,
+	NavigationMenuItem,
+	NavigationMenuLink,
+	NavigationMenuList,
+	navigationMenuTriggerStyle,
+} from '@/components/ui/navigation-menu';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import logout from '@/app/firebase/auth/signout';
+import { useAuthContext } from '@/app/context/AuthContext';
+import hasErrorMessage from '@/app/utils/Error/ErrorHelper';
+import { ModeToggle } from '@/app/components/ModeToggle';
 
 export default function NavBar() {
 	const user = useAuthContext();
-	const pathName = usePathname();
 
 	const handleLogout = async () => {
 		try {
@@ -25,66 +49,122 @@ export default function NavBar() {
 	};
 
 	return (
-		<nav className='navbar navbar-expand-lg bg-body-tertiary'>
-			<div className='container-fluid'>
-				<Link className='navbar-brand' href='/'>
-					<Image
-						className='d-inline-block align-top'
-						src='\app-logo.svg'
-						alt='Logo'
-						width={30}
-						height={30}
-					/>
-					Sports Booking
-				</Link>
-				<button
-					className='navbar-toggler'
-					type='button'
-					data-bs-toggle='collapse'
-					data-bs-target='#navbarSupportedContent'
-					aria-controls='navbarSupportedContent'
-					aria-expanded='false'
-					aria-label='Toggle navigation'
-				>
-					<span className='navbar-toggler-icon' />
-				</button>
-				<div className='collapse navbar-collapse' id='navbarSupportedContent'>
-					<ul className='navbar-nav me-auto mb-2 mb-lg-0'>
+		<header className='sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6'>
+			<nav className='hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6'>
+				<NavigationMenu>
+					<NavigationMenuList>
+						<Link href='/' legacyBehavior passHref>
+							<NavigationMenuLink className={navigationMenuTriggerStyle()}>
+								<Image
+									className='d-inline-block align-top'
+									src='\app-logo.svg'
+									alt='Logo'
+									width={30}
+									height={30}
+								/>
+								<span className='ml-1 text-xl'>Sport Booking</span>
+							</NavigationMenuLink>
+						</Link>
 						{user ? (
-							<li className='nav-item'>
-								<Link
-									className={`nav-link ${pathName === '/courts' ? 'active' : ''}`}
-									href='/courts'
-								>
-									Courts
+							<NavigationMenuItem>
+								<Link href='/courts' legacyBehavior passHref>
+									<NavigationMenuLink className={navigationMenuTriggerStyle()}>
+										Canchas
+									</NavigationMenuLink>
 								</Link>
-							</li>
+							</NavigationMenuItem>
 						) : (
-							<li className='nav-item'>
+							<NavigationMenuItem>
+								<Link href='/' legacyBehavior passHref>
+									<NavigationMenuLink className={navigationMenuTriggerStyle()}>
+										Home
+									</NavigationMenuLink>
+								</Link>
+							</NavigationMenuItem>
+						)}
+					</NavigationMenuList>
+				</NavigationMenu>
+			</nav>
+			<Sheet>
+				<SheetTrigger asChild>
+					<Button variant='outline' size='icon' className='shrink-0 md:hidden'>
+						<Menu className='h-5 w-5' />
+						<span className='sr-only'>Toggle navigation menu</span>
+					</Button>
+				</SheetTrigger>
+				<SheetContent className='w-[300px] sm:w-[240px]' side='left'>
+					<nav className='grid gap-6 text-lg font-medium'>
+						<SheetHeader>
+							<SheetTitle>
+								<div className='flex items-center gap-2'>
+									<Image
+										className='d-inline-block align-top'
+										src='\app-logo.svg'
+										alt='Logo'
+										width={30}
+										height={30}
+									/>
+									<span>Sport Booking</span>
+								</div>
+							</SheetTitle>
+						</SheetHeader>
+						{!user && (
+							<SheetClose asChild>
 								<Link
-									className={`nav-link ${pathName === '/' ? 'active' : ''}`}
-									aria-current='page'
 									href='/'
+									className='flex items-center gap-2 text-lg font-semibold'
 								>
 									Home
 								</Link>
-							</li>
+							</SheetClose>
 						)}
-					</ul>
-					{user && (
-						<>
-							<span className='navbar-text'>{user.email}</span>
-							<button
-								className='btn btn-outline-danger ms-1 my-2 my-sm-0'
-								type='button'
-								onClick={handleLogout}
-							>
-								Cerrar Sesión
-							</button>
-						</>
-					)}
+						<SheetClose asChild>
+							{user ? (
+								<Link
+									href='/courts'
+									className='text-muted-foreground hover:text-foreground'
+								>
+									Canchas
+								</Link>
+							) : (
+								<Link
+									href='/signin'
+									className='text-muted-foreground hover:text-foreground'
+								>
+									Iniciar Sesión
+								</Link>
+							)}
+						</SheetClose>
+					</nav>
+				</SheetContent>
+			</Sheet>
+			<div className='flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4'>
+				<div className='ml-auto flex-initial'>
+					<ModeToggle />
 				</div>
+				{user && (
+					<DropdownMenu>
+						<DropdownMenuTrigger asChild>
+							<Button variant='secondary' size='icon' className='rounded-full'>
+								<Avatar>
+									<AvatarImage src={user?.photoURL ?? undefined} />
+									<AvatarFallback>...</AvatarFallback>
+								</Avatar>
+								<span className='sr-only'>Toggle user menu</span>
+							</Button>
+						</DropdownMenuTrigger>
+						<DropdownMenuContent align='end'>
+							<DropdownMenuLabel>{user.email}</DropdownMenuLabel>
+							<DropdownMenuSeparator />
+							<DropdownMenuItem>
+								<Button variant='destructive' onClick={handleLogout}>
+									Cerrar Sesión
+								</Button>
+							</DropdownMenuItem>
+						</DropdownMenuContent>
+					</DropdownMenu>
+				)}
 			</div>
-		</nav>
+		</header>
 	);
 }

@@ -3,8 +3,16 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { useAuthContext } from './context/AuthContext';
-import Loading from './components/UI/Loading/Loading';
+import {
+	Card,
+	CardHeader,
+	CardTitle,
+	CardDescription,
+	CardContent,
+} from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { useAuthContext } from '@/app/context/AuthContext';
+import Loading from '@/app/components/UI/Loading/Loading';
 
 export default function Home() {
 	const user = useAuthContext();
@@ -20,23 +28,23 @@ export default function Home() {
 	}, [user, router]);
 
 	return (
-		<main className='bg-light'>
+		<main className='flex justify-center'>
 			{loading ? (
 				<Loading />
 			) : (
-				<div className='d-flex flex-column justify-content-center align-items-center gap-4 p-5 '>
-					<h2 className='text-center'>Bienvenido!</h2>
-					<p className='text-center'>
-						Inicie sesión para acceder a la información de sus canchas...
-					</p>
-					<Link
-						className='d-flex justify-content-center w-50 btn btn-primary p'
-						href='/signin'
-						style={{ maxWidth: '200px' }}
-					>
-						Ingresar
-					</Link>
-				</div>
+				<Card className='m-3 max-w-sm'>
+					<CardHeader>
+						<CardTitle>Bienvenido!</CardTitle>
+						<CardDescription>
+							Inicie sesión para acceder a la información de sus canchas
+						</CardDescription>
+					</CardHeader>
+					<CardContent>
+						<Button className='w-full' asChild>
+							<Link href='/signin'>Ingresar</Link>
+						</Button>
+					</CardContent>
+				</Card>
 			)}
 		</main>
 	);

@@ -1,58 +1,61 @@
-import { RegisterOptions, useFormContext } from 'react-hook-form';
-import { findInputError } from '../../../utils/Form/formHelper';
-import './Input.css';
+'use client';
 
-type Props = {
-	label: string;
-	type: string;
-	id: string;
-	placeholder: string;
+import {
+	FormControl,
+	FormDescription,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
+} from '@/components/ui/form';
+import { Input as InputUI } from '@/components/ui/input';
+import { useFormContext } from 'react-hook-form';
+
+export type Props = {
 	name: string;
-	validation: RegisterOptions;
+	type: string;
+	placeholder: string;
+	label: string;
+	description?: string;
 	showCurrency?: boolean;
 	min?: string | undefined;
 	max?: string | undefined;
 };
 
-export function InputError({ message }: { message: string }) {
-	return <p className='input__error'>{message}</p>;
-}
-
 export default function Input({
-	label,
-	type,
-	id,
-	placeholder,
-	validation,
 	name,
-	showCurrency = false,
-	min = undefined,
-	max = undefined,
+	type,
+	placeholder,
+	label,
+	description,
+	showCurrency,
+	min,
+	max,
 }: Props) {
-	const {
-		register,
-		formState: { errors },
-	} = useFormContext();
-	const inputError = findInputError(errors, name);
+	const { control } = useFormContext();
 
 	return (
-		<div className='mb-3'>
-			<label htmlFor={id} className='form-label'>
-				{label}
-			</label>
-			<div className='input-group input__container'>
-				{showCurrency && <span className='input-group-text'>$</span>}
-				<input
-					id={id}
-					type={type}
-					className='form-control'
-					placeholder={placeholder}
-					min={min}
-					max={max}
-					{...register(name, validation)}
-				/>
-			</div>
-			{inputError && <InputError message={inputError} />}
-		</div>
+		<FormField
+			control={control}
+			name={name}
+			render={({ field }) => (
+				<FormItem>
+					<FormLabel>{label}</FormLabel>
+					{showCurrency && <span className='input-group-text'>$</span>}
+					<FormControl>
+						<InputUI
+							onPointerDown={e => e.stopPropagation()}
+							type={type}
+							placeholder={placeholder}
+							{...field}
+							min={min}
+							max={max}
+						/>
+					</FormControl>
+					{description && <FormDescription>{description}</FormDescription>}
+					<FormMessage />
+				</FormItem>
+			)}
+		/>
 	);
 }

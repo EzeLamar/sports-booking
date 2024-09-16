@@ -1,15 +1,10 @@
 /* eslint-disable no-console */
 import type { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
-import {
-	TEXT_VALIDATOR,
-	NUMBER_VALIDATOR,
-	EMAIL_VALIDATOR,
-	CHECKBOX_VALIDATOR,
-} from '../../../utils/Form/inputValidators';
+import { z } from 'zod';
 import Form from '../Form/Form';
 import Input from './Input';
-import MultipleInputSelector from '../MultipleInputSelector/MultipleInputSelector';
+import ButtonGroup from './ButtonGroup';
 
 const meta = {
 	title: 'UI/Form/Input',
@@ -23,6 +18,27 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
+const FormSchema = z.object({
+	firstName: z.string().min(4, { message: 'Al menos 4 caracteres' }),
+	lastName: z.string().min(4, { message: 'Al menos 4 caracteres' }),
+	age: z.coerce.number({
+		required_error: 'Edad requerida',
+	}),
+	email: z
+		.string({
+			required_error: 'Email requerido',
+		})
+		.email({ message: 'Email no es valido' }),
+	days: z.array(z.string()),
+});
+
+const daysOptions = [
+	{ id: 'monday', label: 'Monday' },
+	{ id: 'tuesday', label: 'Tuesday' },
+	{ id: 'wednesday', label: 'Wednesday' },
+	{ id: 'thursday', label: 'Thursday' },
+];
+
 // @ts-expect-error useState ts limitation on storybook
 export const InputsWithValidators: Story = {
 	decorators: [
@@ -30,8 +46,8 @@ export const InputsWithValidators: Story = {
 			const [disabled, setDisabled] = useState<boolean>(true);
 			const initialValues = {
 				firstName: 'Pepe',
-				lastName: null,
-				age: '23',
+				lastName: '',
+				age: 23,
 				email: 'test@mail.com',
 				days: ['tuesday'],
 			};
@@ -46,6 +62,7 @@ export const InputsWithValidators: Story = {
 
 			return (
 				<Form
+					formSchema={FormSchema}
 					title='Form With Inputs'
 					initialValues={initialValues}
 					handleSubmit={handleSubmit}
@@ -56,40 +73,20 @@ export const InputsWithValidators: Story = {
 					setDisabled={setDisabled}
 				>
 					<Input
+						type='text'
 						label='Firstname'
-						id='input-field-firstname'
 						placeholder='...'
 						name='firstName'
-						{...TEXT_VALIDATOR}
 					/>
 					<Input
+						type='text'
 						label='Lastname'
-						id='input-field-lastname'
 						placeholder='...'
 						name='lastName'
-						{...TEXT_VALIDATOR}
 					/>
-					<Input
-						label='Age'
-						id='input-field-age'
-						placeholder=''
-						name='age'
-						{...NUMBER_VALIDATOR}
-					/>
-					<Input
-						label='Email'
-						id='input-field-email'
-						placeholder='...'
-						name='email'
-						{...EMAIL_VALIDATOR}
-					/>
-					<MultipleInputSelector
-						id='input-field-multiple-input-selector'
-						options={['monday', 'tuesday', 'friday']}
-						label='Days'
-						name='days'
-						{...CHECKBOX_VALIDATOR}
-					/>
+					<Input type='number' label='Age' placeholder='Age' name='age' />
+					<Input type='email' label='Email' placeholder='...' name='email' />
+					<ButtonGroup items={daysOptions} label='Days' name='days' />
 				</Form>
 			);
 		},

@@ -2,9 +2,9 @@
 
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Loading from '../../../components/UI/Loading/Loading';
-import { useAuthContext } from '../../../context/AuthContext';
-import CourtSettingsView from './CourtSettingsView';
+import { useAuthContext } from '@/app/context/AuthContext';
+import Loading from '@/app/components/UI/Loading/Loading';
+import CourtSettingsView from '@/app/(admin)/courts/[id]/CourtSettingsView';
 
 export default function CourtView({ params }: { params: { id: string } }) {
 	const user = useAuthContext();

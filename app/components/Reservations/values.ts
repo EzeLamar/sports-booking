@@ -2,8 +2,8 @@ import moment from 'moment';
 import {
 	ReservationStatus,
 	ReservationType,
-} from '../../firebase/reservations/model';
-import { InitialReservation } from './ReservationForm';
+} from '@/app/firebase/reservations/model';
+import { InitialReservation } from '@/app/components/Reservations/ReservationForm';
 
 const now = new Date();
 export const RESERVATION_START_TIME = new Date(

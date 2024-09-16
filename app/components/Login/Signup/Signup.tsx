@@ -1,11 +1,7 @@
-/* eslint-disable jsx-a11y/label-has-associated-control */
-import Form from '../../UI/Form/Form';
-import Input from '../../UI/Input/Input';
-import {
-	EMAIL_VALIDATOR,
-	PASSWORD_VALIDATOR,
-} from '../../../utils/Form/inputValidators';
-import Card from '../../UI/Card/Card';
+import Card from '@/app/components/UI/Card/Card';
+import { z } from 'zod';
+import Input from '@/app/components/UI/Input/Input';
+import Form from '@/app/components/UI/Form/Form';
 
 export type Register = {
 	user: string;
@@ -24,6 +20,19 @@ const LABELS = {
 	SUBMIT: 'Registrar',
 };
 
+const FormSchema = z.object({
+	user: z
+		.string({
+			required_error: 'Dirección de correo requerida',
+		})
+		.email({
+			message: 'Dirección de correo inválida',
+		}),
+	password: z.string().min(6, {
+		message: 'Mínimo 6 carácteres',
+	}),
+});
+
 export default function Signup({ handleSubmit }: Props) {
 	const formValues = {
 		user: null,
@@ -39,20 +48,19 @@ export default function Signup({ handleSubmit }: Props) {
 				handleSubmit={handleSubmit}
 				submitLabel={LABELS.SUBMIT}
 				showCancelButton={false}
+				formSchema={FormSchema}
 			>
 				<Input
-					id='signup-user'
 					label={LABELS.USER}
 					name='user'
+					type='email'
 					placeholder={LABELS.USER_PLACEHOLDER}
-					{...EMAIL_VALIDATOR}
 				/>
 				<Input
-					id='sigup-pwsd'
 					label={LABELS.PASSWORD}
 					name='password'
+					type='password'
 					placeholder={LABELS.PASSWORD}
-					{...PASSWORD_VALIDATOR}
 				/>
 			</Form>
 		</Card>

@@ -1,15 +1,12 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useState } from 'react';
-import Form from '../../UI/Form/Form';
-import Input from '../../UI/Input/Input';
-import {
-	TEXT_VALIDATOR,
-	HOUR_VALIDATOR,
-	PRICE_VALIDATOR,
-	CHECKBOX_VALIDATOR,
-} from '../../../utils/Form/inputValidators';
-import Card from '../../UI/Card/Card';
-import MultipleInputSelector from '../../UI/MultipleInputSelector/MultipleInputSelector';
+import hasErrorMessage from '@/app/utils/Error/ErrorHelper';
+import { toast } from 'react-toastify';
+import { z } from 'zod';
+import Card from '@/app/components/UI/Card/Card';
+import Form from '@/app/components/UI/Form/Form';
+import Input from '@/app/components/UI/Input/Input';
+import ButtonGroup from '@/app/components/UI/Input/ButtonGroup';
 
 export type Court = {
 	id: string;
@@ -17,7 +14,7 @@ export type Court = {
 	name: string;
 	address: string;
 	availableDays: string[];
-	pricePerHour: string;
+	pricePerHour: number;
 	openHour: string;
 	closeHour: string;
 };
@@ -38,15 +35,57 @@ const LABELS = {
 	PLACEHOLDER_HOUR: 'HH:00',
 	PRICE: 'Precio por Hora',
 	WEEKDAYS: [
-		'Lunes',
-		'Martes',
-		'Miércoles',
-		'Jueves',
-		'Viernes',
-		'Sábado',
-		'Domingo',
+		{
+			id: 'monday',
+			label: 'Lunes',
+		},
+		{
+			id: 'tuesday',
+			label: 'Martes',
+		},
+		{
+			id: 'wednesday',
+			label: 'Miércoles',
+		},
+		{
+			id: 'thursday',
+			label: 'Jueves',
+		},
+		{
+			id: 'friday',
+			label: 'Viernes',
+		},
+		{
+			id: 'saturday',
+			label: 'Sábado',
+		},
+		{
+			id: 'sunday',
+			label: 'Domingo',
+		},
 	],
 };
+
+const FormSchema = z.object({
+	name: z.string().min(5, { message: 'Al menos 5 caracteres' }),
+	address: z.string().min(5, { message: 'Al menos 5 caracteres' }),
+	availableDays: z.array(z.string()).refine(value => value.some(item => item), {
+		message: 'Debe seleccionar al menos 1 dia.',
+	}),
+	openHour: z
+		.string({
+			required_error: 'Hora de apertura requerida',
+		})
+		.regex(/^([0-1]?[0-9]|2[0-3]):[0|3][0]$/, { message: 'Formato Inválido' }),
+	closeHour: z
+		.string({
+			required_error: 'Hora de cierre requerida',
+		})
+		.regex(/^([0-1]?[0-9]|2[0-3]):[0|3][0]$/, { message: 'Formato Inválido' }),
+	pricePerHour: z.coerce
+		.number()
+		.min(1, { message: 'Debe seleccionar un precio.' }),
+});
 
 export default function CourtSettings({
 	court = null,
@@ -56,6 +95,26 @@ export default function CourtSettings({
 	const [disabled, setDisabled] = useState<boolean>(!editable);
 	const formValues = { ...court };
 
+	const onSubmit = async (
+		data: z.infer<typeof FormSchema>
+	): Promise<boolean> => {
+		const courtSubmitted: Court = {
+			...data,
+			id: court?.id ?? '',
+			isEnabled: false,
+		};
+
+		try {
+			return await handleSubmit(courtSubmitted);
+		} catch (error: unknown) {
+			if (hasErrorMessage(error)) {
+				toast.error(error.message, { theme: 'colored' });
+			}
+
+			return false;
+		}
+	};
+
 	return (
 		<Card>
 			<Form
@@ -63,49 +122,43 @@ export default function CourtSettings({
 				disabled={disabled}
 				setDisabled={setDisabled}
 				initialValues={formValues}
-				handleSubmit={handleSubmit}
+				handleSubmit={onSubmit}
+				formSchema={FormSchema}
 			>
 				<Input
-					id='court-settings-name'
 					label={LABELS.NAME}
+					type='text'
 					name='name'
 					placeholder={LABELS.NAME}
-					{...TEXT_VALIDATOR}
 				/>
 				<Input
-					id='court-settings-address'
 					label={LABELS.ADDRESS}
+					type='text'
 					name='address'
 					placeholder={LABELS.ADDRESS}
-					{...TEXT_VALIDATOR}
 				/>
-				<MultipleInputSelector
-					id='court-settings-available-days'
-					label={LABELS.OPEN_DAYS}
+				<ButtonGroup
 					name='availableDays'
-					options={LABELS.WEEKDAYS}
-					{...CHECKBOX_VALIDATOR}
+					label={LABELS.OPEN_DAYS}
+					items={LABELS.WEEKDAYS}
 				/>
 				<Input
-					id='court-settings-open-hour'
 					label={LABELS.OPEN_HOUR}
+					type='time'
 					name='openHour'
 					placeholder={LABELS.PLACEHOLDER_HOUR}
-					{...HOUR_VALIDATOR}
 				/>
 				<Input
-					id='court-settings-close-hour'
 					label={LABELS.CLOSE_HOUR}
+					type='time'
 					name='closeHour'
 					placeholder={LABELS.PLACEHOLDER_HOUR}
-					{...HOUR_VALIDATOR}
 				/>
 				<Input
-					id='court-settings-price'
 					label={LABELS.PRICE}
+					type='number'
 					name='pricePerHour'
 					placeholder={LABELS.PRICE}
-					{...PRICE_VALIDATOR}
 				/>
 			</Form>
 		</Card>

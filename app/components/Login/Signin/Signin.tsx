@@ -1,12 +1,8 @@
 import GoogleButton from 'react-google-button';
-import Form from '../../UI/Form/Form';
-import Input from '../../UI/Input/Input';
-import {
-	EMAIL_VALIDATOR,
-	PASSWORD_VALIDATOR,
-} from '../../../utils/Form/inputValidators';
-import Card from '../../UI/Card/Card';
-import './Signin.css';
+import { z } from 'zod';
+import Card from '@/app/components/UI/Card/Card';
+import Form from '@/app/components/UI/Form/Form';
+import Input from '@/app/components/UI/Input/Input';
 
 export type Login = {
 	user: string;
@@ -26,16 +22,29 @@ const LABELS = {
 	SUBMIT: 'Ingresar',
 };
 
+const FormSchema = z.object({
+	user: z
+		.string({
+			required_error: 'Dirección de correo requerida',
+		})
+		.email({
+			message: 'Dirección de correo inválida',
+		}),
+	password: z.string().min(6, {
+		message: 'Mínimo 6 carácteres',
+	}),
+});
+
 export default function Signin({ handleSubmit, handleGoogleLogin }: Props) {
-	const formValues = {
-		user: null,
-		password: null,
+	const initialValues = {
+		user: '',
+		password: '',
 	};
 
 	return (
 		<Card>
 			<legend>{LABELS.TITLE}</legend>
-			<div className='signin__google-button'>
+			<div className='mb-3'>
 				<GoogleButton
 					label='Continuar con Google'
 					onClick={handleGoogleLogin}
@@ -44,24 +53,23 @@ export default function Signin({ handleSubmit, handleGoogleLogin }: Props) {
 			-ó-
 			<Form
 				disabled={false}
-				initialValues={formValues}
+				initialValues={initialValues}
 				handleSubmit={handleSubmit}
 				submitLabel={LABELS.SUBMIT}
 				showCancelButton={false}
+				formSchema={FormSchema}
 			>
 				<Input
-					id='signin-user'
 					label={LABELS.USER}
 					name='user'
 					placeholder={LABELS.USER_PLACEHOLDER}
-					{...EMAIL_VALIDATOR}
+					type='email'
 				/>
 				<Input
-					id='sigin-pwsd'
 					label={LABELS.PASSWORD}
+					type='password'
 					name='password'
 					placeholder={LABELS.PASSWORD}
-					{...PASSWORD_VALIDATOR}
 				/>
 			</Form>
 		</Card>

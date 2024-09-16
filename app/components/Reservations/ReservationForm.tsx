@@ -1,24 +1,20 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useState } from 'react';
-import { FieldValues } from 'react-hook-form';
 import moment from 'moment';
 import { toast } from 'react-toastify';
+import { z } from 'zod';
+import { Button } from '@/components/ui/button';
+import { Trash } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
 import {
 	ReservationStatus,
 	ReservationType,
-} from '../../firebase/reservations/model';
-import hasErrorMessage from '../../utils/Error/ErrorHelper';
-import Form from '../UI/Form/Form';
-import Input from '../UI/Input/Input';
-import {
-	DATETIME_VALIDATOR,
-	NUMBER_VALIDATOR,
-	PRICE_VALIDATOR,
-	STATUS_VALIDATOR,
-	TEXT_VALIDATOR,
-	TYPE_VALIDATOR,
-} from '../../utils/Form/inputValidators';
-import Select from '../UI/Select/Select';
+} from '@/app/firebase/reservations/model';
+import hasErrorMessage from '@/app/utils/Error/ErrorHelper';
+import Input from '@/app/components/UI/Input/Input';
+import Form from '@/app/components/UI/Form/Form';
+import Select from '@/app/components/UI/Select/Select';
 
 const LABELS = {
 	FORM_TITLE: 'Datos de la reserva',
@@ -35,30 +31,30 @@ const LABELS = {
 
 const TYPE_VALUES = [
 	{
-		key: ReservationType.Match,
+		value: ReservationType.Match,
 		label: 'Partido',
 	},
 	{
-		key: ReservationType.Lesson,
+		value: ReservationType.Lesson,
 		label: 'Clase',
 	},
 	{
-		key: ReservationType.Tournament,
+		value: ReservationType.Tournament,
 		label: 'Torneo',
 	},
 ];
 
 const STATUS_VALUES = [
 	{
-		key: ReservationStatus.Booked,
+		value: ReservationStatus.Booked,
 		label: 'Reservado',
 	},
 	{
-		key: ReservationStatus.Paid,
+		value: ReservationStatus.Paid,
 		label: 'Pagado',
 	},
 	{
-		key: ReservationStatus.Canceled,
+		value: ReservationStatus.Canceled,
 		label: 'Cancelado',
 	},
 ];
@@ -99,6 +95,30 @@ type Props = {
 	showTitle?: boolean;
 };
 
+const FormSchema = z
+	.object({
+		id: z.string().nullable(),
+		ocurrences: z.coerce
+			.number()
+			.min(1, { message: 'Debe definir el número de ocurrencias.' }),
+		owner: z.string().min(2, {
+			message: 'El nombre de la reserva debe tener al menos 2 caracteres.',
+		}),
+		type: z.nativeEnum(ReservationType),
+		startTime: z.string().min(1, {
+			message: 'Debe seleccionar una hora de inicio.',
+		}),
+		endTime: z.string().min(1, {
+			message: 'Debe seleccionar una hora de fin.',
+		}),
+		price: z.coerce.number().min(1, { message: 'Debe seleccionar un precio.' }),
+		status: z.nativeEnum(ReservationStatus),
+	})
+	.refine(data => data.startTime < data.endTime, {
+		message: 'La hora de inicio debe ser anterior a la hora de fin.',
+		path: ['endTime'], // path of error
+	});
+
 export default function ReservationForm({
 	reservation,
 	handleSubmit,
@@ -128,7 +148,9 @@ export default function ReservationForm({
 		ocurrences: SINGLE_OCURRENCE,
 	};
 
-	const onSubmit = async (data: FieldValues): Promise<boolean> => {
+	const onSubmit = async (
+		data: z.infer<typeof FormSchema>
+	): Promise<boolean> => {
 		const reservationSubmitted = {
 			id: data.id,
 			owner: data.owner,
@@ -165,42 +187,24 @@ export default function ReservationForm({
 		}
 	};
 
-	const endHourValidation = (endTime: string, formValues: FieldValues) => {
-		if (endTime === formValues.startTime) {
-			return 'Fecha y hora igual a la de inicio';
-		}
-
-		if (endTime < formValues.startTime) {
-			return 'Fecha y hora anterior a la de inicio';
-		}
-
-		return true;
-	};
-
 	return (
 		<>
-			{initialValues.id && (
-				<button
-					className='position-absolute top-0 end-0 mt-3 me-3 p-2 btn btn-danger bi bi-trash-fill'
-					type='button'
+			{initialValues.id && disabled && (
+				<Button
+					className='absolute top-20 right-4'
+					variant='destructive'
 					onClick={() => onDelete(initialValues.id ?? '')}
 				>
-					{LABELS.DELETE}
-				</button>
+					<Trash className='h-4 w-4' />
+				</Button>
 			)}
 			{!initialValues.id && (
-				<div className='form-check form-switch'>
-					<input
-						className='form-check-input'
-						type='checkbox'
-						role='switch'
-						id='switch-regular-booking'
-						checked={isRegularBooking}
-						onChange={() => setIsRegularBooking(!isRegularBooking)}
+				<div className='flex items-center space-x-2'>
+					<Switch
+						id='airplane-mode'
+						onClick={() => setIsRegularBooking(!isRegularBooking)}
 					/>
-					<label className='form-check-label' htmlFor='switch-regular-booking'>
-						{LABELS.REGULAR_BOOKING}
-					</label>
+					<Label htmlFor='airplane-mode'>{LABELS.REGULAR_BOOKING}</Label>
 				</div>
 			)}
 			<Form
@@ -210,68 +214,50 @@ export default function ReservationForm({
 				handleCancel={handleCancel}
 				disabled={disabled}
 				setDisabled={setDisabled}
+				formSchema={FormSchema}
 			>
 				<Input
-					id='reservation-owner'
+					type='text'
 					label={LABELS.OWNER}
 					name='owner'
 					placeholder={LABELS.OWNER}
-					{...TEXT_VALIDATOR}
-				/>
-				<Select
-					id='reservation-type'
-					label={LABELS.TYPE}
-					name='type'
-					values={TYPE_VALUES}
-					{...TYPE_VALIDATOR}
 				/>
 				{isRegularBooking && (
 					<Input
-						id='reservation-ocurrences'
+						type='number'
 						label={LABELS.OCURRENCES}
 						placeholder={LABELS.OCURRENCES}
 						name='ocurrences'
-						{...NUMBER_VALIDATOR}
 					/>
 				)}
+				<Select name='type' label={LABELS.TYPE} options={TYPE_VALUES} />
+				{reservation.id && (
+					<>
+						<Input
+							type='datetime-local'
+							label={LABELS.START_TIME}
+							name='startTime'
+							placeholder={LABELS.START_TIME}
+							min={min}
+							max={max}
+						/>
+						<Input
+							type='datetime-local'
+							label={LABELS.END_TIME}
+							name='endTime'
+							placeholder={LABELS.END_TIME}
+							min={min}
+							max={max}
+						/>
+					</>
+				)}
 				<Input
-					id='reservation-start-time'
-					label={LABELS.START_TIME}
-					name='startTime'
-					placeholder={LABELS.START_TIME}
-					min={min}
-					max={max}
-					{...DATETIME_VALIDATOR}
-				/>
-				<Input
-					id='reservation-end-time'
-					label={LABELS.END_TIME}
-					name='endTime'
-					placeholder={LABELS.END_TIME}
-					min={min}
-					max={max}
-					type={DATETIME_VALIDATOR.type}
-					validation={{
-						...DATETIME_VALIDATOR.validation,
-						validate: {
-							endGreaterThanStart: endHourValidation,
-						},
-					}}
-				/>
-				<Input
-					id='reservation-price'
+					type='number'
 					label={LABELS.PRICE}
 					name='price'
 					placeholder={LABELS.PRICE}
-					{...PRICE_VALIDATOR}
 				/>
-				<Select
-					id='reservation-status'
-					label={LABELS.STATUS}
-					name='status'
-					values={STATUS_VALUES}
-					{...STATUS_VALIDATOR}
-				/>
+				<Select name='status' label={LABELS.STATUS} options={STATUS_VALUES} />
 			</Form>
 		</>
 	);
