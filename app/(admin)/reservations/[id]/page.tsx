@@ -3,7 +3,6 @@
 import moment from 'moment';
 import { Views } from 'react-big-calendar';
 import { useEffect, useState } from 'react';
-import Calendar from '@/app/components/UI/Calendar/Calendar';
 import {
 	createReservation,
 	deleteReservation,
@@ -19,6 +18,7 @@ import Loading from '@/app/components/UI/Loading/Loading';
 import { TEvent } from '@/app/components/UI/Calendar/model';
 import { Reservation as ReservationForm } from '@/app/components/Reservations/ReservationForm';
 import { Reservation } from '@/app/firebase/reservations/model';
+import Calendar from '@/app/components/UI/Calendar/Calendar';
 
 type Props = {
 	params: { id: string };

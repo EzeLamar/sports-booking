@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import hasErrorMessage from '../../../utils/Error/ErrorHelper';
 import CourtSettings, {
 	Court,
-} from '../../../components/Courts/CourtSettings/CourtSettings';
-import { getCourt, editCourt } from '../../../firebase/courts/courts';
-import Loading from '../../../components/UI/Loading/Loading';
+} from '@/app/components/Courts/CourtSettings/CourtSettings';
+import { editCourt, getCourt } from '@/app/firebase/courts/courts';
+import hasErrorMessage from '@/app/utils/Error/ErrorHelper';
+import Loading from '@/app/components/UI/Loading/Loading';
 
 type Props = {
 	courtId: string;

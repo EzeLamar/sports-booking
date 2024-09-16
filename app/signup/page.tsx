@@ -2,9 +2,9 @@
 
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
-import signUp from '../firebase/auth/signup';
-import Signup, { Register } from '../components/Login/Signup/Signup';
-import hasErrorMessage from '../utils/Error/ErrorHelper';
+import signUp from '@/app/firebase/auth/signup';
+import Signup, { Register } from '@/app/components/Login/Signup/Signup';
+import hasErrorMessage from '@/app/utils/Error/ErrorHelper';
 
 export default function SignUpPage() {
 	const router = useRouter();

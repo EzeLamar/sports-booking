@@ -1,9 +1,9 @@
 'use client';
 
+import Loading from '@/app/components/UI/Loading/Loading';
+import { useAuthContext } from '@/app/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import { useAuthContext } from '../context/AuthContext';
-import Loading from '../components/UI/Loading/Loading';
 
 export default function AdminLayout({
 	children,

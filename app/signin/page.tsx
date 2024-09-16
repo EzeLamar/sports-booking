@@ -3,9 +3,9 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
-import { signIn, googlePopUpSignIn } from '../firebase/auth/signin';
-import Signin, { Login } from '../components/Login/Signin/Signin';
-import hasErrorMessage from '../utils/Error/ErrorHelper';
+import { signIn, googlePopUpSignIn } from '@/app/firebase/auth/signin';
+import Signin, { Login } from '@/app/components/Login/Signin/Signin';
+import hasErrorMessage from '@/app/utils/Error/ErrorHelper';
 
 export default function SignInPage() {
 	const router = useRouter();

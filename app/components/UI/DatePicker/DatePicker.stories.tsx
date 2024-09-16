@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
 import { addDays } from 'date-fns';
-import DatePicker from './DatePicker';
+import DatePicker from '@/app/components/UI/DatePicker/DatePicker';
 
 const meta = {
 	title: 'UI/DatePicker',

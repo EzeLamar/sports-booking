@@ -5,7 +5,7 @@ import {
 	GoogleAuthProvider,
 	UserCredential,
 } from 'firebase/auth';
-import firebaseApp from '../config';
+import firebaseApp from '@/app/firebase/config';
 
 const auth = getAuth(firebaseApp);
 

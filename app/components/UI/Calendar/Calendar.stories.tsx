@@ -4,9 +4,9 @@ import { Views } from 'react-big-calendar';
 import {
 	ReservationStatus,
 	ReservationType,
-} from '../../../firebase/reservations/model';
+} from '@/app/firebase/reservations/model';
+import { Reservation } from '@/app/components/Reservations/ReservationForm';
 import Calendar from './Calendar';
-import { Reservation } from '../../Reservations/ReservationForm';
 import { TEvent } from './model';
 
 const meta = {

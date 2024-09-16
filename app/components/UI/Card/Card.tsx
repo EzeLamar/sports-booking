@@ -1,11 +1,15 @@
+'use client';
+
+import { CardContent, Card as CardUI } from '@/components/ui/card';
+
 type Props = {
 	children: React.ReactNode;
 };
 
-export default function Card({ children }: Props) {
+export default function Card2({ children }: Props) {
 	return (
-		<div className='card'>
-			<div className='card-body'>{children}</div>
-		</div>
+		<CardUI>
+			<CardContent className='pt-3'>{children}</CardContent>
+		</CardUI>
 	);
 }
