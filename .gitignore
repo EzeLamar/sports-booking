@@ -42,3 +42,6 @@ next-env.d.ts
 
 # storybook
 storybook-static
+
+# Local Netlify folder
+.netlify
