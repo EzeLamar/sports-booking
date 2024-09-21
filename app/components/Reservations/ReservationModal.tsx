@@ -78,7 +78,7 @@ export default function ReservationModal({
 			}
 			onClose={() => handleClose()}
 			description={!reservation.id ? rangeTime : null}
-			className={typeColorSelected(reservation.type ?? '')}
+			className={`${typeColorSelected(reservation.type ?? '')} ${!reservation.id && 'min-h-[70vh]'}`}
 		>
 			{editable ? (
 				<ReservationForm
