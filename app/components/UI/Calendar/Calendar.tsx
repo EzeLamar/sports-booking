@@ -50,8 +50,7 @@ function EventDay({ event }: EventProp) {
 
 	return (
 		<span>
-			<p>{`${owner}`}</p>
-			<p>{`$${price}`}</p>
+			<p>{`$${price} - ${owner}`}</p>
 		</span>
 	);
 }
@@ -97,7 +96,11 @@ type Props = {
 	maxHour?: Date | null;
 	defaultDate?: Date;
 	views?: View[];
+	currentView?: View;
+	setCurrentView?: (view: View) => void;
 	defaultView?: View;
+	currentDay?: Date;
+	setCurrentDay?: (date: Date) => void;
 };
 
 export default function Calendar({
@@ -111,6 +114,10 @@ export default function Calendar({
 	defaultDate = new Date(),
 	views = [Views.MONTH, Views.WEEK, Views.DAY, Views.AGENDA],
 	defaultView = Views.MONTH,
+	currentView = defaultView,
+	currentDay = defaultDate,
+	setCurrentView = () => {},
+	setCurrentDay = () => {},
 }: Props) {
 	moment.locale('es');
 	const localizer = momentLocalizer(moment);
@@ -162,6 +169,7 @@ export default function Calendar({
 						updatedEvent,
 					]);
 					setShowModal(false);
+					setSelected(null);
 					resolve(true);
 				});
 			});
@@ -204,24 +212,34 @@ export default function Calendar({
 			handleDeleteEvent(id).then(() => {
 				setEvents(myEvents.filter(event => event.data.id !== id));
 				setShowModal(false);
+				setSelected(null);
 				resolve(true);
 			});
 		});
 
-	const onSelectSlot = useCallback(({ start, end }: SelectEventSlotProp) => {
-		const reservation: InitialReservation = {
-			id: null,
-			type: null,
-			owner: '',
-			startTime: start,
-			endTime: end,
-			price: null,
-			status: null,
-		};
-		setSelected(reservation);
-		setEditable(true);
-		setShowModal(true);
-	}, []);
+	const onSelectSlot = useCallback(
+		({ start, end }: SelectEventSlotProp) => {
+			if (currentView === Views.MONTH) {
+				setCurrentView(Views.DAY);
+				setCurrentDay(start);
+				return;
+			}
+
+			const reservation: InitialReservation = {
+				id: null,
+				type: null,
+				owner: '',
+				startTime: start,
+				endTime: end,
+				price: null,
+				status: null,
+			};
+			setSelected(reservation);
+			setEditable(true);
+			setShowModal(true);
+		},
+		[currentView, setCurrentDay, setCurrentView]
+	);
 
 	const onSelectEvent = useCallback((event: TEvent) => {
 		const reservation: InitialReservation = {
@@ -240,13 +258,15 @@ export default function Calendar({
 	}, []);
 
 	return (
-		<div className='calendar__container'>
+		<div className='h-screen p-4 background'>
 			<ReactCalendar
+				view={currentView}
+				toolbar={false}
 				localizer={localizer}
 				events={myEvents}
 				views={views}
-				defaultView={defaultView}
-				defaultDate={defaultDate}
+				defaultView={Views.MONTH}
+				date={currentDay}
 				{...(minHour ? { min: minHour } : {})}
 				{...(maxHour ? { max: maxHour } : {})}
 				components={components}
@@ -257,6 +277,12 @@ export default function Calendar({
 				selectable
 				onSelectEvent={onSelectEvent}
 				onSelectSlot={onSelectSlot}
+				onDrillDown={date => {
+					if (currentView === Views.MONTH) {
+						setCurrentView(Views.DAY);
+						setCurrentDay(date);
+					}
+				}}
 			/>
 			{selected && (
 				<ReservationModal
@@ -267,6 +293,7 @@ export default function Calendar({
 					handleDelete={onDelete}
 					handleCancel={() => setShowModal(false)}
 					editable={editable}
+					setEditable={setEditable}
 					minDate={selected ? selected.startTime : null}
 					maxDate={selected ? selected.startTime : null}
 				/>

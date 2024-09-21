@@ -19,7 +19,9 @@ const court: Court = {
 	name: 'Test Court',
 	address: 'Test Address 1234',
 	availableDays: ['Martes', 'Jueves', 'Domingo'],
-	pricePerHour: 1234.5,
+	matchPerHour: 1234.5,
+	classPerHour: 456.5,
+	tournamentPerHour: 8000.5,
 	openHour: '14:00',
 	closeHour: '16:00',
 };

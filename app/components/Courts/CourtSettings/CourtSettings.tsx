@@ -14,9 +14,11 @@ export type Court = {
 	name: string;
 	address: string;
 	availableDays: string[];
-	pricePerHour: number;
 	openHour: string;
 	closeHour: string;
+	matchPerHour: number;
+	tournamentPerHour: number;
+	classPerHour: number;
 };
 
 type Props = {
@@ -33,7 +35,9 @@ const LABELS = {
 	OPEN_HOUR: 'Hora Inicio',
 	CLOSE_HOUR: 'Hora Cierre',
 	PLACEHOLDER_HOUR: 'HH:00',
-	PRICE: 'Precio por Hora',
+	CLASS_PRICE: 'Clase por Hora',
+	MATCH_PRICE: 'Partido por Hora',
+	TOURNAMENT_PRICE: 'Torneo por Hora',
 	WEEKDAYS: [
 		{
 			id: 'monday',
@@ -82,7 +86,13 @@ const FormSchema = z.object({
 			required_error: 'Hora de cierre requerida',
 		})
 		.regex(/^([0-1]?[0-9]|2[0-3]):[0|3][0]$/, { message: 'Formato Inválido' }),
-	pricePerHour: z.coerce
+	matchPerHour: z.coerce
+		.number()
+		.min(1, { message: 'Debe seleccionar un precio.' }),
+	classPerHour: z.coerce
+		.number()
+		.min(1, { message: 'Debe seleccionar un precio.' }),
+	tournamentPerHour: z.coerce
 		.number()
 		.min(1, { message: 'Debe seleccionar un precio.' }),
 });
@@ -155,10 +165,25 @@ export default function CourtSettings({
 					placeholder={LABELS.PLACEHOLDER_HOUR}
 				/>
 				<Input
-					label={LABELS.PRICE}
+					label={LABELS.MATCH_PRICE}
 					type='number'
-					name='pricePerHour'
-					placeholder={LABELS.PRICE}
+					name='matchPerHour'
+					placeholder={LABELS.MATCH_PRICE}
+					showCurrency
+				/>
+				<Input
+					label={LABELS.CLASS_PRICE}
+					type='number'
+					name='classPerHour'
+					placeholder={LABELS.CLASS_PRICE}
+					showCurrency
+				/>
+				<Input
+					label={LABELS.TOURNAMENT_PRICE}
+					type='number'
+					name='tournamentPerHour'
+					placeholder={LABELS.TOURNAMENT_PRICE}
+					showCurrency
 				/>
 			</Form>
 		</Card>

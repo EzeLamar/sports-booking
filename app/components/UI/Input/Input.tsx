@@ -41,7 +41,7 @@ export default function Input({
 			render={({ field }) => (
 				<FormItem>
 					<FormLabel>{label}</FormLabel>
-					{showCurrency && <span className='input-group-text'>$</span>}
+					{showCurrency && <span className='ml-1'>$$$</span>}
 					<FormControl>
 						<InputUI
 							onPointerDown={e => e.stopPropagation()}

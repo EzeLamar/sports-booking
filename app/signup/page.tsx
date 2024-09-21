@@ -23,7 +23,10 @@ export default function SignUpPage() {
 				router.push('/');
 			} catch (error) {
 				if (hasErrorMessage(error)) {
-					toast.error(error.message, { theme: 'colored' });
+					toast.error(error.message, {
+						theme: 'colored',
+						position: 'bottom-right',
+					});
 				}
 
 				throw error;
