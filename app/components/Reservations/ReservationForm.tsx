@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import moment from 'moment';
 import { toast } from 'react-toastify';
 import { z } from 'zod';
@@ -15,6 +15,8 @@ import hasErrorMessage from '@/app/utils/Error/ErrorHelper';
 import Input from '@/app/components/UI/Input/Input';
 import Form from '@/app/components/UI/Form/Form';
 import Select from '@/app/components/UI/Select/Select';
+import SelectLinked from '@/app/components/UI/Select/SelectLinked';
+import { CourtContext } from '@/app/context/CourtContext';
 
 const LABELS = {
 	FORM_TITLE: 'Datos de la reserva',
@@ -29,22 +31,7 @@ const LABELS = {
 	REGULAR_BOOKING: 'Turno Fijo',
 };
 
-const TYPE_VALUES = [
-	{
-		value: ReservationType.Match,
-		label: 'Partido',
-	},
-	{
-		value: ReservationType.Lesson,
-		label: 'Clase',
-	},
-	{
-		value: ReservationType.Tournament,
-		label: 'Torneo',
-	},
-];
-
-const STATUS_VALUES = [
+export const STATUS_VALUES = [
 	{
 		value: ReservationStatus.Booked,
 		label: 'Reservado',
@@ -56,6 +43,21 @@ const STATUS_VALUES = [
 	{
 		value: ReservationStatus.Canceled,
 		label: 'Cancelado',
+	},
+];
+
+export const TYPE_VALUES = [
+	{
+		value: ReservationType.Match,
+		label: `Partido`,
+	},
+	{
+		value: ReservationType.Lesson,
+		label: `Clase`,
+	},
+	{
+		value: ReservationType.Tournament,
+		label: `Torneo`,
 	},
 ];
 
@@ -131,6 +133,7 @@ export default function ReservationForm({
 }: Props) {
 	const [disabled, setDisabled] = useState<boolean>(!editable);
 	const [isRegularBooking, setIsRegularBooking] = useState<boolean>(false);
+	const court = useContext(CourtContext);
 	const min = minDate ? moment(minDate).format(MIN_DATE_FORMAT) : undefined;
 	const max = maxDate ? moment(maxDate).format(MAX_DATE_FORMAT) : undefined;
 	const initialValues = {
@@ -187,9 +190,53 @@ export default function ReservationForm({
 		}
 	};
 
+	const TYPE_VALUES_BY_PRICE = [
+		{
+			value: ReservationType.Match,
+			label: `Partido - ($${court?.matchPerHour} x hora)`,
+		},
+		{
+			value: ReservationType.Lesson,
+			label: `Clase - ($${court?.classPerHour} x hora)`,
+		},
+		{
+			value: ReservationType.Tournament,
+			label: `Torneo - ($${court?.tournamentPerHour} x hora)`,
+		},
+	];
+
+	const handlePriceValueByType = (type: string) => {
+		if (!court || !reservation.endTime || !reservation.startTime) {
+			return undefined;
+		}
+		const startTime = moment(reservation.startTime);
+		const endTime = moment(reservation.endTime);
+		const reservedHours = endTime.diff(startTime, 'minutes') / 60;
+		let newValue;
+
+		switch (type) {
+			case ReservationType.Lesson:
+				newValue = court.classPerHour * reservedHours;
+				break;
+			case ReservationType.Match:
+				newValue = court.matchPerHour * reservedHours;
+				break;
+			case ReservationType.Tournament:
+				newValue = court.tournamentPerHour * reservedHours;
+				break;
+			default:
+				newValue = 0;
+		}
+
+		return {
+			name: 'price',
+			value: newValue,
+		};
+	};
+
 	return (
 		<>
-			{initialValues.id && disabled && (
+			{initialValues.id && !disabled && (
 				<Button
 					className='absolute top-20 right-4'
 					variant='destructive'
@@ -230,7 +277,12 @@ export default function ReservationForm({
 						name='ocurrences'
 					/>
 				)}
-				<Select name='type' label={LABELS.TYPE} options={TYPE_VALUES} />
+				<SelectLinked
+					name='type'
+					label={LABELS.TYPE}
+					options={TYPE_VALUES_BY_PRICE}
+					handleUpdateLinkedInput={handlePriceValueByType}
+				/>
 				{reservation.id && (
 					<>
 						<Input
@@ -256,6 +308,7 @@ export default function ReservationForm({
 					label={LABELS.PRICE}
 					name='price'
 					placeholder={LABELS.PRICE}
+					showCurrency
 				/>
 				<Select name='status' label={LABELS.STATUS} options={STATUS_VALUES} />
 			</Form>

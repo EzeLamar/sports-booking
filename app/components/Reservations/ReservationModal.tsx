@@ -1,8 +1,11 @@
+import ReservationDetails from '@/app/components/Reservations/ReservationDetails';
 import ReservationForm, {
 	InitialReservation,
 	Reservation,
+	TYPE_VALUES,
 } from '@/app/components/Reservations/ReservationForm';
 import Drawer from '@/app/components/UI/Modal/Drawer';
+import { Button } from '@/components/ui/button';
 import React from 'react';
 
 const LABELS = {
@@ -20,6 +23,7 @@ type Props = {
 	minDate?: Date | null;
 	maxDate?: Date | null;
 	editable?: boolean;
+	setEditable?: (state: boolean) => void;
 };
 
 export default function ReservationModal({
@@ -32,6 +36,7 @@ export default function ReservationModal({
 	editable = false,
 	minDate = null,
 	maxDate = null,
+	setEditable = () => {},
 }: Props) {
 	const getTime = (date: Date | null): string | null => {
 		if (!date) {
@@ -66,21 +71,38 @@ export default function ReservationModal({
 	return (
 		<Drawer
 			show={show}
-			title={!reservation.id ? LABELS.NEW_RESERVATION : LABELS.SHOW_RESERVATION}
+			title={
+				!reservation.id
+					? LABELS.NEW_RESERVATION
+					: TYPE_VALUES.find(x => x.value === reservation.type)?.label
+			}
 			onClose={() => handleClose()}
 			description={!reservation.id ? rangeTime : null}
 			className={typeColorSelected(reservation.type ?? '')}
 		>
-			<ReservationForm
-				reservation={reservation}
-				handleSubmit={handleSubmit}
-				handleCancel={handleCancel}
-				handleDelete={handleDelete}
-				editable={editable}
-				minDate={minDate}
-				maxDate={maxDate}
-				showTitle={false}
-			/>
+			{editable ? (
+				<ReservationForm
+					reservation={reservation}
+					handleSubmit={handleSubmit}
+					handleCancel={handleCancel}
+					handleDelete={handleDelete}
+					editable={editable}
+					minDate={minDate}
+					maxDate={maxDate}
+					showTitle={false}
+				/>
+			) : (
+				<div>
+					<ReservationDetails reservation={reservation} rangeTime={rangeTime} />
+					<Button
+						className='w-full px-4 mt-3'
+						variant='outline'
+						onClick={() => setEditable(true)}
+					>
+						Editar
+					</Button>
+				</div>
+			)}
 		</Drawer>
 	);
 }

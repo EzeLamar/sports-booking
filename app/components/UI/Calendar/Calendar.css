@@ -1,5 +1,5 @@
 .calendar__container {
-	height: 90vh;
+	@apply h-screen;
 }
 
 .calendar__today {
@@ -7,21 +7,56 @@
 }
 
 .calendar__type-lesson {
-	background-color: rgb(91, 199, 241);
+	@apply bg-blue-300 dark:bg-blue-500;
 }
 
 .calendar__type-match {
-	background-color: rgb(108, 108, 234);
+	@apply bg-violet-400 dark:bg-violet-500;
 }
 
 .calendar__type-tournament {
-	background-color: rgb(234, 159, 108);
+	@apply bg-orange-300 dark:bg-orange-500;
 }
 
 .calendar__status-booked {
-	border: solid 3px red;
+	@apply border-solid border-2 border-red-500 dark:border-red-300;
 }
 
 .calendar__status-canceled {
-	background-color: grey;
+	@apply bg-foreground;
+}
+
+.rbc-off-range-bg {
+	@apply bg-gray-200 dark:bg-card;
+}
+
+.rbc-show-more {
+	@apply text-primary;
+	@apply bg-background;
+}
+
+.rbc-today {
+	@apply bg-yellow-100 dark:bg-yellow-900;
+}
+
+.rbc-day-slot .rbc-time-slot {
+	@apply border-none;
+}
+
+.rbc-slot-selection {
+	@apply bg-foreground;
+	@apply text-background;
+}
+
+.rbc-agenda-date-cell {
+	@apply bg-background;
+}
+
+.rbc-event.rbc-selected {
+	@apply bg-foreground;
+	@apply text-background;
+}
+
+.rbc-current-time-indicator {
+	@apply border-2 border-primary;
 }

@@ -59,7 +59,7 @@ export default function Drawer({
 		<DrawerUI open={show} onClose={onClose}>
 			<DrawerContent
 				ref={formContainerRef}
-				className={`min-h-[70vh] px-3 pb-3 ${className}`}
+				className={`px-3 pb-3 ${className}`}
 			>
 				<DrawerHeader>
 					{title && <DrawerTitle>{title}</DrawerTitle>}

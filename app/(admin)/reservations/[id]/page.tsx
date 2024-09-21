@@ -1,7 +1,7 @@
 'use client';
 
 import moment from 'moment';
-import { Views } from 'react-big-calendar';
+import { View, Views } from 'react-big-calendar';
 import { useEffect, useState } from 'react';
 import {
 	createReservation,
@@ -19,6 +19,8 @@ import { TEvent } from '@/app/components/UI/Calendar/model';
 import { Reservation as ReservationForm } from '@/app/components/Reservations/ReservationForm';
 import { Reservation } from '@/app/firebase/reservations/model';
 import Calendar from '@/app/components/UI/Calendar/Calendar';
+import { CourtContext } from '@/app/context/CourtContext';
+import CalendarToolbar from '@/app/components/UI/Calendar/CalendarToolbar/CalendarToolbar';
 
 type Props = {
 	params: { id: string };
@@ -29,6 +31,8 @@ export default function AdminPage({ params }: Props) {
 	const [reservations, setReservations] = useState<Array<TEvent>>([]);
 	const [court, setCourt] = useState<Court | null>(null);
 	const [loading, setLoading] = useState<boolean>(true);
+	const [currentView, setCurrentView] = useState<View>(Views.MONTH);
+	const [currentDay, setCurrentDay] = useState<Date>(new Date());
 
 	const reservationsToEvents = (reservationsData: Reservation[]): TEvent[] =>
 		reservationsData.map(reservation => ({
@@ -73,11 +77,15 @@ export default function AdminPage({ params }: Props) {
 			});
 			toast.success('Reserva Creada!', {
 				theme: 'colored',
+				position: 'bottom-right',
 			});
 			return docRef;
 		} catch (error: unknown) {
 			if (hasErrorMessage(error)) {
-				toast.error(error.message, { theme: 'colored' });
+				toast.error(error.message, {
+					theme: 'colored',
+					position: 'bottom-right',
+				});
 			}
 
 			throw error;
@@ -100,11 +108,15 @@ export default function AdminPage({ params }: Props) {
 			);
 			toast.success(`Reserva Múltiple Creada! (${ocurrences})`, {
 				theme: 'colored',
+				position: 'bottom-right',
 			});
 			return reservationsToEvents(newReservations);
 		} catch (error: unknown) {
 			if (hasErrorMessage(error)) {
-				toast.error(error.message, { theme: 'colored' });
+				toast.error(error.message, {
+					theme: 'colored',
+					position: 'bottom-right',
+				});
 			}
 
 			throw error;
@@ -114,13 +126,17 @@ export default function AdminPage({ params }: Props) {
 	const handleDeleteReservation = async (id: string): Promise<boolean> => {
 		try {
 			await deleteReservation(id);
-			toast.success('Reserva Eliminada!', {
+			toast.warn('Reserva Eliminada!', {
 				theme: 'colored',
+				position: 'bottom-right',
 			});
 			return true;
 		} catch (error: unknown) {
 			if (hasErrorMessage(error)) {
-				toast.error(error.message, { theme: 'colored' });
+				toast.error(error.message, {
+					theme: 'colored',
+					position: 'bottom-right',
+				});
 			}
 
 			throw error;
@@ -147,12 +163,16 @@ export default function AdminPage({ params }: Props) {
 				await updateReservation(reservation);
 				toast.success('Reserva modificada!', {
 					theme: 'colored',
+					position: 'bottom-right',
 				});
 				return true;
 			}
 		} catch (error: unknown) {
 			if (hasErrorMessage(error)) {
-				toast.error(error.message, { theme: 'colored' });
+				toast.error(error.message, {
+					theme: 'colored',
+					position: 'bottom-right',
+				});
 			}
 
 			throw error;
@@ -175,17 +195,16 @@ export default function AdminPage({ params }: Props) {
 			{loading ? (
 				<Loading />
 			) : (
-				<>
-					<h2 className='text-center'>{court?.name}</h2>
-					<label htmlFor='show-all'>
-						<input
-							type='checkbox'
-							id='show-all'
-							checked={showAll}
-							onChange={handleShowAll}
-						/>
-						Mostrar Todas las horas?
-					</label>
+				<CourtContext.Provider value={court}>
+					<CalendarToolbar
+						courtName={court?.name ?? '...'}
+						currentDay={currentDay}
+						setCurrentDay={setCurrentDay}
+						currentView={currentView}
+						handleCurrentViewChange={setCurrentView}
+						showAll={showAll}
+						setShowAll={handleShowAll}
+					/>
 					<Calendar
 						events={reservations}
 						handleAddEvent={handleAddReservation}
@@ -194,9 +213,12 @@ export default function AdminPage({ params }: Props) {
 						handleUpdateEvent={handleUpdateReservation}
 						minHour={minHour}
 						maxHour={maxHour}
-						defaultView={Views.DAY}
+						currentView={currentView}
+						setCurrentView={setCurrentView}
+						currentDay={currentDay}
+						setCurrentDay={setCurrentDay}
 					/>
-				</>
+				</CourtContext.Provider>
 			)}
 		</div>
 	);
