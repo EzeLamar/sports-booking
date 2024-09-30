@@ -4,7 +4,7 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { toast } from 'react-toastify';
-import { Menu } from 'lucide-react';
+import { Goal, Menu, UserIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
 	DropdownMenu,
@@ -66,13 +66,26 @@ export default function NavBar() {
 							</NavigationMenuLink>
 						</Link>
 						{user ? (
-							<NavigationMenuItem>
-								<Link href='/courts' legacyBehavior passHref>
-									<NavigationMenuLink className={navigationMenuTriggerStyle()}>
-										Canchas
-									</NavigationMenuLink>
-								</Link>
-							</NavigationMenuItem>
+							<>
+								<NavigationMenuItem>
+									<Link href='/courts' legacyBehavior passHref>
+										<NavigationMenuLink
+											className={navigationMenuTriggerStyle()}
+										>
+											Canchas
+										</NavigationMenuLink>
+									</Link>
+								</NavigationMenuItem>
+								<NavigationMenuItem>
+									<Link href='/clients' legacyBehavior passHref>
+										<NavigationMenuLink
+											className={navigationMenuTriggerStyle()}
+										>
+											Clientes
+										</NavigationMenuLink>
+									</Link>
+								</NavigationMenuItem>
+							</>
 						) : (
 							<NavigationMenuItem>
 								<Link href='/' legacyBehavior passHref>
@@ -118,23 +131,35 @@ export default function NavBar() {
 								</Link>
 							</SheetClose>
 						)}
-						<SheetClose asChild>
-							{user ? (
-								<Link
-									href='/courts'
-									className='text-muted-foreground hover:text-foreground'
-								>
-									Canchas
-								</Link>
-							) : (
-								<Link
-									href='/signin'
-									className='text-muted-foreground hover:text-foreground'
-								>
-									Iniciar Sesión
-								</Link>
-							)}
-						</SheetClose>
+						{user ? (
+							<>
+								<SheetClose asChild>
+									<Link
+										href='/courts'
+										className='flex gap-2 text-center text-muted-foreground hover:text-foreground'
+									>
+										<Goal />
+										<p>Canchas</p>
+									</Link>
+								</SheetClose>
+								<SheetClose asChild>
+									<Link
+										href='/clients'
+										className='flex gap-2 text-center text-muted-foreground hover:text-foreground'
+									>
+										<UserIcon />
+										<p>Clientes</p>
+									</Link>
+								</SheetClose>
+							</>
+						) : (
+							<Link
+								href='/signin'
+								className='text-muted-foreground hover:text-foreground'
+							>
+								Iniciar Sesión
+							</Link>
+						)}
 					</nav>
 				</SheetContent>
 			</Sheet>

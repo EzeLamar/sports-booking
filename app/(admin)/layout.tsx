@@ -19,5 +19,5 @@ export default function AdminLayout({
 		}
 	}, [user, router]);
 
-	return !user ? <Loading /> : <div>{children}</div>;
+	return <div className='p-3'>{!user ? <Loading /> : children}</div>;
 }

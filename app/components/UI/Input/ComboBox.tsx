@@ -25,6 +25,7 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from '@/components/ui/popover';
+import { PopoverClose } from '@radix-ui/react-popover';
 
 export type Props = {
 	name: string;
@@ -32,6 +33,7 @@ export type Props = {
 	label: string;
 	description?: string;
 	searchable?: boolean;
+	handleSearchNotFound?: () => void;
 };
 
 export default function ComboBox({
@@ -40,6 +42,7 @@ export default function ComboBox({
 	label,
 	description,
 	searchable = false,
+	handleSearchNotFound,
 }: Props) {
 	const { control, setValue } = useFormContext();
 
@@ -50,14 +53,14 @@ export default function ComboBox({
 			render={({ field }) => (
 				<FormItem className='flex flex-col'>
 					<FormLabel>{label}</FormLabel>
-					<Popover>
+					<Popover modal>
 						<PopoverTrigger asChild>
 							<FormControl>
 								<Button
 									variant='outline'
 									role='combobox'
 									className={cn(
-										'w-[200px] justify-between',
+										'justify-between',
 										!field.value && 'text-muted-foreground'
 									)}
 								>
@@ -69,30 +72,34 @@ export default function ComboBox({
 								</Button>
 							</FormControl>
 						</PopoverTrigger>
-						<PopoverContent className='w-[200px] p-0'>
+						<PopoverContent className='p-0'>
 							<Command>
-								{searchable && <CommandInput placeholder='Buscar...' />}
+								<nav className='p-2 flex justify-between items-center gap-2'>
+									{searchable && <CommandInput placeholder='Buscar...' />}
+									<Button onClick={handleSearchNotFound}>Agregar</Button>
+								</nav>
 								<CommandList>
-									<CommandEmpty>No se encontraron resultados.</CommandEmpty>
+									<CommandEmpty>Sin resultados.</CommandEmpty>
 									<CommandGroup>
 										{options.map(option => (
-											<CommandItem
-												value={option.label}
-												key={option.value}
-												onSelect={() => {
-													setValue(name, option.value);
-												}}
-											>
-												<Check
-													className={cn(
-														'mr-2 h-4 w-4',
-														option.value === field.value
-															? 'opacity-100'
-															: 'opacity-0'
-													)}
-												/>
-												{option.label}
-											</CommandItem>
+											<PopoverClose key={option.value} className='w-full'>
+												<CommandItem
+													value={option.label}
+													onSelect={() => {
+														setValue(name, option.value);
+													}}
+												>
+													<Check
+														className={cn(
+															'mr-2 h-4 w-4',
+															option.value === field.value
+																? 'opacity-100'
+																: 'opacity-0'
+														)}
+													/>
+													{option.label}
+												</CommandItem>
+											</PopoverClose>
 										))}
 									</CommandGroup>
 								</CommandList>

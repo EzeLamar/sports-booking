@@ -61,7 +61,7 @@ export default function Drawer({
 				ref={formContainerRef}
 				className={`px-3 pb-3 ${className}`}
 			>
-				<DrawerHeader>
+				<DrawerHeader className='flex flex-col'>
 					{title && <DrawerTitle>{title}</DrawerTitle>}
 					<DrawerDescription>{description}</DrawerDescription>
 				</DrawerHeader>

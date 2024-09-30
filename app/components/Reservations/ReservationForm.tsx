@@ -17,6 +17,9 @@ import Form from '@/app/components/UI/Form/Form';
 import Select from '@/app/components/UI/Select/Select';
 import SelectLinked from '@/app/components/UI/Select/SelectLinked';
 import { CourtContext } from '@/app/context/CourtContext';
+import { ClientsContext } from '@/app/context/ClientsContext';
+import ComboBox from '@/app/components/UI/Input/ComboBox';
+import { useRouter } from 'next/navigation';
 
 const LABELS = {
 	FORM_TITLE: 'Datos de la reserva',
@@ -28,7 +31,7 @@ const LABELS = {
 	START_TIME: 'Hora inicio',
 	END_TIME: 'Hora fin',
 	DELETE: 'Borrar',
-	REGULAR_BOOKING: 'Turno Fijo',
+	REGULAR_BOOKING: 'Turno Fijo (Replicar X semanas)',
 };
 
 export const STATUS_VALUES = [
@@ -131,9 +134,11 @@ export default function ReservationForm({
 	maxDate = null,
 	showTitle = true,
 }: Props) {
+	const router = useRouter();
 	const [disabled, setDisabled] = useState<boolean>(!editable);
 	const [isRegularBooking, setIsRegularBooking] = useState<boolean>(false);
 	const court = useContext(CourtContext);
+	const clients = useContext(ClientsContext);
 	const min = minDate ? moment(minDate).format(MIN_DATE_FORMAT) : undefined;
 	const max = maxDate ? moment(maxDate).format(MAX_DATE_FORMAT) : undefined;
 	const initialValues = {
@@ -234,6 +239,11 @@ export default function ReservationForm({
 		};
 	};
 
+	const clientsByName = clients.map(client => ({
+		label: `${client.firstName} ${client.lastName}`,
+		value: client.id,
+	}));
+
 	return (
 		<>
 			{initialValues.id && !disabled && (
@@ -245,15 +255,6 @@ export default function ReservationForm({
 					<Trash className='h-4 w-4' />
 				</Button>
 			)}
-			{!initialValues.id && (
-				<div className='flex items-center space-x-2'>
-					<Switch
-						id='airplane-mode'
-						onClick={() => setIsRegularBooking(!isRegularBooking)}
-					/>
-					<Label htmlFor='airplane-mode'>{LABELS.REGULAR_BOOKING}</Label>
-				</div>
-			)}
 			<Form
 				title={showTitle ? LABELS.FORM_TITLE : null}
 				initialValues={initialValues}
@@ -263,20 +264,31 @@ export default function ReservationForm({
 				setDisabled={setDisabled}
 				formSchema={FormSchema}
 			>
-				<Input
-					type='text'
-					label={LABELS.OWNER}
-					name='owner'
-					placeholder={LABELS.OWNER}
-				/>
-				{isRegularBooking && (
-					<Input
-						type='number'
-						label={LABELS.OCURRENCES}
-						placeholder={LABELS.OCURRENCES}
-						name='ocurrences'
-					/>
+				{!initialValues.id && (
+					<div className='flex justify-between gap-2'>
+						<div className='flex items-center gap-2'>
+							<Switch
+								id='airplane-mode'
+								onClick={() => setIsRegularBooking(!isRegularBooking)}
+							/>
+							<Label htmlFor='airplane-mode'>{LABELS.REGULAR_BOOKING}</Label>
+						</div>
+						{isRegularBooking && (
+							<Input
+								type='number'
+								placeholder={LABELS.OCURRENCES}
+								name='ocurrences'
+							/>
+						)}
+					</div>
 				)}
+				<ComboBox
+					name='owner'
+					options={clientsByName}
+					label={LABELS.OWNER}
+					searchable
+					handleSearchNotFound={() => router.push('/clients/new')}
+				/>
 				<SelectLinked
 					name='type'
 					label={LABELS.TYPE}

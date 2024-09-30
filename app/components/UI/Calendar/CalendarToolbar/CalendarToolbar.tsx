@@ -94,17 +94,17 @@ export default function CalendarToolbar({
 	};
 
 	return (
-		<>
+		<nav className='flex flex-col justify-between'>
 			<h2 className='text-center text-xl font-bold'>{courtName}</h2>
 			<h3 className='text-center text-l'>{showDateRangeByView()}</h3>
-			<nav className='mx-auto px-4 flex flex-row items-center justify-between py-4 gap-4'>
+			<nav className='px-4 flex items-center justify-between py-4 gap-4'>
 				<div className='flex items-center gap-2'>
 					<Button
 						variant='outline'
 						size='sm'
 						onClick={() => setCurrentDay(new Date())}
 					>
-						Today
+						Hoy
 					</Button>
 					<div className='flex items-center gap-2'>
 						<Button
@@ -147,6 +147,6 @@ export default function CalendarToolbar({
 					<Switch id='show-all-mode' onClick={() => setShowAll(!showAll)} />
 				</div>
 			)}
-		</>
+		</nav>
 	);
 }

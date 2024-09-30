@@ -1,3 +1,4 @@
+import { Client } from '@/app/firebase/clients/model';
 import {
 	ReservationStatus,
 	ReservationType,
@@ -6,7 +7,7 @@ import {
 type ReservationData = {
 	id: string;
 	type: ReservationType;
-	owner: string;
+	owner: Client | null;
 	price: number;
 	status: ReservationStatus;
 };
