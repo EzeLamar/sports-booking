@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useContext, useMemo, useState } from 'react';
 import moment from 'moment';
 import 'moment/locale/es';
 import {
@@ -22,6 +22,7 @@ import {
 	SelectEventSlotProp,
 	TEvent,
 } from '@/app/components/UI/Calendar/model';
+import { ClientsContext } from '@/app/context/ClientsContext';
 
 const AGENDA_RANGE = 7;
 const MESSAGES_LABELS = {
@@ -38,7 +39,7 @@ function Event({ event }: EventProp) {
 	const { data, desc } = event;
 	return (
 		<span>
-			<strong>{data.owner}</strong>
+			<strong>{`${data.owner?.firstName} ${data.owner?.lastName}`}</strong>
 			{desc && `:  ${desc}`}
 		</span>
 	);
@@ -50,7 +51,7 @@ function EventDay({ event }: EventProp) {
 
 	return (
 		<span>
-			<p>{`$${price} - ${owner}`}</p>
+			<p>{`$${price} - ${owner?.firstName} ${owner?.lastName}`}</p>
 		</span>
 	);
 }
@@ -59,14 +60,18 @@ function EventMonth({ event }: EventProp) {
 	const { data } = event;
 	const { owner } = data;
 
-	return <span>{`${owner}`}</span>;
+	return <span>{`${owner?.firstName} ${owner?.lastName}`}</span>;
 }
 
 function EventAgenda({ event }: EventProp) {
 	const { data } = event;
 	const { owner } = data;
 
-	return <span style={{ color: 'white' }}>{`${owner}`}</span>;
+	return (
+		<span
+			style={{ color: 'white' }}
+		>{`${owner?.firstName} ${owner?.lastName}`}</span>
+	);
 }
 
 const customDayPropGetter = (date: Date) => {
@@ -121,6 +126,7 @@ export default function Calendar({
 }: Props) {
 	moment.locale('es');
 	const localizer = momentLocalizer(moment);
+	const clients = useContext(ClientsContext);
 	const [selected, setSelected] = useState<InitialReservation | null>(null);
 	const [showModal, setShowModal] = useState<boolean>(false);
 	const [editable, setEditable] = useState<boolean>(false);
@@ -158,7 +164,7 @@ export default function Calendar({
 						data: {
 							id: data.id ?? '', // TODO: this will be fixed in a future update
 							type: data.type,
-							owner: data.owner,
+							owner: clients.find(client => client.id === data.owner) ?? null,
 							price: data.price,
 							status: data.status,
 						},
@@ -194,7 +200,7 @@ export default function Calendar({
 					data: {
 						id: eventId,
 						type: data.type,
-						owner: data.owner,
+						owner: clients.find(client => client.id === data.owner) ?? null,
 						price: data.price,
 						status: data.status,
 					},
@@ -245,7 +251,7 @@ export default function Calendar({
 		const reservation: InitialReservation = {
 			id: event.data.id,
 			type: event.data.type,
-			owner: event.data.owner,
+			owner: event.data.owner?.id ?? '',
 			startTime: event.start,
 			endTime: event.end,
 			price: event.data.price,
@@ -258,7 +264,7 @@ export default function Calendar({
 	}, []);
 
 	return (
-		<div className='h-screen p-4 background'>
+		<div className='flex-grow p-4 background'>
 			<ReactCalendar
 				view={currentView}
 				toolbar={false}

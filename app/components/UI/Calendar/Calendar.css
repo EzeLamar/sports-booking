@@ -1,6 +1,6 @@
-.calendar__container {
+/* .calendar__container {
 	@apply h-screen;
-}
+} */
 
 .calendar__today {
 	/* background-color: rgb(253, 254, 222); */
@@ -23,7 +23,7 @@
 }
 
 .calendar__status-canceled {
-	@apply bg-foreground;
+	@apply bg-gray-400 dark:bg-gray-500;
 }
 
 .rbc-off-range-bg {

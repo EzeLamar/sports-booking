@@ -15,9 +15,9 @@ export type Props = {
 	name: string;
 	type: string;
 	placeholder: string;
-	label: string;
 	description?: string;
 	showCurrency?: boolean;
+	label?: string;
 	min?: string | undefined;
 	max?: string | undefined;
 };
@@ -26,9 +26,9 @@ export default function Input({
 	name,
 	type,
 	placeholder,
-	label,
 	description,
 	showCurrency,
+	label,
 	min,
 	max,
 }: Props) {
@@ -40,7 +40,7 @@ export default function Input({
 			name={name}
 			render={({ field }) => (
 				<FormItem>
-					<FormLabel>{label}</FormLabel>
+					{label && <FormLabel>{label}</FormLabel>}
 					{showCurrency && <span className='ml-1'>$$$</span>}
 					<FormControl>
 						<InputUI
