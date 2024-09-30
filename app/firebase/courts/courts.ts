@@ -72,9 +72,9 @@ export async function getAllCourts(): Promise<Array<Court>> {
 			availableDays: data.availableDays,
 			openHour: data.openHour,
 			closeHour: data.closeHour,
-			matchPerHour: data.pricePerHour,
-			classPerHour: data.pricePerHour,
-			tournamentPerHour: data.pricePerHour,
+			matchPerHour: data.matchPerHour,
+			classPerHour: data.classPerHour,
+			tournamentPerHour: data.tournamentPerHour,
 		};
 	});
 }

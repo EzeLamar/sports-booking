@@ -29,7 +29,13 @@ const events = [
 		data: {
 			id: '1',
 			type: ReservationType.Lesson,
-			owner: 'Ezequiel Lamarque',
+			owner: {
+				id: '1',
+				firstName: 'Ezequiel',
+				lastName: 'Lamarque',
+				email: 'ezequiel@lamarque.com',
+				phone: null,
+			},
 			price: 5000,
 			status: ReservationStatus.Booked,
 		},
@@ -41,7 +47,13 @@ const events = [
 		data: {
 			id: '2',
 			type: ReservationType.Match,
-			owner: 'Lucas Bualo',
+			owner: {
+				id: '2',
+				firstName: 'Lucas',
+				lastName: 'Bualo',
+				email: 'lucas@bualo.com',
+				phone: null,
+			},
 			price: 1500,
 			status: ReservationStatus.Booked,
 		},
@@ -53,7 +65,13 @@ const events = [
 		data: {
 			id: '3',
 			type: ReservationType.Tournament,
-			owner: 'Ezequiel Lamarque',
+			owner: {
+				id: '1',
+				firstName: 'Ezequiel',
+				lastName: 'Lamarque',
+				email: 'ezequiel@lamarque.com',
+				phone: null,
+			},
 			price: 5000,
 			status: ReservationStatus.Paid,
 		},
@@ -65,7 +83,13 @@ const events = [
 		data: {
 			id: '4',
 			type: ReservationType.Match,
-			owner: 'Lucas Bualo',
+			owner: {
+				id: '2',
+				firstName: 'Lucas',
+				lastName: 'Bualo',
+				email: 'lucas@bualo.com',
+				phone: null,
+			},
 			price: 1500,
 			status: ReservationStatus.Booked,
 		},
@@ -77,7 +101,13 @@ const events = [
 		data: {
 			id: '5',
 			type: ReservationType.Match,
-			owner: 'Ezequiel Lamarque',
+			owner: {
+				id: '1',
+				firstName: 'Ezequiel',
+				lastName: 'Lamarque',
+				email: 'ezequiel@lamarque.com',
+				phone: null,
+			},
 			price: 1500.5,
 			status: ReservationStatus.Canceled,
 		},
@@ -108,7 +138,13 @@ const handleAddRegularEvent = (
 			data: {
 				id: `${index + 1}`,
 				type: data.type,
-				owner: data.owner,
+				owner: {
+					id: '1',
+					firstName: 'FirstName',
+					lastName: 'LastName',
+					email: 'first@name.com',
+					phone: null,
+				},
 				price: data.price,
 				status: data.status,
 			},

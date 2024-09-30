@@ -110,6 +110,37 @@ export async function getAllReservations(): Promise<Array<Reservation>> {
 	});
 }
 
+export async function getReservationsByClientId(
+	clientId: string
+): Promise<Array<Reservation>> {
+	const db = getFirestore(firebaseApp);
+	const colRef = collection(
+		db,
+		process.env.NEXT_PUBLIC_RESERVATIONS_COLLECTION ??
+			'NEXT_PUBLIC_RESERVATIONS_COLLECTION'
+	);
+	const q = await query(colRef, where('owner', '==', clientId));
+	const courtsSnap = await getDocs(q);
+
+	return courtsSnap.docs.map((docSnap): Reservation => {
+		const data = docSnap.data();
+
+		return {
+			id: docSnap.id,
+			court: data.court,
+			owner: data.owner,
+			startTime: data.startTime.toDate(),
+			endTime: getEndTimeFromStartTimeAndDuration(
+				data.startTime.toDate(),
+				data.duration
+			),
+			type: data.type,
+			price: data.price,
+			status: data.status,
+		};
+	});
+}
+
 export async function getAllReservationsByCourtId(
 	courtId: string
 ): Promise<Array<Reservation>> {
