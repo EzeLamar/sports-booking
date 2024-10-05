@@ -20,6 +20,8 @@ import { CourtContext } from '@/app/context/CourtContext';
 import { ClientsContext } from '@/app/context/ClientsContext';
 import ComboBox from '@/app/components/UI/Input/ComboBox';
 import { useRouter } from 'next/navigation';
+import ModalConfirmDelete from '@/app/components/UI/Modal/ModalConfirmDelete/ModalConfirmDelete';
+import { DialogTrigger } from '@/components/ui/dialog';
 
 const LABELS = {
 	FORM_TITLE: 'Datos de la reserva',
@@ -245,15 +247,16 @@ export default function ReservationForm({
 	}));
 
 	return (
-		<>
+		<ModalConfirmDelete
+			handleDelete={() => onDelete(initialValues.id ?? '')}
+			title='Reserva'
+		>
 			{initialValues.id && !disabled && (
-				<Button
-					className='absolute top-20 right-4'
-					variant='destructive'
-					onClick={() => onDelete(initialValues.id ?? '')}
-				>
-					<Trash className='h-4 w-4' />
-				</Button>
+				<DialogTrigger asChild>
+					<Button className='absolute top-20 right-4' variant='destructive'>
+						<Trash className='h-4 w-4' />
+					</Button>
+				</DialogTrigger>
 			)}
 			<Form
 				title={showTitle ? LABELS.FORM_TITLE : null}
@@ -324,6 +327,6 @@ export default function ReservationForm({
 				/>
 				<Select name='status' label={LABELS.STATUS} options={STATUS_VALUES} />
 			</Form>
-		</>
+		</ModalConfirmDelete>
 	);
 }
