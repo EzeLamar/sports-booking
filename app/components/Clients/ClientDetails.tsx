@@ -15,6 +15,8 @@ import {
 } from '@/app/firebase/reservations/model';
 import { getReservationsByClientId } from '@/app/firebase/reservations/reservation';
 import Card from '@/app/components/UI/Card/Card';
+import { DialogTrigger } from '@/components/ui/dialog';
+import ModalConfirmDelete from '@/app/components/UI/Modal/ModalConfirmDelete/ModalConfirmDelete';
 
 type Props = {
 	client: Client;
@@ -70,27 +72,32 @@ export default function ClientDetails({ client }: Props) {
 	);
 
 	return (
-		<div className='flex flex-col gap-3'>
-			<h2 className='text-2xl mb-2 flex text-center justify-center items-center gap-2'>
-				<User className='w-6 h-6' />
-				{`${client.firstName} ${client.lastName}`}
-			</h2>
-			<Card>
-				<h3 className='text-xl'>Reservas del Cliente</h3>
-				<div className='mt-3 flex flex-col gap-2'>
-					<p className='text-red-500'>{`Sin Pagar: ${booked.length}`}</p>
-					<p className='text-green-600'>{`Pagadas: ${paid.length}`}</p>
-					<p className='text-gray-500'>{`Canceladas: ${cancelled.length}`}</p>
-				</div>
-			</Card>
-			<ClientEditForm client={client} />
-			<Button
-				className='mt-3'
-				variant='destructive'
-				onClick={() => handleDeleteClient(client.id)}
-			>
-				Borrar Cliente
-			</Button>
-		</div>
+		<ModalConfirmDelete
+			title='Cliente'
+			description='Las reservas vinculadas a este cliente se mantendrán pero sin
+		cliente asociado.'
+			handleDelete={() => handleDeleteClient(client.id)}
+		>
+			<div className='flex flex-col gap-3'>
+				<h2 className='text-2xl mb-2 flex text-center justify-center items-center gap-2'>
+					<User className='w-6 h-6' />
+					{`${client.firstName} ${client.lastName}`}
+				</h2>
+				<Card>
+					<h3 className='text-xl'>Reservas del Cliente</h3>
+					<div className='mt-3 flex flex-col gap-2'>
+						<p className='text-red-500'>{`Sin Pagar: ${booked.length}`}</p>
+						<p className='text-green-600'>{`Pagadas: ${paid.length}`}</p>
+						<p className='text-gray-500'>{`Canceladas: ${cancelled.length}`}</p>
+					</div>
+				</Card>
+				<ClientEditForm client={client} />
+				<DialogTrigger asChild>
+					<Button className='mt-3' variant='destructive'>
+						Borrar
+					</Button>
+				</DialogTrigger>
+			</div>
+		</ModalConfirmDelete>
 	);
 }
