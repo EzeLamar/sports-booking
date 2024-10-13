@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useContext, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import moment from 'moment';
 import 'moment/locale/es';
 import {
@@ -22,7 +22,7 @@ import {
 	SelectEventSlotProp,
 	TEvent,
 } from '@/app/components/UI/Calendar/model';
-import { ClientsContext } from '@/app/context/ClientsContext';
+import { ReservationStatus } from '@/app/firebase/reservations/model';
 
 const AGENDA_RANGE = 7;
 const MESSAGES_LABELS = {
@@ -37,6 +37,10 @@ const MESSAGES_LABELS = {
 
 function Event({ event }: EventProp) {
 	const { data, desc } = event;
+	if (!data.show) {
+		return <span />;
+	}
+
 	return (
 		<span>
 			<strong>{`${data.owner?.firstName} ${data.owner?.lastName}`}</strong>
@@ -47,18 +51,40 @@ function Event({ event }: EventProp) {
 
 function EventDay({ event }: EventProp) {
 	const { data } = event;
-	const { owner, price } = data;
+	const { owner } = data;
+
+	if (!data.show) {
+		return <span />;
+	}
 
 	return (
-		<span>
-			<p>{`$${price} - ${owner?.firstName} ${owner?.lastName}`}</p>
+		<span className='flex flex-wrap gap-3'>
+			<p>{`${owner?.firstName} ${owner?.lastName}`}</p>
+			<p>{`${data.status !== ReservationStatus.Paid ? '(Pendiente)' : ''}`}</p>
 		</span>
+	);
+}
+
+function EventWeek({ event }: EventProp) {
+	const { data } = event;
+	const { owner } = data;
+
+	if (!data.show) {
+		return <span />;
+	}
+
+	return (
+		<div>{`${owner?.firstName.toUpperCase().charAt(0)}${owner?.lastName.toUpperCase().charAt(0)}`}</div>
 	);
 }
 
 function EventMonth({ event }: EventProp) {
 	const { data } = event;
 	const { owner } = data;
+
+	if (!data.show) {
+		return <span />;
+	}
 
 	return <span>{`${owner?.firstName} ${owner?.lastName}`}</span>;
 }
@@ -67,10 +93,15 @@ function EventAgenda({ event }: EventProp) {
 	const { data } = event;
 	const { owner } = data;
 
+	if (!data.show) {
+		return <span />;
+	}
+
 	return (
-		<span
-			style={{ color: 'white' }}
-		>{`${owner?.firstName} ${owner?.lastName}`}</span>
+		<span className='flex flex-col justify-between text-background'>
+			<p>{`${owner?.firstName} ${owner?.lastName}`}</p>
+			<p>{`${data.status !== ReservationStatus.Paid ? '(Pendiente)' : ''}`}</p>
+		</span>
 	);
 }
 
@@ -85,6 +116,11 @@ const customDayPropGetter = (date: Date) => {
 const customEventPropGetter = (event: TEvent) => {
 	const { data } = event;
 	const { type, status } = data;
+
+	if (!data.show) {
+		return { className: 'calendar__not-show' };
+	}
+
 	return { className: `calendar__type-${type} calendar__status-${status}` };
 };
 
@@ -126,16 +162,20 @@ export default function Calendar({
 }: Props) {
 	moment.locale('es');
 	const localizer = momentLocalizer(moment);
-	const clients = useContext(ClientsContext);
 	const [selected, setSelected] = useState<InitialReservation | null>(null);
+	const [selectedEvent, setSelectedEvent] = useState<TEvent | null>(null);
 	const [showModal, setShowModal] = useState<boolean>(false);
 	const [editable, setEditable] = useState<boolean>(false);
+	const filteredEvents = events.filter(event => event.data.show);
 
 	const { components } = useMemo(
 		() => ({
 			components: {
 				day: {
 					event: EventDay,
+				},
+				week: {
+					event: EventWeek,
 				},
 				month: {
 					event: EventMonth,
@@ -148,7 +188,6 @@ export default function Calendar({
 		}),
 		[]
 	);
-	const [myEvents, setEvents] = useState<TEvent[]>(events);
 
 	const onSubmit = (
 		data: Reservation,
@@ -157,23 +196,6 @@ export default function Calendar({
 		if (data.id) {
 			return new Promise(resolve => {
 				handleUpdateEvent(data).then(() => {
-					const updatedEvent: TEvent = {
-						start: data.startTime,
-						end: data.endTime,
-						title: 'Test Title',
-						data: {
-							id: data.id ?? '', // TODO: this will be fixed in a future update
-							type: data.type,
-							owner: clients.find(client => client.id === data.owner) ?? null,
-							price: data.price,
-							status: data.status,
-						},
-						desc: '',
-					};
-					setEvents([
-						...myEvents.filter(event => event.data.id !== data.id),
-						updatedEvent,
-					]);
 					setShowModal(false);
 					setSelected(null);
 					resolve(true);
@@ -183,8 +205,7 @@ export default function Calendar({
 
 		if (ocurrences > 1) {
 			return new Promise(resolve => {
-				handleAddRegularEvent(data, ocurrences).then((newEvents: TEvent[]) => {
-					setEvents([...myEvents, ...newEvents]);
+				handleAddRegularEvent(data, ocurrences).then(() => {
 					setShowModal(false);
 					resolve(true);
 				});
@@ -192,21 +213,7 @@ export default function Calendar({
 		}
 
 		return new Promise(resolve => {
-			handleAddEvent(data).then((eventId: string) => {
-				const event: TEvent = {
-					start: data.startTime,
-					end: data.endTime,
-					title: 'Test Title',
-					data: {
-						id: eventId,
-						type: data.type,
-						owner: clients.find(client => client.id === data.owner) ?? null,
-						price: data.price,
-						status: data.status,
-					},
-					desc: '',
-				};
-				setEvents([...myEvents, event]);
+			handleAddEvent(data).then(() => {
 				setShowModal(false);
 				resolve(true);
 			});
@@ -216,7 +223,6 @@ export default function Calendar({
 	const onDelete = (id: string): Promise<boolean> =>
 		new Promise(resolve => {
 			handleDeleteEvent(id).then(() => {
-				setEvents(myEvents.filter(event => event.data.id !== id));
 				setShowModal(false);
 				setSelected(null);
 				resolve(true);
@@ -259,17 +265,26 @@ export default function Calendar({
 		};
 
 		setSelected(reservation);
+		setSelectedEvent(event);
 		setShowModal(true);
 		setEditable(false);
 	}, []);
 
+	const handleCloseModal = () => {
+		setShowModal(false);
+		setSelected(null);
+		setSelectedEvent(null);
+		setEditable(false);
+	};
+
 	return (
 		<div className='flex-grow p-4 background'>
 			<ReactCalendar
+				selected={selectedEvent}
 				view={currentView}
 				toolbar={false}
 				localizer={localizer}
-				events={myEvents}
+				events={currentView === Views.MONTH ? filteredEvents : events}
 				views={views}
 				defaultView={Views.MONTH}
 				date={currentDay}
@@ -293,11 +308,12 @@ export default function Calendar({
 			{selected && (
 				<ReservationModal
 					show={showModal}
+					setShow={setShowModal}
 					reservation={selected}
-					handleClose={() => setShowModal(false)}
+					handleClose={handleCloseModal}
 					handleSubmit={onSubmit}
 					handleDelete={onDelete}
-					handleCancel={() => setShowModal(false)}
+					handleCancel={handleCloseModal}
 					editable={editable}
 					setEditable={setEditable}
 					minDate={selected ? selected.startTime : null}

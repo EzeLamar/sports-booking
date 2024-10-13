@@ -25,7 +25,6 @@ export default function SignUpPage() {
 				if (hasErrorMessage(error)) {
 					toast.error(error.message, {
 						theme: 'colored',
-						position: 'bottom-right',
 					});
 				}
 

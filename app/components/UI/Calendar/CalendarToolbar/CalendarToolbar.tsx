@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ListFilter } from 'lucide-react';
 import {
 	Select,
 	SelectContent,
@@ -11,6 +11,7 @@ import { View, Views } from 'react-big-calendar';
 import moment from 'moment';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
+import { DialogTrigger } from '@/components/ui/dialog';
 
 const options = [
 	{ value: 'month', label: 'Mes' },
@@ -27,6 +28,7 @@ type Props = {
 	handleCurrentViewChange: (view: View) => void;
 	showAll: boolean;
 	setShowAll: (showAll: boolean) => void;
+	hasFilter: boolean;
 };
 
 export default function CalendarToolbar({
@@ -37,6 +39,7 @@ export default function CalendarToolbar({
 	showAll,
 	setShowAll,
 	handleCurrentViewChange,
+	hasFilter,
 }: Props) {
 	const handleLeftArrowClick = () => {
 		const day = moment(currentDay);
@@ -94,16 +97,12 @@ export default function CalendarToolbar({
 	};
 
 	return (
-		<nav className='flex flex-col justify-between'>
+		<nav className='sticky top-0 flex flex-col justify-between bg-background z-50 pb-3'>
 			<h2 className='text-center text-xl font-bold'>{courtName}</h2>
 			<h3 className='text-center text-l'>{showDateRangeByView()}</h3>
 			<nav className='px-4 flex items-center justify-between py-4 gap-4'>
 				<div className='flex items-center gap-2'>
-					<Button
-						variant='outline'
-						size='sm'
-						onClick={() => setCurrentDay(new Date())}
-					>
+					<Button variant='outline' onClick={() => setCurrentDay(new Date())}>
 						Hoy
 					</Button>
 					<div className='flex items-center gap-2'>
@@ -140,6 +139,14 @@ export default function CalendarToolbar({
 						))}
 					</SelectContent>
 				</Select>
+				<DialogTrigger asChild>
+					<Button
+						className={`${hasFilter && 'text-primary border-2 border-primary'}`}
+						variant='outline'
+					>
+						<ListFilter className='h-4 w-4' />
+					</Button>
+				</DialogTrigger>
 			</nav>
 			{currentView !== Views.MONTH && (
 				<div className='flex justify-center items-center space-x-2'>

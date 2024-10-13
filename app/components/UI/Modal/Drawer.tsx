@@ -14,6 +14,7 @@ import {
 
 type Props = {
 	show: boolean;
+	setShow: (state: boolean) => void;
 	children: React.ReactNode;
 	onClose: () => void;
 	className?: string;
@@ -24,6 +25,7 @@ type Props = {
 
 export default function Drawer({
 	show,
+	setShow,
 	children,
 	onClose,
 	className = '',
@@ -56,7 +58,7 @@ export default function Drawer({
 	}, []);
 
 	return (
-		<DrawerUI open={show} onClose={onClose}>
+		<DrawerUI open={show} onClose={onClose} onOpenChange={setShow}>
 			<DrawerContent
 				ref={formContainerRef}
 				className={`px-3 pb-3 ${className}`}
