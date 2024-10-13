@@ -5,8 +5,12 @@ import ReservationForm, {
 	TYPE_VALUES,
 } from '@/app/components/Reservations/ReservationForm';
 import Drawer from '@/app/components/UI/Modal/Drawer';
+import ModalConfirmDelete from '@/app/components/UI/Modal/ModalConfirmDelete/ModalConfirmDelete';
+import hasErrorMessage from '@/app/utils/Error/ErrorHelper';
 import { Button } from '@/components/ui/button';
+import { DialogTrigger } from '@radix-ui/react-dialog';
 import React from 'react';
+import { toast } from 'react-toastify';
 
 const LABELS = {
 	SHOW_RESERVATION: 'Reserva',
@@ -15,6 +19,7 @@ const LABELS = {
 
 type Props = {
 	show: boolean;
+	setShow: (state: boolean) => void;
 	reservation: InitialReservation;
 	handleClose: () => void;
 	handleSubmit: (data: Reservation, ocurrences: number) => Promise<boolean>;
@@ -28,6 +33,7 @@ type Props = {
 
 export default function ReservationModal({
 	show,
+	setShow,
 	reservation,
 	handleSubmit,
 	handleClose,
@@ -68,9 +74,22 @@ export default function ReservationModal({
 		return '';
 	};
 
+	const onDelete = async (id: string): Promise<boolean> => {
+		try {
+			return await handleDelete(id);
+		} catch (error: unknown) {
+			if (hasErrorMessage(error)) {
+				toast.error(error.message, { theme: 'colored' });
+			}
+
+			return false;
+		}
+	};
+
 	return (
 		<Drawer
 			show={show}
+			setShow={setShow}
 			title={
 				!reservation.id
 					? LABELS.NEW_RESERVATION
@@ -85,7 +104,6 @@ export default function ReservationModal({
 					reservation={reservation}
 					handleSubmit={handleSubmit}
 					handleCancel={handleCancel}
-					handleDelete={handleDelete}
 					editable={editable}
 					minDate={minDate}
 					maxDate={maxDate}
@@ -93,14 +111,27 @@ export default function ReservationModal({
 				/>
 			) : (
 				<div>
-					<ReservationDetails reservation={reservation} rangeTime={rangeTime} />
-					<Button
-						className='w-full px-4 mt-3'
-						variant='outline'
-						onClick={() => setEditable(true)}
+					<ModalConfirmDelete
+						handleDelete={() => onDelete(reservation.id as string)}
+						title='Reserva'
 					>
-						Editar
-					</Button>
+						<ReservationDetails
+							reservation={reservation}
+							rangeTime={rangeTime}
+						/>
+						<Button
+							className='w-full px-4 mt-3'
+							variant='outline'
+							onClick={() => setEditable(true)}
+						>
+							Editar
+						</Button>
+						<DialogTrigger asChild>
+							<Button className='w-full px-4 mt-3' variant='destructive'>
+								Borrar
+							</Button>
+						</DialogTrigger>
+					</ModalConfirmDelete>
 				</div>
 			)}
 		</Drawer>

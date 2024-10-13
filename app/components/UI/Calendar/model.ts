@@ -10,6 +10,7 @@ type ReservationData = {
 	owner: Client | null;
 	price: number;
 	status: ReservationStatus;
+	show: boolean;
 };
 
 export type TEvent = {
