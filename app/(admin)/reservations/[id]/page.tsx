@@ -10,6 +10,7 @@ import CalendarToolbar from '@/app/components/UI/Calendar/CalendarToolbar/Calend
 import useClients from '@/app/hooks/useClients';
 import useReservations from '@/app/hooks/useReservations';
 import { ClientsContext } from '@/app/context/ClientsContext';
+import CalendarModalFilter from '@/app/components/UI/Calendar/CalendarModalFilter/CalendarModalFilter';
 
 type Props = {
 	params: { id: string };
@@ -23,7 +24,10 @@ export default function AdminPage({ params }: Props) {
 	const {
 		court,
 		reservations,
+		hasFilter,
 		loading: loadingReservations,
+		filters,
+		setFilters,
 		handleAddReservation,
 		handleAddRegularReservation,
 		handleDeleteReservation,
@@ -45,34 +49,37 @@ export default function AdminPage({ params }: Props) {
 	};
 
 	return (
-		<div className='flex flex-col h-screen gap-4'>
+		<div className='flex flex-col h-[85vh]'>
 			{loadingReservations || loadingClients ? (
 				<Loading />
 			) : (
 				<CourtContext.Provider value={court}>
 					<ClientsContext.Provider value={clients}>
-						<CalendarToolbar
-							courtName={court?.name ?? '...'}
-							currentDay={currentDay}
-							setCurrentDay={setCurrentDay}
-							currentView={currentView}
-							handleCurrentViewChange={setCurrentView}
-							showAll={showAll}
-							setShowAll={handleShowAll}
-						/>
-						<Calendar
-							events={reservations}
-							handleAddEvent={handleAddReservation}
-							handleAddRegularEvent={handleAddRegularReservation}
-							handleDeleteEvent={handleDeleteReservation}
-							handleUpdateEvent={handleUpdateReservation}
-							minHour={minHour}
-							maxHour={maxHour}
-							currentView={currentView}
-							setCurrentView={setCurrentView}
-							currentDay={currentDay}
-							setCurrentDay={setCurrentDay}
-						/>
+						<CalendarModalFilter filters={filters} setFilters={setFilters}>
+							<CalendarToolbar
+								courtName={court?.name ?? '...'}
+								currentDay={currentDay}
+								setCurrentDay={setCurrentDay}
+								currentView={currentView}
+								handleCurrentViewChange={setCurrentView}
+								showAll={showAll}
+								setShowAll={handleShowAll}
+								hasFilter={hasFilter}
+							/>
+							<Calendar
+								events={reservations}
+								handleAddEvent={handleAddReservation}
+								handleAddRegularEvent={handleAddRegularReservation}
+								handleDeleteEvent={handleDeleteReservation}
+								handleUpdateEvent={handleUpdateReservation}
+								minHour={minHour}
+								maxHour={maxHour}
+								currentView={currentView}
+								setCurrentView={setCurrentView}
+								currentDay={currentDay}
+								setCurrentDay={setCurrentDay}
+							/>
+						</CalendarModalFilter>
 					</ClientsContext.Provider>
 				</CourtContext.Provider>
 			)}

@@ -45,7 +45,6 @@ export default function ClientDetails({ client }: Props) {
 			await deleteClient(id);
 			toast.warn('Cliente Eliminado!', {
 				theme: 'colored',
-				position: 'bottom-right',
 			});
 
 			router.push('/clients');
@@ -53,7 +52,6 @@ export default function ClientDetails({ client }: Props) {
 			if (hasErrorMessage(error)) {
 				toast.error(error.message, {
 					theme: 'colored',
-					position: 'bottom-right',
 				});
 			}
 
@@ -87,6 +85,11 @@ export default function ClientDetails({ client }: Props) {
 					<h3 className='text-xl'>Reservas del Cliente</h3>
 					<div className='mt-3 flex flex-col gap-2'>
 						<p className='text-red-500'>{`Sin Pagar: ${booked.length}`}</p>
+						{booked.map(reservation => (
+							<p key={reservation.id} className='text-red-500'>
+								{reservation.startTime.toLocaleDateString()}
+							</p>
+						))}
 						<p className='text-green-600'>{`Pagadas: ${paid.length}`}</p>
 						<p className='text-gray-500'>{`Canceladas: ${cancelled.length}`}</p>
 					</div>

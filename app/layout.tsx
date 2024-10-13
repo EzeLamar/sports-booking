@@ -32,7 +32,7 @@ export default function RootLayout({
 	  */}
 			<body
 				className={cn(
-					'min-h-screen bg-background font-sans antialiased',
+					'h-screen bg-background font-sans antialiased',
 					fontSans.variable
 				)}
 			>
@@ -45,7 +45,7 @@ export default function RootLayout({
 					<ToastContainer />
 					<AuthContextProvider>
 						<NavBar />
-						<div className='container-fluid pt-3'>{children}</div>
+						<div className='container-fluid'>{children}</div>
 					</AuthContextProvider>
 				</ThemeProvider>
 				<SpeedInsights />

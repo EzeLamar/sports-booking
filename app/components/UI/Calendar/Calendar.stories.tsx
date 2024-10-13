@@ -38,6 +38,7 @@ const events = [
 			},
 			price: 5000,
 			status: ReservationStatus.Booked,
+			show: true,
 		},
 	},
 	{
@@ -56,6 +57,7 @@ const events = [
 			},
 			price: 1500,
 			status: ReservationStatus.Booked,
+			show: true,
 		},
 	},
 	{
@@ -74,6 +76,7 @@ const events = [
 			},
 			price: 5000,
 			status: ReservationStatus.Paid,
+			show: true,
 		},
 	},
 	{
@@ -92,6 +95,7 @@ const events = [
 			},
 			price: 1500,
 			status: ReservationStatus.Booked,
+			show: true,
 		},
 	},
 	{
@@ -110,6 +114,7 @@ const events = [
 			},
 			price: 1500.5,
 			status: ReservationStatus.Canceled,
+			show: true,
 		},
 	},
 ];
@@ -147,6 +152,7 @@ const handleAddRegularEvent = (
 				},
 				price: data.price,
 				status: data.status,
+				show: true,
 			},
 		}));
 		resolve(regularEvents);
