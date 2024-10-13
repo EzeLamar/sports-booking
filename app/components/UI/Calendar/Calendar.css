@@ -6,6 +6,14 @@
 	/* background-color: rgb(253, 254, 222); */
 }
 
+.rbc-month-view {
+	@apply border-gray-200 dark:border-gray-600;
+}
+
+.calendar__not-show {
+	@apply rounded-none bg-gray-400 dark:bg-gray-500;
+}
+
 .calendar__type-lesson {
 	@apply bg-blue-300 dark:bg-blue-500;
 }
@@ -18,12 +26,12 @@
 	@apply bg-orange-300 dark:bg-orange-500;
 }
 
-.calendar__status-booked {
+/* .calendar__status-booked {
 	@apply border-solid border-2 border-red-500 dark:border-red-300;
-}
+} */
 
 .calendar__status-canceled {
-	@apply bg-gray-400 dark:bg-gray-500;
+	@apply bg-slate-700 dark:bg-slate-600 line-through;
 }
 
 .rbc-off-range-bg {

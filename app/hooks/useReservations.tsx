@@ -2,7 +2,11 @@ import { Court } from '@/app/components/Courts/CourtSettings/CourtSettings';
 import { TEvent } from '@/app/components/UI/Calendar/model';
 import { Client } from '@/app/firebase/clients/model';
 import { getCourt, getCourtRef } from '@/app/firebase/courts/courts';
-import { Reservation } from '@/app/firebase/reservations/model';
+import {
+	Reservation,
+	ReservationStatus,
+	ReservationType,
+} from '@/app/firebase/reservations/model';
 import { Reservation as ReservationForm } from '@/app/components/Reservations/ReservationForm';
 import {
 	createRegularReservation,
@@ -16,6 +20,12 @@ import moment from 'moment';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
+export type Filters = {
+	clientIds: string[];
+	types: ReservationType[];
+	status: ReservationStatus[];
+};
+
 type Props = {
 	courtId: string;
 	clients: Client[];
@@ -25,6 +35,9 @@ type useReservationsProps = {
 	court: Court | null;
 	reservations: TEvent[];
 	loading: boolean;
+	hasFilter: boolean;
+	filters: Filters;
+	setFilters: (filters: Filters) => void;
 	handleAddReservation: (data: ReservationForm) => Promise<string>;
 	handleAddRegularReservation: (
 		data: ReservationForm,
@@ -48,6 +61,7 @@ const reservationsToEvents = (
 			owner: clients.find(client => client.id === reservation.owner) ?? null,
 			price: reservation.price,
 			status: reservation.status,
+			show: true,
 		},
 	}));
 
@@ -58,6 +72,15 @@ export default function useReservations({
 	const [reservations, setReservations] = useState<TEvent[]>([]);
 	const [court, setCourt] = useState<Court | null>(null);
 	const [loading, setLoading] = useState<boolean>(true);
+	const [filters, setFilters] = useState<Filters>({
+		clientIds: [],
+		types: [],
+		status: [],
+	});
+	const hasFilter =
+		filters.clientIds.length > 0 ||
+		filters.types.length > 0 ||
+		filters.status.length > 0;
 
 	useEffect((): void => {
 		const fetchReservations = async () => {
@@ -68,7 +91,8 @@ export default function useReservations({
 				const courtData = await getCourt(courtId);
 				const reservationsData = await getAllReservationsByCourtId(courtId);
 				setCourt(courtData);
-				setReservations(reservationsToEvents(reservationsData, clients));
+				const reservationData = reservationsToEvents(reservationsData, clients);
+				setReservations(reservationData);
 				setLoading(false);
 			} catch (error: unknown) {
 				if (hasErrorMessage(error)) {
@@ -78,6 +102,38 @@ export default function useReservations({
 		};
 		fetchReservations();
 	}, [courtId, clients]);
+
+	useEffect((): void => {
+		const { clientIds, types, status } = filters;
+		const reservationFilters: ((reservation: TEvent) => boolean)[] = [];
+		const filterByClientIds = (reservation: TEvent) =>
+			reservation.data.owner?.id
+				? clientIds.includes(reservation.data.owner.id)
+				: false;
+		const filterByTypes = (reservation: TEvent) =>
+			types.includes(reservation.data.type);
+		const filterByStatus = (reservation: TEvent) =>
+			status.includes(reservation.data.status);
+
+		if (clientIds.length > 0) {
+			reservationFilters.push(filterByClientIds);
+		}
+		if (types.length > 0) {
+			reservationFilters.push(filterByTypes);
+		}
+		if (status.length > 0) {
+			reservationFilters.push(filterByStatus);
+		}
+		setReservations(currentReservations =>
+			currentReservations.map(reservation => ({
+				...reservation,
+				data: {
+					...reservation.data,
+					show: reservationFilters.every(filter => filter(reservation)),
+				},
+			}))
+		);
+	}, [filters]);
 
 	const handleAddReservation = async (
 		data: ReservationForm
@@ -89,16 +145,30 @@ export default function useReservations({
 				endTime: new Date(data.endTime),
 				court: getCourtRef(courtId),
 			});
+
+			const newEvent: TEvent = {
+				start: data.startTime,
+				end: data.endTime,
+				title: 'Test Title',
+				data: {
+					id: docRef,
+					type: data.type,
+					owner: clients.find(client => client.id === data.owner) ?? null,
+					price: data.price,
+					status: data.status,
+					show: true,
+				},
+				desc: '',
+			};
+			setReservations([...reservations, newEvent]);
 			toast.success('Reserva Creada!', {
 				theme: 'colored',
-				position: 'bottom-right',
 			});
 			return docRef;
 		} catch (error: unknown) {
 			if (hasErrorMessage(error)) {
 				toast.error(error.message, {
 					theme: 'colored',
-					position: 'bottom-right',
 				});
 			}
 
@@ -122,14 +192,15 @@ export default function useReservations({
 			);
 			toast.success(`Reserva Múltiple Creada! (${ocurrences})`, {
 				theme: 'colored',
-				position: 'bottom-right',
 			});
-			return reservationsToEvents(newReservations, clients);
+			const newEvents = reservationsToEvents(newReservations, clients);
+			setReservations([...reservations, ...newEvents]);
+
+			return newEvents;
 		} catch (error: unknown) {
 			if (hasErrorMessage(error)) {
 				toast.error(error.message, {
 					theme: 'colored',
-					position: 'bottom-right',
 				});
 			}
 
@@ -140,16 +211,16 @@ export default function useReservations({
 	const handleDeleteReservation = async (id: string): Promise<boolean> => {
 		try {
 			await deleteReservation(id);
-			toast.warn('Reserva Eliminada!', {
+			toast.warning('Reserva Eliminada!', {
 				theme: 'colored',
-				position: 'bottom-right',
 			});
+			setReservations(reservations.filter(event => event.data.id !== id));
+
 			return true;
 		} catch (error: unknown) {
 			if (hasErrorMessage(error)) {
 				toast.error(error.message, {
 					theme: 'colored',
-					position: 'bottom-right',
 				});
 			}
 
@@ -177,8 +248,27 @@ export default function useReservations({
 				await updateReservation(reservation);
 				toast.success('Reserva modificada!', {
 					theme: 'colored',
-					position: 'bottom-right',
 				});
+
+				const updatedEvent: TEvent = {
+					start: data.startTime,
+					end: data.endTime,
+					title: 'Test Title',
+					data: {
+						id: data.id ?? '', // TODO: this will be fixed in a future update
+						type: data.type,
+						owner: clients.find(client => client.id === data.owner) ?? null,
+						price: data.price,
+						status: data.status,
+						show: true,
+					},
+					desc: '',
+				};
+				setReservations([
+					...reservations.filter(event => event.data.id !== data.id),
+					updatedEvent,
+				]);
+
 				return true;
 			}
 		} catch (error: unknown) {
@@ -197,6 +287,9 @@ export default function useReservations({
 		court,
 		reservations,
 		loading,
+		hasFilter,
+		filters,
+		setFilters,
 		handleAddReservation,
 		handleAddRegularReservation,
 		handleDeleteReservation,

@@ -3,8 +3,6 @@ import React, { useContext, useState } from 'react';
 import moment from 'moment';
 import { toast } from 'react-toastify';
 import { z } from 'zod';
-import { Button } from '@/components/ui/button';
-import { Trash } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import {
@@ -20,8 +18,6 @@ import { CourtContext } from '@/app/context/CourtContext';
 import { ClientsContext } from '@/app/context/ClientsContext';
 import ComboBox from '@/app/components/UI/Input/ComboBox';
 import { useRouter } from 'next/navigation';
-import ModalConfirmDelete from '@/app/components/UI/Modal/ModalConfirmDelete/ModalConfirmDelete';
-import { DialogTrigger } from '@/components/ui/dialog';
 
 const LABELS = {
 	FORM_TITLE: 'Datos de la reserva',
@@ -94,7 +90,6 @@ export type InitialReservation = {
 type Props = {
 	reservation: InitialReservation;
 	handleSubmit: (data: Reservation, ocurrences: number) => Promise<boolean>;
-	handleDelete: (id: string) => Promise<boolean>;
 	handleCancel: () => void;
 	minDate?: Date | null;
 	maxDate?: Date | null;
@@ -130,7 +125,6 @@ export default function ReservationForm({
 	reservation,
 	handleSubmit,
 	handleCancel = () => {},
-	handleDelete,
 	editable = false,
 	minDate = null,
 	maxDate = null,
@@ -176,18 +170,6 @@ export default function ReservationForm({
 				reservationSubmitted,
 				isRegularBooking ? data.ocurrences : SINGLE_OCURRENCE
 			);
-		} catch (error: unknown) {
-			if (hasErrorMessage(error)) {
-				toast.error(error.message, { theme: 'colored' });
-			}
-
-			return false;
-		}
-	};
-
-	const onDelete = async (id: string): Promise<boolean> => {
-		try {
-			return await handleDelete(id);
 		} catch (error: unknown) {
 			if (hasErrorMessage(error)) {
 				toast.error(error.message, { theme: 'colored' });
@@ -247,86 +229,74 @@ export default function ReservationForm({
 	}));
 
 	return (
-		<ModalConfirmDelete
-			handleDelete={() => onDelete(initialValues.id ?? '')}
-			title='Reserva'
+		<Form
+			title={showTitle ? LABELS.FORM_TITLE : null}
+			initialValues={initialValues}
+			handleSubmit={onSubmit}
+			handleCancel={handleCancel}
+			disabled={disabled}
+			setDisabled={setDisabled}
+			formSchema={FormSchema}
 		>
-			{initialValues.id && !disabled && (
-				<DialogTrigger asChild>
-					<Button className='absolute top-20 right-4' variant='destructive'>
-						<Trash className='h-4 w-4' />
-					</Button>
-				</DialogTrigger>
-			)}
-			<Form
-				title={showTitle ? LABELS.FORM_TITLE : null}
-				initialValues={initialValues}
-				handleSubmit={onSubmit}
-				handleCancel={handleCancel}
-				disabled={disabled}
-				setDisabled={setDisabled}
-				formSchema={FormSchema}
-			>
-				{!initialValues.id && (
-					<div className='flex justify-between gap-2'>
-						<div className='flex items-center gap-2'>
-							<Switch
-								id='airplane-mode'
-								onClick={() => setIsRegularBooking(!isRegularBooking)}
-							/>
-							<Label htmlFor='airplane-mode'>{LABELS.REGULAR_BOOKING}</Label>
-						</div>
-						{isRegularBooking && (
-							<Input
-								type='number'
-								placeholder={LABELS.OCURRENCES}
-								name='ocurrences'
-							/>
-						)}
+			{!initialValues.id && (
+				<div className='flex justify-between gap-2'>
+					<div className='flex items-center gap-2'>
+						<Switch
+							id='airplane-mode'
+							onClick={() => setIsRegularBooking(!isRegularBooking)}
+						/>
+						<Label htmlFor='airplane-mode'>{LABELS.REGULAR_BOOKING}</Label>
 					</div>
-				)}
-				<ComboBox
-					name='owner'
-					options={clientsByName}
-					label={LABELS.OWNER}
-					searchable
-					handleSearchNotFound={() => router.push('/clients/new')}
-				/>
-				<SelectLinked
-					name='type'
-					label={LABELS.TYPE}
-					options={TYPE_VALUES_BY_PRICE}
-					handleUpdateLinkedInput={handlePriceValueByType}
-				/>
-				{reservation.id && (
-					<>
+					{isRegularBooking && (
 						<Input
-							type='datetime-local'
-							label={LABELS.START_TIME}
-							name='startTime'
-							placeholder={LABELS.START_TIME}
-							min={min}
-							max={max}
+							type='number'
+							placeholder={LABELS.OCURRENCES}
+							name='ocurrences'
 						/>
-						<Input
-							type='datetime-local'
-							label={LABELS.END_TIME}
-							name='endTime'
-							placeholder={LABELS.END_TIME}
-							min={min}
-							max={max}
-						/>
-					</>
-				)}
-				<Input
-					type='number'
-					label={LABELS.PRICE}
-					name='price'
-					placeholder={LABELS.PRICE}
-					showCurrency
-				/>
-				<Select name='status' label={LABELS.STATUS} options={STATUS_VALUES} />
-			</Form>
-		</ModalConfirmDelete>
+					)}
+				</div>
+			)}
+			<ComboBox
+				name='owner'
+				options={clientsByName}
+				label={LABELS.OWNER}
+				searchable
+				handleSearchNotFound={() => router.push('/clients/new')}
+			/>
+			<SelectLinked
+				name='type'
+				label={LABELS.TYPE}
+				options={TYPE_VALUES_BY_PRICE}
+				handleUpdateLinkedInput={handlePriceValueByType}
+			/>
+			{reservation.id && (
+				<>
+					<Input
+						type='datetime-local'
+						label={LABELS.START_TIME}
+						name='startTime'
+						placeholder={LABELS.START_TIME}
+						min={min}
+						max={max}
+					/>
+					<Input
+						type='datetime-local'
+						label={LABELS.END_TIME}
+						name='endTime'
+						placeholder={LABELS.END_TIME}
+						min={min}
+						max={max}
+					/>
+				</>
+			)}
+			<Input
+				type='number'
+				label={LABELS.PRICE}
+				name='price'
+				placeholder={LABELS.PRICE}
+				showCurrency
+			/>
+			<Select name='status' label={LABELS.STATUS} options={STATUS_VALUES} />
+		</Form>
 	);
 }
