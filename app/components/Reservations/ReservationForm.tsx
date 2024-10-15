@@ -102,7 +102,8 @@ const FormSchema = z
 		id: z.string().nullable(),
 		ocurrences: z.coerce
 			.number()
-			.min(1, { message: 'Debe definir el número de ocurrencias.' }),
+			.min(1, { message: 'Debe definir el número de ocurrencias.' })
+			.max(10, { message: 'El maximo es 10.' }),
 		owner: z.string().min(2, {
 			message: 'El nombre de la reserva debe tener al menos 2 caracteres.',
 		}),
