@@ -7,7 +7,7 @@ import hasErrorMessage from '@/app/utils/Error/ErrorHelper';
 import Loading from '@/app/components/UI/Loading/Loading';
 import { Client } from '@/app/firebase/clients/model';
 import { getAllClients } from '@/app/firebase/clients/client';
-import ClientsView from '@/app/components/Clients/ClientsView/ClientsView';
+import ClientsView from '@/app/components/Clients/View/ClientsView';
 
 export default function ClientsPage() {
 	const router = useRouter();

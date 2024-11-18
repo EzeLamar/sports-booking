@@ -6,6 +6,8 @@ import {
 	DocumentReference,
 	collection,
 	getDocs,
+	addDoc,
+	deleteDoc,
 } from 'firebase/firestore';
 import { Court } from '@/app/components/Courts/CourtSettings/CourtSettings';
 import firebaseApp from '@/app/firebase/config';
@@ -29,7 +31,7 @@ export async function getCourt(courtId: string): Promise<Court> {
 
 	const data = { ...docSnap.data() };
 	return {
-		id: data.id,
+		id: docSnap.id,
 		isEnabled: data.enabled,
 		name: data.name,
 		address: data.address,
@@ -42,14 +44,62 @@ export async function getCourt(courtId: string): Promise<Court> {
 	};
 }
 
-export async function editCourt(court: Court): Promise<boolean> {
+export async function createCourt(courtData: Court): Promise<string> {
+	const db = getFirestore(firebaseApp);
+	const colRef = collection(
+		db,
+		process.env.NEXT_PUBLIC_COURT_COLLECTION ?? 'NEXT_PUBLIC_COURT_COLLECTION'
+	);
+
+	const court = {
+		enabled: courtData.isEnabled,
+		name: courtData.name,
+		address: courtData.address,
+		availableDays: courtData.availableDays,
+		openHour: courtData.openHour,
+		closeHour: courtData.closeHour,
+		matchPerHour: courtData.matchPerHour,
+		classPerHour: courtData.classPerHour,
+		tournamentPerHour: courtData.tournamentPerHour,
+	};
+	const docRef = await addDoc(colRef, court);
+
+	return docRef.id;
+}
+
+export async function editCourt(courtData: Court): Promise<boolean> {
 	const db = getFirestore(firebaseApp);
 	const docRef = doc(
 		db,
 		process.env.NEXT_PUBLIC_COURT_COLLECTION ?? 'NEXT_PUBLIC_COURT_COLLECTION',
-		court.id
+		courtData.id
 	);
+
+	const court = {
+		enabled: courtData.isEnabled,
+		name: courtData.name,
+		address: courtData.address,
+		availableDays: courtData.availableDays,
+		openHour: courtData.openHour,
+		closeHour: courtData.closeHour,
+		matchPerHour: courtData.matchPerHour,
+		classPerHour: courtData.classPerHour,
+		tournamentPerHour: courtData.tournamentPerHour,
+	};
+
 	await updateDoc(docRef, court);
+
+	return true;
+}
+
+export async function deleteCourt(id: string): Promise<boolean> {
+	const db = getFirestore(firebaseApp);
+	const docRef = doc(
+		db,
+		process.env.NEXT_PUBLIC_COURT_COLLECTION ?? 'NEXT_PUBLIC_COURT_COLLECTION',
+		id
+	);
+	await deleteDoc(docRef);
 
 	return true;
 }
@@ -65,7 +115,7 @@ export async function getAllCourts(): Promise<Array<Court>> {
 	return courtsSnap.docs.map((docSnap): Court => {
 		const data = docSnap.data();
 		return {
-			id: data.id,
+			id: docSnap.id,
 			isEnabled: data.enabled,
 			name: data.name,
 			address: data.address,

@@ -39,7 +39,7 @@ function ClientsView({ clients }: Props) {
 					<UserPlus />
 				</Button>
 			</form>
-			<div className='d-flex gap-3 flex-wrap flex-sm-row flex-column align-items-center justify-content-around'>
+			<div className='flex flex-col md:flex-row md:flex-wrap gap-3 '>
 				{filteredClients.length === 0 && (
 					<p className='text-xl text-center pt-5 '>No hay resultados..</p>
 				)}

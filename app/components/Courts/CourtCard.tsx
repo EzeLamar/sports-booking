@@ -17,7 +17,7 @@ type Props = {
 
 function CourtCard({ court }: Props) {
 	return (
-		<Card className='m-3 max-w-sm'>
+		<Card className='md:w-96'>
 			<CardHeader>
 				<CardTitle className='flex gap-2'>
 					<Goal />
@@ -26,6 +26,9 @@ function CourtCard({ court }: Props) {
 			</CardHeader>
 			<CardContent className='flex flex-col gap-2'>
 				<div>{court.address}</div>
+				<div className='text-primary text-sm'>
+					{court.availableDays.join(', ')}
+				</div>
 				<div>{`${court.openHour} - ${court.closeHour} hs`}</div>
 				<p>{`Partido x hora: $${court.matchPerHour}`}</p>
 				<p>{`Clase x hora: $${court.classPerHour}`}</p>
