@@ -6,10 +6,10 @@ import { toast } from 'react-toastify';
 import { getAllCourts } from '@/app/firebase/courts/courts';
 import hasErrorMessage from '@/app/utils/Error/ErrorHelper';
 import Loading from '@/app/components/UI/Loading/Loading';
-import CourtCard from '@/app/components/Courts/CourtCard';
 import { Court } from '@/app/components/Courts/CourtSettings/CourtSettings';
+import CourtsView from '@/app/components/Courts/View/CourtsView';
 
-export default function CourtsView() {
+export default function CourtsPage() {
 	const router = useRouter();
 	const [courts, setCourts] = useState<Array<Court>>([]);
 	const [loading, setLoading] = useState<boolean>(true);
@@ -29,13 +29,5 @@ export default function CourtsView() {
 		fetchData();
 	}, [router]);
 
-	return loading ? (
-		<Loading />
-	) : (
-		<div className='d-flex gap-3 flex-wrap flex-sm-row flex-column align-items-center justify-content-around'>
-			{courts.map(court => (
-				<CourtCard key={court.id} court={court} />
-			))}
-		</div>
-	);
+	return loading ? <Loading /> : <CourtsView courts={courts} />;
 }

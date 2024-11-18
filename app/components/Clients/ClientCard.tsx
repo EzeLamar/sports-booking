@@ -18,14 +18,14 @@ function ClientCard({ client }: Props) {
 	const [isOpen, setIsOpen] = React.useState(false);
 
 	return (
-		<Card className='m-3 max-w-sm'>
+		<Card>
 			<Collapsible>
 				<CardHeader>
 					<CardTitle className='flex justify-between'>
 						<div className='flex items-center gap-1'>
 							<CollapsibleTrigger
 								onClick={() => setIsOpen(!isOpen)}
-								className='flex items-center gap-1'
+								className='flex items-center gap-1 text-md'
 							>
 								<ChevronDown
 									className={cn(

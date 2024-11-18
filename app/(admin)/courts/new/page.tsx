@@ -1,34 +1,45 @@
-/* eslint-disable jsx-a11y/label-has-associated-control */
-import React, { useState } from 'react';
-import hasErrorMessage from '@/app/utils/Error/ErrorHelper';
+'use client';
+
+import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
-import { z } from 'zod';
-import Card from '@/app/components/UI/Card/Card';
+import hasErrorMessage from '@/app/utils/Error/ErrorHelper';
 import Form from '@/app/components/UI/Form/Form';
 import Input from '@/app/components/UI/Input/Input';
+import { z } from 'zod';
+import Card from '@/app/components/UI/Card/Card';
+import { Court } from '@/app/components/Courts/CourtSettings/CourtSettings';
 import ButtonGroup from '@/app/components/UI/Input/ButtonGroup';
+import { createCourt } from '@/app/firebase/courts/courts';
 
-export type Court = {
-	id: string;
-	isEnabled: boolean;
-	name: string;
-	address: string;
-	availableDays: string[];
-	openHour: string;
-	closeHour: string;
-	matchPerHour: number;
-	tournamentPerHour: number;
-	classPerHour: number;
-};
-
-type Props = {
-	handleSubmit: (data: Court) => Promise<boolean>;
-	court?: Court | null;
-	editable?: boolean;
-};
+const FormSchema = z.object({
+	name: z.string().min(5, { message: 'Al menos 5 caracteres' }),
+	address: z.string().min(5, { message: 'Al menos 5 caracteres' }),
+	availableDays: z.array(z.string()).refine(value => value.some(item => item), {
+		message: 'Debe seleccionar al menos 1 dia.',
+	}),
+	openHour: z
+		.string({
+			required_error: 'Hora de apertura requerida',
+		})
+		.regex(/^([0-1]?[0-9]|2[0-3]):[0|3][0]$/, { message: 'Formato Inválido' }),
+	closeHour: z
+		.string({
+			required_error: 'Hora de cierre requerida',
+		})
+		.regex(/^([0-1]?[0-9]|2[0-3]):[0|3][0]$/, { message: 'Formato Inválido' }),
+	matchPerHour: z.coerce
+		.number()
+		.min(1, { message: 'Debe seleccionar un precio.' }),
+	classPerHour: z.coerce
+		.number()
+		.min(1, { message: 'Debe seleccionar un precio.' }),
+	tournamentPerHour: z.coerce
+		.number()
+		.min(1, { message: 'Debe seleccionar un precio.' }),
+});
 
 const LABELS = {
-	TITLE: 'Configuración de Cancha',
+	TITLE: 'Nueva Cancha',
 	NAME: 'Nombre',
 	ADDRESS: 'Dirección',
 	OPEN_DAYS: 'Días Habilitados',
@@ -70,52 +81,23 @@ const LABELS = {
 	],
 };
 
-const FormSchema = z.object({
-	name: z.string().min(5, { message: 'Al menos 5 caracteres' }),
-	address: z.string().min(5, { message: 'Al menos 5 caracteres' }),
-	availableDays: z.array(z.string()).refine(value => value.some(item => item), {
-		message: 'Debe seleccionar al menos 1 dia.',
-	}),
-	openHour: z
-		.string({
-			required_error: 'Hora de apertura requerida',
-		})
-		.regex(/^([0-1]?[0-9]|2[0-3]):[0|3][0]$/, { message: 'Formato Inválido' }),
-	closeHour: z
-		.string({
-			required_error: 'Hora de cierre requerida',
-		})
-		.regex(/^([0-1]?[0-9]|2[0-3]):[0|3][0]$/, { message: 'Formato Inválido' }),
-	matchPerHour: z.coerce
-		.number()
-		.min(1, { message: 'Debe seleccionar un precio.' }),
-	classPerHour: z.coerce
-		.number()
-		.min(1, { message: 'Debe seleccionar un precio.' }),
-	tournamentPerHour: z.coerce
-		.number()
-		.min(1, { message: 'Debe seleccionar un precio.' }),
-});
-
-export default function CourtSettings({
-	court = null,
-	editable = false,
-	handleSubmit,
-}: Props) {
-	const [disabled, setDisabled] = useState<boolean>(!editable);
-	const formValues = { ...court };
+export default function CourtCreationPage() {
+	const router = useRouter();
 
 	const onSubmit = async (
 		data: z.infer<typeof FormSchema>
 	): Promise<boolean> => {
-		const courtSubmitted: Court = {
+		const CourtSubmitted: Court = {
 			...data,
-			id: court?.id ?? '',
-			isEnabled: false,
+			id: '',
+			isEnabled: true,
 		};
 
 		try {
-			return await handleSubmit(courtSubmitted);
+			const courtd = await createCourt(CourtSubmitted);
+			router.push(`/courts/${courtd}`);
+
+			return true;
 		} catch (error: unknown) {
 			if (hasErrorMessage(error)) {
 				toast.error(error.message, { theme: 'colored' });
@@ -125,15 +107,26 @@ export default function CourtSettings({
 		}
 	};
 
+	const initialValues = {
+		name: '',
+		address: '',
+		availableDays: [],
+		openHour: '',
+		closeHour: '',
+		matchPerHour: 0,
+		classPerHour: 0,
+		tournamentPerHour: 0,
+	};
+
 	return (
 		<Card>
 			<Form
-				title={LABELS.TITLE}
-				disabled={disabled}
-				setDisabled={setDisabled}
-				initialValues={formValues}
+				title='Nueva Cancha'
+				initialValues={initialValues}
 				handleSubmit={onSubmit}
+				disabled={false}
 				formSchema={FormSchema}
+				showCancelButton={false}
 			>
 				<Input
 					label={LABELS.NAME}
