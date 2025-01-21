@@ -7,7 +7,6 @@
 	"extends": [
 		"next/core-web-vitals",
 		"airbnb",
-		"airbnb/hooks",
 		"plugin:@typescript-eslint/recommended",
 		"plugin:react/recommended",
 		"plugin:jsx-a11y/recommended",
@@ -22,13 +21,7 @@
 			"tsx": true
 		}
 	},
-	"plugins": [
-		"import",
-		"jsx-a11y",
-		"react",
-		"react-hooks",
-		"@typescript-eslint"
-	],
+	"plugins": ["import", "jsx-a11y", "react", "@typescript-eslint"],
 	"rules": {
 		"linebreak-style": ["error", "unix"],
 		"no-console": "error",
