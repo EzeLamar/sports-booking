@@ -8,7 +8,53 @@ export default buildConfig({
 	editor: lexicalEditor(),
 
 	// Define and configure your collections in this array
-	collections: [],
+	collections: [
+		{
+			slug: 'posts', // Identificador único de la colección
+			labels: {
+				singular: 'Post',
+				plural: 'Posts',
+			},
+			fields: [
+				{
+					name: 'title',
+					type: 'text',
+					required: true,
+				},
+				{
+					name: 'content',
+					type: 'richText',
+					required: true,
+				},
+				{
+					name: 'author',
+					type: 'relationship',
+					relationTo: 'users', // Relación con la colección 'users'
+					required: true,
+				},
+				{
+					name: 'publishedDate',
+					type: 'date',
+				},
+				{
+					name: 'status',
+					type: 'select',
+					options: [
+						{
+							label: 'Draft',
+							value: 'draft',
+						},
+						{
+							label: 'Published',
+							value: 'published',
+						},
+					],
+					defaultValue: 'draft',
+					required: true,
+				},
+			],
+		},
+	],
 
 	// Your Payload secret - should be a complex and secure string, unguessable
 	secret: process.env.PAYLOAD_SECRET || '',
